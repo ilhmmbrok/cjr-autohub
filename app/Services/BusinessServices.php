@@ -26,13 +26,22 @@ class BusinessServices
     {
         // 1. Validasi field wajib
         $required = [
-            'customer_id', 'phone', 'address', 'vehicle_type',
-            'model_year', 'plate_number', 'customer_complaint',
-            'booking_date', 'checkin_time',
+            'customer_id',
+            'phone',
+            'address',
+            'vehicle_type',
+            'model_year',
+            'plate_number',
+            'customer_complaint',
+            'booking_date',
+            'checkin_time',
         ];
         foreach ($required as $field) {
             if (empty(trim((string)($data[$field] ?? '')))) {
-                return ['success' => false, 'message' => 'Semua field wajib diisi.'];
+                return [
+                    'success' => false,
+                    'message' => 'Semua field wajib diisi.'
+                ];
             }
         }
 
@@ -44,22 +53,34 @@ class BusinessServices
         // 3. Validasi format tanggal
         $parsedDate = DateTime::createFromFormat('Y-m-d', $data['booking_date']);
         if (!$parsedDate || $parsedDate->format('Y-m-d') !== $data['booking_date']) {
-            return ['success' => false, 'message' => 'Format tanggal tidak valid.'];
+            return [
+                'success' => false,
+                'message' => 'Format tanggal tidak valid.'
+            ];
         }
         if ($data['booking_date'] < $today) {
-            return ['success' => false, 'message' => 'Tanggal tidak boleh di masa lalu.'];
+            return [
+                'success' => false,
+                'message' => 'Tanggal tidak boleh di masa lalu.'
+            ];
         }
 
         // 4. Validasi format waktu
         $parsedTime = DateTime::createFromFormat('H:i', $data['checkin_time']);
         if (!$parsedTime || $parsedTime->format('H:i') !== $data['checkin_time']) {
-            return ['success' => false, 'message' => 'Format waktu tidak valid.'];
+            return [
+                'success' => false,
+                'message' => 'Format waktu tidak valid.'
+            ];
         }
 
         // 5. Ambil jadwal — dipakai untuk semua cek berikutnya
         $schedule = $this->scheduleModel->getBusinessHours();
         if (!$schedule) {
-            return ['success' => false, 'message' => 'Jam operasional belum diatur oleh admin.'];
+            return [
+                'success' => false,
+                'message' => 'Jam operasional belum diatur oleh admin.'
+            ];
         }
 
         $openTime  = $schedule['open_time'];
@@ -86,7 +107,7 @@ class BusinessServices
             ];
         }
 
-        // 7b. Jika booking hari ini, jam check-in tidak boleh di masa lalu
+        // 8. Jika booking hari ini, jam check-in tidak boleh di masa lalu
         if ($data['booking_date'] === $today && $checkin < $nowTime) {
             return [
                 'success' => false,
@@ -94,7 +115,7 @@ class BusinessServices
             ];
         }
 
-        // 8. Cek slot + insert dalam satu transaksi (cegah race condition)
+        // 9. Cek slot + insert dalam satu transaksi (cegah race condition)
         try {
             $db = Database::connect();
             $db->beginTransaction();
@@ -109,18 +130,23 @@ class BusinessServices
 
             if ($total >= $maxSlot) {
                 $db->rollBack();
-                return ['success' => false, 'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'];
+                return [
+                    'success' => false,
+                    'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'
+                ];
             }
 
             $this->bookingModel->createBooking($data);
 
             $db->commit();
             return ['success' => true, 'message' => 'Booking berhasil.'];
-
         } catch (Exception $e) {
             $db->rollBack();
             error_log('BusinessServices::createBooking — ' . $e->getMessage());
-            return ['success' => false, 'message' => 'Terjadi kesalahan. Silahkan coba lagi.'];
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan. Silahkan coba lagi.'
+            ];
         }
     }
 }

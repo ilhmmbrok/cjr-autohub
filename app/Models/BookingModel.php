@@ -108,11 +108,6 @@ class BookingModel
         return (int)($result['total'] ?? 0);
     }
 
-    public function getNextQueueNumber(string $date): int
-    {
-        return $this->countBookingsByDate($date) + 1;
-    }
-
     public function deleteCancelledBookings(): int
     {
         return Database::execute(
