@@ -1,0 +1,17 @@
+{
+  "name": "autohub",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --watch",
+    "build": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}

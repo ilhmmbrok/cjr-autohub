@@ -1,0 +1,17 @@
+{
+    "name": "cjr/autohub",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\": "database/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ilham Mubarok",
+            "email": "ilhmmbrok@gmail.com"
+        }
+    ],
+    "require": {}
+}
