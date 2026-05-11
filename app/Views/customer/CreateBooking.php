@@ -1,8 +1,8 @@
-<?php require __DIR__ . '/../layouts/sidebar-customer.php'; ?>
+<?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
 <title>Form Booking Online</title>
 
-<div class="flex-1 px-6 py-8 bg-white min-h-screen">
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
     <div class="mb-7">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
             <a href="/customer" class="hover:text-zinc-700 transition-colors">Dashboard</a>
@@ -17,7 +17,7 @@
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white overflow-hidden pb-4">
-            <form action="/customer/newbooking" method="POST">
+            <form action="/create" method="POST">
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-4">
                         <div>

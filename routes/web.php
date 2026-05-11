@@ -34,5 +34,7 @@ Router::post('/admin/jadwal',                    [ScheduleController::class,    
 Router::get('/dashboard',           [CustomerController::class, 'index'],    'customer');
 Router::get('/create',              [BookingController::class,  'index'],    'customer');
 Router::post('/create',             [BookingController::class,  'store'],    'customer');
+Router::get('/edit/:id',           [BookingController::class,  'updateView'],   'customer');
+Router::post('/edit/:id',          [BookingController::class,  'update'],   'customer');
 Router::get('/history',             [BookingController::class,  'ShowAllBooking'],  'customer');
 Router::post('/booking/:id/cancel', [BookingController::class,  'cancel'],   'customer');

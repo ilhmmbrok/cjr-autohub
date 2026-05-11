@@ -10,7 +10,7 @@ use PDOStatement;
 class Database
 {
     private static $db_host = "localhost";
-    private static $db_name = "autohub_fix";
+    private static $db_name = "autohub";
     private static $db_user = "root";
     private static $db_pass = "";
     private static $db_charset = "utf8mb4";

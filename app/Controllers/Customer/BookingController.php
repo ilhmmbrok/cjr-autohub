@@ -95,4 +95,69 @@ class BookingController extends Controller
         Session::setMessage('success', 'Booking berhasil dibatalkan.');
         $this->redirect('/history');
     }
+
+    public function updateView(string $id): void
+    {
+        $user    = Auth::user('customer');
+        $booking = $this->bookingModel->findBooking((int) $id);
+
+        if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
+            Session::setMessage('error', 'Booking tidak ditemukan.');
+            $this->redirect('/history');
+            return;
+        }
+
+        if ($booking['progress_status'] !== 'Pending') {
+            Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa diubah.');
+            $this->redirect('/history');
+            return;
+        }
+
+        $this->view('customer.EditBooking', [
+            'booking' => $booking,
+        ]);
+    }
+
+    public function update(string $id): void
+    {
+        $user    = Auth::user('customer');
+        $booking = $this->bookingModel->findBooking((int) $id);
+
+        if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
+            Session::setMessage('error', 'Booking tidak ditemukan.');
+            $this->redirect('/history');
+            return;
+        }
+
+        if ($booking['progress_status'] !== 'Pending') {
+            Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa diubah.');
+            $this->redirect('/history');
+            return;
+        }
+
+        $data = $this->input([
+            'phone',
+            'address',
+            'vehicle_type',
+            'model_year',
+            'plate_number',
+            'customer_complaint',
+            'date',
+            'checkin_time',
+        ]);
+
+        $result = $this->businessServices->updateBooking((int) $id, array_merge($data, [
+            'customer_id'  => Auth::user('customer')['id'],
+            'booking_date' => $data['date'],
+        ]));
+
+        if (!$result['success']) {
+            Session::setMessage('error', $result['message']);
+            $this->redirect("/booking/{$id}/update");
+            return;
+        }
+
+        Session::setMessage('success', 'Booking berhasil diperbarui.');
+        $this->redirect('/history');
+    }
 }

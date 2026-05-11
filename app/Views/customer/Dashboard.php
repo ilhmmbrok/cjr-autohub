@@ -1,4 +1,4 @@
-<?php require __DIR__ . '/../layouts/sidebar-customer.php'; ?>
+<?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
 <title>Dashboard</title>
 <style>
@@ -66,7 +66,7 @@
     }
 </style>
 
-<div class=" flex-1 px-6 py-8 bg-white min-h-screen">
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
 
     <!-- Header -->
     <div class="mb-7">
@@ -77,7 +77,7 @@
     </div>
 
     <div class="space-y-4">
-        <!-- Active Booking Status -->
+
         <?php
         $activeBooking = null;
         foreach ($bookings as $b) {
@@ -110,145 +110,166 @@
                 'hint'       => 'Kendaraan Anda sedang dikerjakan oleh teknisi',
             ],
         ];
+
+        $slot   = $slotInfo[0] ?? null;
+        $isFull = $slot && $slot['available'] <= 0;
+        $pct    = ($slot && $slot['max'] > 0) ? round(($slot['booked'] / $slot['max']) * 100) : 0;
+        $cfg    = $activeBooking ? ($statusMap[$activeBooking['progress_status']] ?? null) : null;
         ?>
 
-        <div class="rounded-xl border border-zinc-200 bg-white p-5">
-            <!-- Card Header -->
-            <div class="flex items-start justify-between mb-4">
-                <div>
-                    <h2 class="text-sm font-semibold text-zinc-900">Booking Aktif</h2>
-                    <p class="text-xs text-zinc-400 mt-0.5">Status kendaraan Anda saat ini</p>
+        <!-- ── Top 2-column grid: Booking Aktif + Jam Operasional ── -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+
+            <!-- Card: Booking Aktif -->
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-sm font-semibold text-zinc-900">Booking Aktif</h2>
+                        <p class="text-xs text-zinc-400 mt-0.5">Status kendaraan Anda saat ini</p>
+                    </div>
+                    <?php if ($activeBooking && $cfg): ?>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border <?= $cfg['badge'] ?>">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                            <?= htmlspecialchars($activeBooking['progress_status']) ?>
+                        </span>
+                    <?php endif; ?>
                 </div>
-                <?php if ($activeBooking): ?>
-                    <?php $cfg = $statusMap[$activeBooking['progress_status']] ?? null; ?>
-                    <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border <?= $cfg['badge'] ?>">
-                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
-                        <?= htmlspecialchars($activeBooking['progress_status']) ?>
-                    </span>
+
+                <div class="border-t border-zinc-100 -mx-5 mb-4"></div>
+
+                <?php if ($activeBooking && $cfg): ?>
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 <?= $cfg['iconBg'] ?>">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="<?= $cfg['iconStroke'] ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <?= $cfg['iconPath'] ?>
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-baseline gap-2 flex-wrap">
+                                <span class="text-sm font-semibold text-zinc-900"><?= htmlspecialchars($activeBooking['model_year']) ?></span>
+                                <span class="font-mono text-xs text-zinc-400 tracking-wide uppercase"><?= htmlspecialchars($activeBooking['plate_number']) ?></span>
+                            </div>
+                            <p class="text-xs text-zinc-400 mt-0.5">
+                                <?= date('d M Y', strtotime($activeBooking['booking_date'])) ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 mt-4 pt-4 border-t border-zinc-100">
+                        <svg class="w-3.5 h-3.5 text-zinc-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
+                        </svg>
+                        <p class="text-xs text-zinc-400"><?= $cfg['hint'] ?></p>
+                    </div>
+
+                <?php else: ?>
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-9 h-9 rounded-lg bg-zinc-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-zinc-500">Tidak ada booking aktif</p>
+                            <p class="text-xs text-zinc-400 mt-0.5">Buat booking baru untuk mulai servis kendaraan Anda.</p>
+                        </div>
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <!-- Divider -->
-            <div class="border-t border-zinc-100 -mx-5 mb-4"></div>
-
-            <?php if ($activeBooking && $cfg): ?>
-                <!-- Booking Info Row -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 <?= $cfg['iconBg'] ?>">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="<?= $cfg['iconStroke'] ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <?= $cfg['iconPath'] ?>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-baseline gap-2 flex-wrap">
-                            <span class="text-sm font-semibold text-zinc-900"><?= htmlspecialchars($activeBooking['model_year']) ?></span>
-                            <span class="font-mono text-xs text-zinc-400 tracking-wide uppercase"><?= htmlspecialchars($activeBooking['plate_number']) ?></span>
-                        </div>
-                        <p class="text-xs text-zinc-400 mt-0.5">
-                            <?= date('d M Y', strtotime($activeBooking['booking_date'])) ?>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Footer Hint -->
-                <div class="flex items-center gap-1.5 mt-4 pt-4 border-t border-zinc-100">
-                    <svg class="w-3.5 h-3.5 text-zinc-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4M12 8h.01" stroke-linecap="round" />
-                    </svg>
-                    <p class="text-xs text-zinc-400"><?= $cfg['hint'] ?></p>
-                </div>
-
-            <?php else: ?>
-                <!-- Empty State -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-9 h-9 rounded-lg bg-zinc-100 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                    </div>
+            <!-- Card: Jam Operasional & Slot -->
+            <div class="rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
+                <div class="flex items-start justify-between mb-4">
                     <div>
-                        <p class="text-sm font-medium text-zinc-500">Tidak ada booking aktif</p>
-                        <p class="text-xs text-zinc-400 mt-0.5">Buat booking baru untuk mulai servis kendaraan Anda.</p>
+                        <h2 class="text-sm font-semibold text-zinc-900">Jam Operasional</h2>
+                        <p class="text-xs text-zinc-400 mt-0.5">Jam buka bengkel & ketersediaan slot hari ini</p>
                     </div>
+                    <?php if (!empty($schedule)): ?>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border
+                            <?= $isFull ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200' ?>">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-70"></span>
+                            <?= $isFull ? 'Slot Penuh' : 'Tersedia' ?>
+                        </span>
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
-        </div>
 
-        <div>
-            <?php if (empty($schedule)): ?>
-                <div class="rounded-lg border border-zinc-200 bg-white">
-                    <div class="text-center py-16 text-zinc-400">
-                        <svg class="w-10 h-10 mx-auto mb-3 text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p class="font-medium text-zinc-500 text-base">Jadwal belum diatur</p>
-                        <p class="text-xs mt-1">Admin belum mengatur jam operasional bengkel.</p>
+                <div class="border-t border-zinc-100 -mx-5 mb-4"></div>
+
+                <?php if (empty($schedule)): ?>
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-9 h-9 rounded-lg bg-zinc-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-zinc-500">Jadwal belum diatur</p>
+                            <p class="text-xs text-zinc-400 mt-0.5">Admin belum mengatur jam operasional bengkel.</p>
+                        </div>
                     </div>
-                </div>
-            <?php else: ?>
 
-                <?php
-                $slot   = $slotInfo[0] ?? null;
-                $isFull = $slot && $slot['available'] <= 0;
-                $pct    = ($slot && $slot['max'] > 0) ? round(($slot['booked'] / $slot['max']) * 100) : 0;
-                ?>
+                <?php else: ?>
+                    <div class="space-y-4">
 
-                <!-- Jam Operasional & Slot Hari Ini (digabung) -->
-                <div class="bg-white border border-zinc-200 rounded-xl p-5 w-full">
-                    <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wide mb-4">Jam Operasional & Slot Hari Ini</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                        <!-- Jam Operasional -->
-                        <div class="flex items-center gap-3 flex-1">
-                            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Jam Buka -->
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-xs text-zinc-400 mb-0.5">Buka – Tutup</p>
-                                <p class="text-base font-semibold text-zinc-800">
+                                <p class="text-xs text-zinc-400">Jam Operasional</p>
+                                <p class="text-sm font-semibold text-zinc-800 mt-0.5">
                                     <?= substr($schedule['open_time'], 0, 5) ?> – <?= substr($schedule['close_time'], 0, 5) ?>
                                 </p>
                             </div>
                         </div>
-                        <!-- Slot Hari Ini -->
+
                         <?php if ($slot): ?>
-                            <div class="flex items-center gap-3 flex-1">
-                                <div class="w-10 h-10 rounded-lg <?= $isFull ? 'bg-red-50' : 'bg-green-50' ?> flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 <?= $isFull ? 'text-red-500' : 'text-green-500' ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="border-t border-zinc-100"></div>
+
+                            <!-- Slot bar -->
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-lg <?= $isFull ? 'bg-red-50' : 'bg-green-50' ?> flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4 <?= $isFull ? 'text-red-500' : 'text-green-500' ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <p class="text-xs text-zinc-400">Slot hari ini</p>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <p class="text-xs text-zinc-400">Slot Hari Ini</p>
                                         <p class="text-xs font-semibold <?= $isFull ? 'text-red-600' : 'text-green-600' ?>">
-                                            <?= $isFull ? 'Penuh' : "Sisa {$slot['available']}" ?>
+                                            <?= $isFull ? 'Penuh' : "Sisa {$slot['available']} slot" ?>
                                         </p>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <div class="flex-1 bg-zinc-200 rounded-full h-1.5">
-                                            <div class="h-1.5 rounded-full transition-all <?= $isFull ? 'bg-red-500' : ($pct >= 75 ? 'bg-orange-500' : 'bg-blue-500') ?>"
+                                        <div class="flex-1 bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="h-1.5 rounded-full transition-all duration-500
+                                                <?= $isFull ? 'bg-red-500' : ($pct >= 75 ? 'bg-orange-500' : 'bg-blue-500') ?>"
                                                 style="width: <?= min($pct, 100) ?>%"></div>
                                         </div>
-                                        <p class="text-xs text-zinc-400 whitespace-nowrap"><?= $slot['booked'] ?>/<?= $slot['max'] ?> terisi</p>
+                                        <p class="text-xs text-zinc-400 whitespace-nowrap tabular-nums">
+                                            <?= $slot['booked'] ?>/<?= $slot['max'] ?> terisi
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         <?php endif; ?>
 
                     </div>
-                </div>
+                <?php endif; ?>
+            </div>
 
-            <?php endif; ?>
         </div>
+        <!-- ── End top grid ── -->
 
 
+        <!-- Riwayat Booking -->
         <div class="rounded-lg border border-zinc-200 bg-white p-6">
             <div class="mb-5">
                 <h2 class="text-sm font-semibold text-zinc-900">Riwayat Booking</h2>
@@ -266,11 +287,11 @@
                         <thead>
                             <tr class="border-b border-slate-100 text-slate-500 text-xs uppercase tracking-wide">
                                 <th class="pb-3 pr-4">Tanggal</th>
-                                <th class="pb-3 pr-4 ">Jam Datang</th>
-                                <th class="pb-3 pr-4 ">Nomor Telepon</th>
-                                <th class="pb-3 pr-4 ">Kendaraan</th>
-                                <th class="pb-3 pr-4 ">No. Polisi</th>
-                                <th class="pb-3 pr-4 ">Status</th>
+                                <th class="pb-3 pr-4">Jam Datang</th>
+                                <th class="pb-3 pr-4">Nomor Telepon</th>
+                                <th class="pb-3 pr-4">Kendaraan</th>
+                                <th class="pb-3 pr-4">No. Polisi</th>
+                                <th class="pb-3 pr-4">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
@@ -315,6 +336,7 @@
                 </div>
             <?php endif; ?>
         </div>
+
     </div>
 
 </div>

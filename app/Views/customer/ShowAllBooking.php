@@ -1,9 +1,9 @@
 <title>Riwayat Booking</title>
 
 <body>
-    <?php require __DIR__ . '/../layouts/sidebar-customer.php'; ?>
+    <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
-    <div class="flex-1 px-6 py-8 bg-white min-h-screen">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
         <div class="mb-7">
             <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
                 <a href="/customer" class="hover:text-zinc-700 transition-colors">Dashboard</a>
@@ -15,8 +15,6 @@
             <h2 class="text-xl font-semibold text-zinc-900 tracking-tight">Riwayat Booking</h2>
             <p class="text-sm text-zinc-500 mt-0.5">Daftar semua booking kendaraan Anda.</p>
         </div>
-
-
 
         <div class="rounded-lg border border-zinc-200 bg-white overflow-hidden">
             <?php if (empty($bookings)): ?>
@@ -31,7 +29,6 @@
                             <tr class="border-b border-zinc-100 bg-zinc-50 text-left">
                                 <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Tanggal</th>
                                 <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Jam Datang</th>
-                                <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No Antrian</th>
                                 <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Kendaraan</th>
                                 <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Polisi</th>
                                 <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Status</th>
@@ -46,9 +43,6 @@
                                     </td>
                                     <td class="px-5 py-3.5 text-zinc-600">
                                         <?= htmlspecialchars(date('H:i', strtotime($booking['checkin_time']))) ?>
-                                    </td>
-                                    <td class="px-5 py-3.5 text-zinc-600">
-                                        <?= htmlspecialchars($booking['queue_id']) ?>
                                     </td>
                                     <td class="px-5 py-3.5 text-zinc-800 font-medium">
                                         <div><?= htmlspecialchars($booking['model_year']) ?></div>
@@ -81,6 +75,10 @@
                                                 Cancel
                                             </button>
                                         <?php endif; ?>
+                                        <a href="/edit/<?= $booking['booking_id'] ?>"
+                                            class="text-xs font-medium px-3 py-1.5 rounded-md border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors">
+                                            Edit
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

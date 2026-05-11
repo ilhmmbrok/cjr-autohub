@@ -149,4 +149,60 @@ class BusinessServices
             ];
         }
     }
+
+    public function updateBooking(int $id, array $data): array
+    {
+        // Validasi field wajib
+        $required = [
+            'phone',
+            'address',
+            'vehicle_type',
+            'model_year',
+            'plate_number',
+            'customer_complaint',
+            'booking_date',
+            'checkin_time',
+        ];
+        foreach ($required as $field) {
+            if (empty(trim((string)($data[$field] ?? '')))) {
+                return [
+                    'success' => false,
+                    'message' => 'Semua field wajib diisi.'
+                ];
+            }
+        }
+
+        // Ambil booking lama
+        $booking = $this->bookingModel->findBooking($id);
+        if (!$booking) {
+            return [
+                'success' => false,
+                'message' => 'Booking tidak ditemukan.'
+            ];
+        }
+
+        // Cek apakah booking sudah lewat atau bukan
+        $nowDT   = new DateTime('now', $this->timezone);
+        $today   = $nowDT->format('Y-m-d');
+        $nowTime = $nowDT->format('H:i:s');
+
+        if ($booking['booking_date'] < $today || ($booking['booking_date'] === $today && $booking['checkin_time'] < $nowTime)) {
+            return [
+                'success' => false,
+                'message' => 'Booking sudah lewat dan tidak bisa diubah.'
+            ];
+        }
+
+        // Update booking dengan data baru
+        try {
+            $this->bookingModel->updateBooking($id, $data);
+            return ['success' => true, 'message' => 'Booking berhasil diubah.'];
+        } catch (Exception $e) {
+            error_log('BusinessServices::updateBooking — ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengubah booking. Silahkan coba lagi.'
+            ];
+        }
+    }
 }
