@@ -9,23 +9,29 @@ use PDOStatement;
 
 class Database
 {
-    private static $db_host = "localhost";
-    private static $db_name = "autohub";
-    private static $db_user = "root";
-    private static $db_pass = "";
-    private static $db_charset = "utf8mb4";
     private static ?PDO $connection = null;
 
     public static function connect(): PDO
     {
         if (self::$connection === null) {
-            try {
-                $dsn = "mysql:host=" . self::$db_host . ";dbname=" . self::$db_name . ";charset=" . self::$db_charset;
+            self::$connection = self::createConnection();
+        }
+        return self::$connection;
+    }
 
-                self::$connection = new PDO(
-                    $dsn,
-                    self::$db_user,
-                    self::$db_pass,
+    public static function createConnection(): PDO
+    {
+        $host = $_ENV['DB_HOST'];
+        $name = $_ENV['DB_NAME'];
+        $user = $_ENV['DB_USER'];
+        $pass = $_ENV['DB_PASS'];
+        $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
+
+        try {
+                return new PDO(
+                    "mysql:host={$host};dbname={$name};charset={$charset}",
+                    $user,
+                    $pass,
                     [
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -37,9 +43,6 @@ class Database
                 http_response_code(500);
                 die(View::render('error.500'));
             }
-        }
-
-        return self::$connection;
     }
 
     public static function query(string $sql, array $params = []): PDOStatement
@@ -51,7 +54,7 @@ class Database
         } catch (PDOException $e) {
             error_log('Query failed: ' . $e->getMessage());
             http_response_code(500);
-            die("Query failed.");
+            die("Query failed." . $e->getMessage());
         }
     }
 
@@ -68,10 +71,5 @@ class Database
     public static function execute(string $sql, array $params = []): int
     {
         return self::query($sql, $params)->rowCount();
-    }
-
-    public static function lastInsertId(): string
-    {
-        return self::connect()->lastInsertId();
     }
 }
