@@ -3,6 +3,12 @@
 use App\Core\Auth;
 
 $user = Auth::user('customer');
+$currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$navItems = [
+    ['href' => '/dashboard',         'label' => 'Dashboard'],
+    ['href' => '/create-booking',    'label' => 'Booking'],
+    ['href' => '/history-booking',   'label' => 'History'],
+];
 ?>
 
 <!DOCTYPE html>
@@ -11,8 +17,15 @@ $user = Auth::user('customer');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <?php echo '<link rel="icon" href="/assets/autohub.webp" type="image/x-icon"/>' ?>
     <style>
+        @import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600');
+
+        * {
+            font-family: 'Instrument Sans', sans-serif;
+        }
+
         /* Mobile menu transition */
         #mobile-menu {
             max-height: 0;
@@ -121,41 +134,32 @@ $user = Auth::user('customer');
     </style>
 </head>
 
-<body class="bg-zinc-50 min-h-screen">
+<body class=" min-h-screen">
 
     <!-- Top Navbar -->
     <header class="sticky top-0 z-50 w-full bg-white border-b border-zinc-200">
-        <div class="max-w-screen-xl mx-auto px-4 sm:px-6">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14">
 
                 <!-- Brand -->
                 <a href="/customer" class="flex items-center gap-2.5 flex-shrink-0">
-                    <div class="w-7 h-7 rounded-lg bg-zinc-900 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
+                    <div class="w-8 h-8 rounded-lg  flex items-center justify-center shrink-0">
+                        <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo"/>' ?>
                     </div>
-                    <span class="text-sm font-semibold text-zinc-900 tracking-tight">AutoHub</span>
+                    <span class="text-md font-semibold text-zinc-900 tracking-tight">AutoHub</span>
                 </a>
 
                 <!-- Desktop Nav Links (center) -->
                 <nav id="desktop-nav" class="hidden md:flex items-center gap-1">
                     <?php
-                    $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                    $navItems = [
-                        ['href' => '/dashboard',         'label' => 'Dashboard'],
-                        ['href' => '/create-booking',    'label' => 'Buat Booking'],
-                        ['href' => '/history-booking',   'label' => 'History Booking'],
-                    ];
                     foreach ($navItems as $item):
                         $isActive = $currentPath === $item['href'];
                     ?>
                         <a href="<?= $item['href'] ?>"
                             class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                                   <?= $isActive
-                                        ? 'text-zinc-900 bg-zinc-100'
-                                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50' ?>">
+                                <?= $isActive
+                                    ? 'text-zinc-900 bg-zinc-100'
+                                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50' ?>">
                             <?= $item['label'] ?>
                         </a>
                     <?php endforeach; ?>
@@ -171,9 +175,6 @@ $user = Auth::user('customer');
                             <div class="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
                                 <?= strtoupper(substr($user['fullname'] ?? 'U', 0, 1)) ?>
                             </div>
-                            <span class="text-xs font-medium text-zinc-700 max-w-[120px] truncate">
-                                <?= htmlspecialchars($user['fullname'] ?? '') ?>
-                            </span>
                             <svg id="user-chevron" class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -237,9 +238,9 @@ $user = Auth::user('customer');
                 ?>
                     <a href="<?= $item['href'] ?>"
                         class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
-                               <?= $isActive
-                                    ? 'text-zinc-900 bg-zinc-100'
-                                    : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50' ?>">
+                            <?= $isActive
+                                ? 'text-zinc-900 bg-zinc-100'
+                                : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50' ?>">
                         <?= $item['label'] ?>
                     </a>
                 <?php endforeach; ?>
@@ -267,9 +268,9 @@ $user = Auth::user('customer');
 
     <script>
         // ── Mobile menu toggle ──
-        const toggle   = document.getElementById('menu-toggle');
-        const menu     = document.getElementById('mobile-menu');
-        const iconOpen  = document.getElementById('icon-open');
+        const toggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('icon-open');
         const iconClose = document.getElementById('icon-close');
 
         toggle.addEventListener('click', () => {
@@ -279,9 +280,9 @@ $user = Auth::user('customer');
         });
 
         // ── User dropdown toggle ──
-        const userBtn      = document.getElementById('user-pill-btn');
+        const userBtn = document.getElementById('user-pill-btn');
         const userDropdown = document.getElementById('user-dropdown');
-        const userChevron  = document.getElementById('user-chevron');
+        const userChevron = document.getElementById('user-chevron');
 
         userBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -300,8 +301,3 @@ $user = Auth::user('customer');
             e.stopPropagation();
         });
     </script>
-
-    <!-- Page content goes here -->
-</body>
-
-</html>

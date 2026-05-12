@@ -1,12 +1,16 @@
 <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
-<title>Form Booking Online</title>
-
-<div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
-    <div class="w-full">
+<div class="w-full bg-white min-h-[calc(100vh-56px)] px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-6">
-            <h2 class="text-xl font-semibold text-zinc-900 tracking-tight">Form Booking Online</h2>
-            <p class="text-sm text-zinc-500 mt-0.5">Silahkan isi form dibawah ini.</p>
+            <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
+                <a href="/dashboard" class="hover:text-zinc-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <a href="/history-booking" class="hover:text-zinc-700 transition-colors">Riwayat</a>
+                <span>/</span>
+                <span class="text-zinc-700 font-medium">Edit Booking</span>
+            </div>
+            <h1 class="text-2xl font-semibold text-zinc-900 tracking-tight">Ubah Booking</h1>
+            <p class="text-sm text-zinc-500 mt-0.5">Perbarui informasi booking kendaraan Anda.</p>
         </div>
 
         <div class="rounded-lg border border-zinc-200 bg-white overflow-hidden pb-4">
@@ -123,18 +127,17 @@
                 </div>
 
                 <div class="px-6 py-4 flex justify-end gap-3 border-t border-zinc-100">
-                    <a href="/history-booking">
-                        <button type="button" class="text-sm px-4 py-2 rounded-md border border-zinc-200 bg-white font-medium text-zinc-700 hover:bg-zinc-50 transition-all">
+                    <a href="/dashboard">
+                        <button type="button" class="text-sm px-4 py-2 rounded-md border border-zinc-200 bg-white font-medium text-zinc-700 hover:bg-zinc-50 active:scale-95 transition-all duration-200">
                             Batal
                         </button>
                     </a>
-                    <button type="submit" class="text-sm px-4 py-2 rounded-md bg-zinc-900 font-medium text-white hover:bg-zinc-800 transition-all">
-                        Submit Booking
+                    <button type="submit" class="text-sm px-4 py-2 rounded-md bg-zinc-900 font-medium text-white hover:bg-zinc-800 active:scale-95 transition-all duration-200">
+                        Update Booking
                     </button>
                 </div>
             </form>
         </div>
-    </div>
 </div>
 
 <?php require __DIR__ . '/../components/toast.php'; ?>

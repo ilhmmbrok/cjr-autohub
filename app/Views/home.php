@@ -20,7 +20,7 @@
     <div class="bg-zinc-50 min-h-screen">
         <!-- Navbar -->
         <nav class="bg-white border-b border-zinc-200">
-            <div class="mx-auto px-10 py-4 flex items-center justify-between">
+            <div class="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="w-7 h-7 rounded-lg  flex items-center justify-center">
                         <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo"/>' ?>
@@ -29,11 +29,11 @@
                 </div>
                 <div class="flex gap-3">
                     <a href="/login"
-                        class="px-4 py-2 text-sm font-medium text-zinc-700 rounded-md border border-zinc-200 hover:bg-zinc-100 transition-all">
+                        class="px-4 py-2 text-sm font-medium text-zinc-700 rounded-md border border-zinc-200 hover:bg-zinc-100 active:scale-95 transition-all duration-200">
                         Sign In
                     </a>
                     <a href="/register"
-                        class="px-4 py-2 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 transition-all">
+                        class="px-4 py-2 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 active:scale-95 transition-all duration-200">
                         Sign Up
                     </a>
                 </div>
@@ -50,11 +50,11 @@
             </p>
             <div class="mt-8 flex gap-3 justify-center">
                 <a href="/register"
-                    class="px-6 py-2.5 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 transition-all">
+                    class="px-6 py-2.5 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 active:scale-95 transition-all duration-200">
                     Daftar Sekarang
                 </a>
                 <a href="/login"
-                    class="px-6 py-2.5 text-sm font-medium text-zinc-700 border border-zinc-200 rounded-md hover:bg-zinc-100 transition-all">
+                    class="px-6 py-2.5 text-sm font-medium text-zinc-700 border border-zinc-200 rounded-md hover:bg-zinc-100 active:scale-95 transition-all duration-200">
                     Masuk
                 </a>
             </div>

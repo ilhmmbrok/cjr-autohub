@@ -42,7 +42,7 @@ function renderBookingActionDropdown(int $bookingId): void
 
         <div class="drop-menu" role="menu">
 
-            <a href="/admin/daftar-booking/<?= $id ?>/detail" class="drop-item" role="menuitem">
+            <a href="/detail-booking/<?= $id ?>" class="drop-item" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -52,7 +52,7 @@ function renderBookingActionDropdown(int $bookingId): void
                 Detail
             </a>
 
-            <a href="/admin/daftar-booking/<?= $id ?>/edit" class="drop-item" role="menuitem">
+            <a href="/edit-booking/<?= $id ?>" class="drop-item" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -70,8 +70,8 @@ function renderBookingActionDropdown(int $bookingId): void
                 role="menuitem"
                 onclick="openDialog({
                     title:       'Hapus Booking',
-                    description: 'Booking #<?= $id ?> akan dihapus permanen. Lanjutkan?',
-                    action:      '/admin/daftar-booking/<?= $id ?>/delete',
+                    description: 'Anda yakin ingin membatalkan booking #<?= $id ?> ?',
+                    action:      '/history-booking/<?= $id ?>/cancel',
                     confirmText: 'Hapus'
                 })">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
@@ -83,7 +83,7 @@ function renderBookingActionDropdown(int $bookingId): void
                     <path d="M14 11v6" />
                     <path d="M9 6V4h6v2" />
                 </svg>
-                Hapus
+                Cancel
             </button>
 
         </div>
@@ -114,7 +114,11 @@ function renderBookingActionDropdownAssets(): void
             background: #fff;
             cursor: pointer;
             color: #71717a;
-            transition: background 120ms;
+            transition: all 120ms;
+        }
+
+        .drop-btn:active {
+            transform: scale(0.9);
         }
 
         .drop-btn:hover {
@@ -135,11 +139,20 @@ function renderBookingActionDropdownAssets(): void
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 4px;
-            display: none;
+            
+            /* Smooth interaction */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
+            pointer-events: none;
         }
 
         .drop-menu.open {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
 
         .drop-item {
@@ -151,12 +164,16 @@ function renderBookingActionDropdownAssets(): void
             font-size: 13px;
             color: #18181b;
             cursor: pointer;
-            transition: background 100ms;
+            transition: all 120ms;
             text-decoration: none;
             background: none;
             border: none;
             width: 100%;
             text-align: left;
+        }
+
+        .drop-item:active {
+            transform: scale(0.97);
         }
 
         .drop-item:hover {
@@ -187,14 +204,13 @@ function renderBookingActionDropdownAssets(): void
                 if (!isOpen) {
                     const rect = btn.getBoundingClientRect();
                     menu.style.top = (rect.bottom + 4) + 'px';
-                    menu.style.left = (rect.right - menu.offsetWidth || rect.right - 148) + 'px';
+                    
+                    /* Hitung posisi left agar rata kanan dengan tombol */
+                    const menuWidth = menu.offsetWidth || 148;
+                    menu.style.left = (rect.right - menuWidth) + 'px';
+                    
                     menu.classList.add('open');
                     btn.setAttribute('aria-expanded', 'true');
-
-                    /* koreksi posisi setelah menu terrender */
-                    requestAnimationFrame(function() {
-                        menu.style.left = (rect.right - menu.offsetWidth) + 'px';
-                    });
                 }
             }
 
@@ -207,7 +223,12 @@ function renderBookingActionDropdownAssets(): void
             }
 
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.drop-wrap')) closeAll();
+                if (!e.target.closest('.drop-wrap')) {
+                    closeAll();
+                } else if (e.target.closest('.drop-item')) {
+                    /* Close dropdown when an item is clicked */
+                    setTimeout(closeAll, 50);
+                }
             });
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeAll();

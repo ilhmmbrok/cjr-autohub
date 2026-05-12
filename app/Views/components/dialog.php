@@ -16,26 +16,48 @@
  *   });
  */
 ?>
+<!-- CSS asisten: dipindahkan ke tag style biasa tanpa <head> -->
+<style>
+    #dialog-card {
+        position: fixed;
+        z-index: 9999;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+        visibility: hidden;
+    }
 
-<head>
-    <link rel="stylesheet" href="/css/app.css">
-    <style>
-        @import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600');
+    #dialog-card.open {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+        visibility: visible;
+    }
 
-        * {
-            font-family: 'Instrument Sans', sans-serif;
-        }
-    </style>
-</head>
+    #dialog-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s;
+    }
+
+    #dialog-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+</style>
 
 <!-- Overlay -->
-<div id="dialog-overlay"
-    class="hidden fixed inset-0 z-[9998] bg-black/50 opacity-0 transition-opacity duration-200"
-    onclick="closeDialog()"></div>
+<div id="dialog-overlay" onclick="closeDialog()"></div>
 
 <!-- Dialog -->
-<div id="dialog-card"
-    class="hidden fixed z-[9999] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-95 opacity-0 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] font-sans">
+<div id="dialog-card" class="font-sans">
 
     <div class="bg-white border border-zinc-200 rounded-lg shadow-xl w-[400px] max-w-[calc(100vw-32px)] p-6">
 
@@ -78,29 +100,13 @@
             confirmBtn.textContent = opts.confirmText || 'Lanjutkan';
             cancelBtn.textContent = opts.cancelText || 'Batal';
 
-            overlay.classList.remove('hidden');
-            card.classList.remove('hidden');
-
-            requestAnimationFrame(() => {
-                overlay.classList.remove('opacity-0');
-                overlay.classList.add('opacity-100');
-
-                card.classList.remove('opacity-0', 'scale-95');
-                card.classList.add('opacity-100', 'scale-100');
-            });
+            overlay.classList.add('open');
+            card.classList.add('open');
         };
 
         window.closeDialog = function() {
-            overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0');
-
-            card.classList.remove('opacity-100', 'scale-100');
-            card.classList.add('opacity-0', 'scale-95');
-
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                card.classList.add('hidden');
-            }, 200);
+            overlay.classList.remove('open');
+            card.classList.remove('open');
         };
 
         document.addEventListener('keydown', function(e) {

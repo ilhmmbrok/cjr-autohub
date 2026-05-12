@@ -1,3 +1,44 @@
+<?php
+
+$activeBooking = null;
+foreach ($bookings as $b) {
+    if (in_array($b['progress_status'], ['Pending', 'Admin Approved', 'In Progress'])) {
+        $activeBooking = $b;
+        break;
+    }
+}
+
+$statusMap = [
+    'Pending'        => [
+        'badge'      => 'bg-yellow-50 text-yellow-800 border-yellow-200',
+        'iconBg'     => 'bg-yellow-50 border border-yellow-200',
+        'iconStroke' => '#ca8a04',
+        'iconPath'   => '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+        'hint'       => 'Menunggu konfirmasi dari admin bengkel',
+    ],
+    'Admin Approved' => [
+        'badge'      => 'bg-blue-50 text-blue-700 border-blue-200',
+        'iconBg'     => 'bg-blue-50 border border-blue-200',
+        'iconStroke' => '#2563eb',
+        'iconPath'   => '<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+        'hint'       => 'Booking disetujui, silakan datang sesuai jadwal',
+    ],
+    'In Progress'    => [
+        'badge'      => 'bg-orange-50 text-orange-700 border-orange-200',
+        'iconBg'     => 'bg-orange-50 border border-orange-200',
+        'iconStroke' => '#ea580c',
+        'iconPath'   => '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
+        'hint'       => 'Kendaraan Anda sedang dikerjakan oleh teknisi',
+    ],
+];
+
+$slot   = $slotInfo[0] ?? null;
+$isFull = $slot && $slot['available'] <= 0;
+$pct    = ($slot && $slot['max'] > 0) ? round(($slot['booked'] / $slot['max']) * 100) : 0;
+$cfg    = $activeBooking ? ($statusMap[$activeBooking['progress_status']] ?? null) : null;
+
+?>
+
 <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
 <title>Dashboard</title>
@@ -50,15 +91,16 @@
     }
 
     .stat-card {
-        transition: box-shadow 150ms;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stat-card:hover {
-        box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
     }
 
     .booking-row td {
-        transition: background 100ms;
+        transition: all 0.2s ease;
     }
 
     .booking-row:hover td {
@@ -66,10 +108,10 @@
     }
 </style>
 
-<div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
+<div class="w-full bg-white min-h-[calc(100vh-56px)] px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- Header -->
-    <div class="mb-7">
+    <div class="mb-6">
         <div>
             <h1 class="text-2xl font-semibold text-zinc-900 tracking-tight">Dashboard</h1>
             <p class="text-sm text-zinc-500 mt-0.5">Selamat datang di dashboard AutoHub.</p>
@@ -77,51 +119,11 @@
     </div>
 
     <div class="space-y-4">
-
-        <?php
-        $activeBooking = null;
-        foreach ($bookings as $b) {
-            if (in_array($b['progress_status'], ['Pending', 'Admin Approved', 'In Progress'])) {
-                $activeBooking = $b;
-                break;
-            }
-        }
-
-        $statusMap = [
-            'Pending'        => [
-                'badge'      => 'bg-yellow-50 text-yellow-800 border-yellow-200',
-                'iconBg'     => 'bg-yellow-50 border border-yellow-200',
-                'iconStroke' => '#ca8a04',
-                'iconPath'   => '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-                'hint'       => 'Menunggu konfirmasi dari admin bengkel',
-            ],
-            'Admin Approved' => [
-                'badge'      => 'bg-blue-50 text-blue-700 border-blue-200',
-                'iconBg'     => 'bg-blue-50 border border-blue-200',
-                'iconStroke' => '#2563eb',
-                'iconPath'   => '<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-                'hint'       => 'Booking disetujui, silakan datang sesuai jadwal',
-            ],
-            'In Progress'    => [
-                'badge'      => 'bg-orange-50 text-orange-700 border-orange-200',
-                'iconBg'     => 'bg-orange-50 border border-orange-200',
-                'iconStroke' => '#ea580c',
-                'iconPath'   => '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
-                'hint'       => 'Kendaraan Anda sedang dikerjakan oleh teknisi',
-            ],
-        ];
-
-        $slot   = $slotInfo[0] ?? null;
-        $isFull = $slot && $slot['available'] <= 0;
-        $pct    = ($slot && $slot['max'] > 0) ? round(($slot['booked'] / $slot['max']) * 100) : 0;
-        $cfg    = $activeBooking ? ($statusMap[$activeBooking['progress_status']] ?? null) : null;
-        ?>
-
         <!-- ── Top 2-column grid: Booking Aktif + Jam Operasional ── -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
 
             <!-- Card: Booking Aktif -->
-            <div class="rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
+            <div class="stat-card rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h2 class="text-sm font-semibold text-zinc-900">Booking Aktif</h2>
@@ -182,7 +184,7 @@
             </div>
 
             <!-- Card: Jam Operasional & Slot -->
-            <div class="rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
+            <div class="stat-card rounded-xl border border-zinc-200 bg-white p-5 flex flex-col">
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h2 class="text-sm font-semibold text-zinc-900">Jam Operasional</h2>

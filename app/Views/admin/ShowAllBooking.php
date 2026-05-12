@@ -1,5 +1,5 @@
 <?php require __DIR__ . '/../layouts/sidebar-admin.php'; ?>
-<?php require __DIR__ . '/../components/action-dropdown.php'; ?>
+<?php require __DIR__ . '/../components/action-dropdown-admin.php'; ?>
 
 <title>Daftar Booking</title>
 <style>
@@ -64,8 +64,12 @@
     }
 
     .filter-btn {
-        transition: all 120ms;
+        transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
+    }
+
+    .filter-btn:active {
+        transform: scale(0.95);
     }
 
     .filter-btn.active {
@@ -79,12 +83,12 @@
     }
 </style>
 
-<div class="flex-1 px-6 py-8 bg-white min-h-screen">
+<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- Breadcrumb + Header -->
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
-            <a href="/admin" class="hover:text-zinc-700 transition-colors">Dashboard</a>
+            <a href="/admin/dashboard" class="hover:text-zinc-700 transition-colors">Dashboard</a>
             <span>/</span>
             <span class="text-zinc-700 font-medium">Daftar Booking</span>
         </div>
@@ -96,7 +100,7 @@
             <!-- Hapus Semua Cancelled -->
             <button type="button"
                 onclick="openDialog({title:'Hapus Semua Cancelled',description:'Semua booking berstatus Cancelled akan dihapus permanen. Lanjutkan?',action:'/admin/daftar-booking/delete-cancelled',confirmText:'Hapus Semua'})"
-                class="text-xs font-medium px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 transition-colors">
+                class="text-xs font-medium px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 active:scale-95 transition-all duration-200">
                 Hapus Semua Cancelled
             </button>
         </div>
@@ -207,7 +211,6 @@
             </div>
         <?php endif; ?>
     </div>
-</div>
 
 <script>
     let activeStatus = '';

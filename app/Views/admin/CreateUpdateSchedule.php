@@ -12,11 +12,11 @@ $hasSchedule = !empty($s);
 <?php require __DIR__ . '/../layouts/sidebar-admin.php'; ?>
 
 <title>Form Jadwal</title>
-<div class="flex-1 px-6 py-8 w-full mx-auto">
+<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8">
 
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
-            <a href="/admin/jadwal" class="hover:text-zinc-700 transition-colors">Dashboard</a>
+            <a href="/admin/dashboard" class="hover:text-zinc-700 transition-colors">Dashboard</a>
             <span>/</span>
             <span class="text-zinc-700 font-medium">Daftar Booking</span>
         </div>
@@ -36,8 +36,9 @@ $hasSchedule = !empty($s);
             <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-white rounded-md border border-blue-100 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg class="w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
                         </svg>
                     </div>
                     <div>
@@ -47,8 +48,13 @@ $hasSchedule = !empty($s);
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-white rounded-md border border-blue-100 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
+                        <svg class="w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-front-icon lucide-car-front">
+                            <path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8" />
+                            <path d="M7 14h.01" />
+                            <path d="M17 14h.01" />
+                            <rect width="18" height="8" x="3" y="10" rx="2" />
+                            <path d="M5 18v2" />
+                            <path d="M19 18v2" />
                         </svg>
                     </div>
                     <div>
@@ -98,7 +104,7 @@ $hasSchedule = !empty($s);
                         <select id="open_time" name="open_time" required
                             class="w-full appearance-none px-3 py-2 rounded-md text-sm border border-zinc-300 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-950/10 focus:border-zinc-400 transition-all cursor-pointer">
                             <option value="" disabled <?= empty($_POST['open_time'] ?? $curOpen) ? 'selected' : '' ?>>Pilih jam</option>
-                            <?php for ($h = 6; $h < 18; $h++): ?>
+                            <?php for ($h = 0; $h < 24; $h++): ?>
                                 <?php $v = sprintf('%02d:00', $h); ?>
                                 <option value="<?= $v ?>" <?= (($_POST['open_time'] ?? $curOpen) === $v) ? 'selected' : '' ?>><?= $v ?></option>
                             <?php endfor; ?>
@@ -119,7 +125,7 @@ $hasSchedule = !empty($s);
                         <select id="close_time" name="close_time" required
                             class="w-full appearance-none px-3 py-2 rounded-md text-sm border border-zinc-300 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-950/10 focus:border-zinc-400 transition-all cursor-pointer">
                             <option value="" disabled <?= empty($_POST['close_time'] ?? $curClose) ? 'selected' : '' ?>>Pilih jam</option>
-                            <?php for ($h = 7; $h <= 22; $h++): ?>
+                            <?php for ($h = 0; $h < 24; $h++): ?>
                                 <?php $v = sprintf('%02d:00', $h); ?>
                                 <option value="<?= $v ?>" <?= (($_POST['close_time'] ?? $curClose) === $v) ? 'selected' : '' ?>><?= $v ?></option>
                             <?php endfor; ?>
@@ -140,7 +146,7 @@ $hasSchedule = !empty($s);
                     Batal
                 </a>
                 <button type="submit"
-                    class="text-sm px-4 py-2 rounded-md bg-zinc-900 font-medium text-white hover:bg-zinc-800 transition-all flex items-center gap-2">
+                    class="text-sm px-4 py-2 rounded-md bg-zinc-900 font-medium text-white hover:bg-zinc-800 active:scale-95 transition-all duration-200 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
@@ -150,10 +156,8 @@ $hasSchedule = !empty($s);
         </form>
     </div>
 
-</div>
+    <?php require __DIR__ . '/../components/toast.php'; ?>
 
-<?php require __DIR__ . '/../components/toast.php'; ?>
+    </body>
 
-</body>
-
-</html>
+    </html>
