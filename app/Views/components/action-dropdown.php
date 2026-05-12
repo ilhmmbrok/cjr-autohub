@@ -42,7 +42,7 @@ function renderBookingActionDropdown(int $bookingId): void
 
         <div class="drop-menu" role="menu">
 
-            <a href="/admin/booking/<?= $id ?>/detail" class="drop-item" role="menuitem">
+            <a href="/admin/daftar-booking/<?= $id ?>/detail" class="drop-item" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -52,7 +52,7 @@ function renderBookingActionDropdown(int $bookingId): void
                 Detail
             </a>
 
-            <a href="/admin/booking/<?= $id ?>/edit" class="drop-item" role="menuitem">
+            <a href="/admin/daftar-booking/<?= $id ?>/edit" class="drop-item" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -71,7 +71,7 @@ function renderBookingActionDropdown(int $bookingId): void
                 onclick="openDialog({
                     title:       'Hapus Booking',
                     description: 'Booking #<?= $id ?> akan dihapus permanen. Lanjutkan?',
-                    action:      '/admin/booking/<?= $id ?>/delete',
+                    action:      '/admin/daftar-booking/<?= $id ?>/delete',
                     confirmText: 'Hapus'
                 })">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"

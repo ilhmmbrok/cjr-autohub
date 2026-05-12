@@ -4,13 +4,6 @@
     <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
     <div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 bg-white min-h-[calc(100vh-56px)]">
-        <div class="mb-7">
-            <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
-                <a href="/customer" class="hover:text-zinc-700 transition-colors">Dashboard</a>
-                <span>/</span>
-                <span class="text-zinc-700 font-medium">Riwayat Booking</span>
-            </div>
-        </div>
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-zinc-900 tracking-tight">Riwayat Booking</h2>
             <p class="text-sm text-zinc-500 mt-0.5">Daftar semua booking kendaraan Anda.</p>
@@ -75,7 +68,7 @@
                                                 Cancel
                                             </button>
                                         <?php endif; ?>
-                                        <a href="/edit/<?= $booking['booking_id'] ?>"
+                                        <a href="/edit-booking/<?= $booking['booking_id'] ?>"
                                             class="text-xs font-medium px-3 py-1.5 rounded-md border border-blue-200 text-blue-600 hover:bg-blue-50 transition-colors">
                                             Edit
                                         </a>

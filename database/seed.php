@@ -4,7 +4,7 @@ use Database\Seeders\DatabaseSeeder;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dsn = "mysql:host=localhost;dbname=autohub_fix;charset=utf8mb4";
+$dsn = "mysql:host=localhost;dbname=autohub;charset=utf8mb4";
 
 try {
     $db = new PDO($dsn, 'root', '', [

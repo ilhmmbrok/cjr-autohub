@@ -16,7 +16,7 @@ $hasSchedule = !empty($s);
 
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
-            <a href="/admin" class="hover:text-zinc-700 transition-colors">Dashboard</a>
+            <a href="/admin/jadwal" class="hover:text-zinc-700 transition-colors">Dashboard</a>
             <span>/</span>
             <span class="text-zinc-700 font-medium">Daftar Booking</span>
         </div>
@@ -28,8 +28,6 @@ $hasSchedule = !empty($s);
         </div>
     </div>
     <!-- Header -->
-
-
 
     <!-- Current Status Card -->
     <?php if ($hasSchedule): ?>
@@ -71,7 +69,7 @@ $hasSchedule = !empty($s);
             <p class="text-xs text-slate-400 mt-0.5">Perubahan langsung berlaku untuk booking baru.</p>
         </div>
 
-        <form action="/admin/jadwal" method="POST" class="px-6 py-6 space-y-5">
+        <form action="/admin/jadwal/create-update" method="POST" class="px-6 py-6 space-y-5">
 
             <!-- Kuota Slot -->
             <div>
@@ -137,7 +135,7 @@ $hasSchedule = !empty($s);
 
             <!-- Actions -->
             <div class="flex justify-end gap-3 pt-2 border-t border-slate-100">
-                <a href="/admin"
+                <a href="/admin/dashboard"
                     class="text-sm px-4 py-2 rounded-md border border-zinc-200 bg-white font-medium text-zinc-700 hover:bg-zinc-50 transition-all">
                     Batal
                 </a>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Customer;
+namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
@@ -22,12 +22,7 @@ class BookingController extends Controller
         $this->businessServices = new BusinessServices();
     }
 
-    public function index(): void
-    {
-        $this->view('customer.CreateBooking');
-    }
-
-    public function ShowAllBooking(): void
+    public function ShowAllBookingByCustomer(): void
     {
         $user     = Auth::user('customer');
         $bookings = $this->bookingModel->getBookingByCustomerId($user['id']);
@@ -37,8 +32,15 @@ class BookingController extends Controller
             'bookings' => $bookings,
         ]);
     }
+    public function showAllBookingbyAdmin(): void
+    {
+        $bookings = $this->bookingModel->getAllBookings();
+        $this->view('admin.ShowAllBooking', [
+            'bookings' => $bookings
+        ]);
+    }
 
-    public function show(string $id): void
+    public function detailBookingByCustomer(string $id): void
     {
         $booking = $this->bookingModel->findBooking((int) $id);
         $this->view('customer.DetailBooking', [
@@ -46,7 +48,12 @@ class BookingController extends Controller
         ]);
     }
 
-    public function store(): void
+    public function createView(): void
+    {
+        $this->view('customer.CreateBooking');
+    }
+
+    public function createBooking(): void
     {
         $data = $this->input([
             'phone',
@@ -66,50 +73,29 @@ class BookingController extends Controller
 
         if (!$result['success']) {
             Session::setMessage('error', $result['message']);
-            $this->redirect('/create');
+            $this->redirect('/create-booking');
             return;
         }
 
         Session::setMessage('success', 'Booking berhasil dibuat.');
-        $this->redirect('/create');
+        $this->redirect('/history-booking');
     }
 
-    public function cancel(string $id): void
+
+    public function updateViewByCustomer(string $id): void
     {
         $user    = Auth::user('customer');
         $booking = $this->bookingModel->findBooking((int) $id);
 
         if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
             Session::setMessage('error', 'Booking tidak ditemukan.');
-            $this->redirect('/history');
-            return;
-        }
-
-        if ($booking['progress_status'] !== 'Pending') {
-            Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa dibatalkan.');
-            $this->redirect('/history');
-            return;
-        }
-
-        $this->bookingModel->updateStatus((int) $id, 'Cancelled');
-        Session::setMessage('success', 'Booking berhasil dibatalkan.');
-        $this->redirect('/history');
-    }
-
-    public function updateView(string $id): void
-    {
-        $user    = Auth::user('customer');
-        $booking = $this->bookingModel->findBooking((int) $id);
-
-        if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
-            Session::setMessage('error', 'Booking tidak ditemukan.');
-            $this->redirect('/history');
+            $this->redirect('/history-booking');
             return;
         }
 
         if ($booking['progress_status'] !== 'Pending') {
             Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa diubah.');
-            $this->redirect('/history');
+            $this->redirect('/history-booking');
             return;
         }
 
@@ -117,21 +103,20 @@ class BookingController extends Controller
             'booking' => $booking,
         ]);
     }
-
-    public function update(string $id): void
+    public function updateBookingByCustomer(string $id): void
     {
         $user    = Auth::user('customer');
         $booking = $this->bookingModel->findBooking((int) $id);
 
         if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
             Session::setMessage('error', 'Booking tidak ditemukan.');
-            $this->redirect('/history');
+            $this->redirect('/history-booking');
             return;
         }
 
         if ($booking['progress_status'] !== 'Pending') {
             Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa diubah.');
-            $this->redirect('/history');
+            $this->redirect('/history-booking');
             return;
         }
 
@@ -153,11 +138,73 @@ class BookingController extends Controller
 
         if (!$result['success']) {
             Session::setMessage('error', $result['message']);
-            $this->redirect("/booking/{$id}/update");
+            $this->redirect("/edit-booking/{$id}");
             return;
         }
 
         Session::setMessage('success', 'Booking berhasil diperbarui.');
-        $this->redirect('/history');
+        $this->redirect('/history-booking');
+    }
+    public function updateStatusBookingByAdmin(string $id): void
+    {
+        $status  = trim($_POST['status'] ?? '');
+        $allowed = [
+            'Admin Approved',
+            'In Progress',
+            'Completed',
+            'Cancelled'
+        ];
+
+        if (!in_array($status, $allowed)) {
+            Session::setMessage('error', 'Status tidak valid.');
+            $this->redirect('/admin/booking');
+            return;
+        }
+
+        $this->bookingModel->updateStatus((int) $id, $status);
+        Session::setMessage('success', 'Status booking diperbarui.');
+        $this->redirect('/admin/daftar-booking');
+    }
+    public function cancelBooking(string $id): void
+    {
+        $user    = Auth::user('customer');
+        $booking = $this->bookingModel->findBooking((int) $id);
+
+        if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
+            Session::setMessage('error', 'Booking tidak ditemukan.');
+            $this->redirect('/history-booking');
+            return;
+        }
+
+        if ($booking['progress_status'] !== 'Pending') {
+            Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa dibatalkan.');
+            $this->redirect('/history-booking');
+            return;
+        }
+
+        $this->bookingModel->updateStatus((int) $id, 'Cancelled');
+        Session::setMessage('success', 'Booking berhasil dibatalkan.');
+        $this->redirect('/history-booking');
+    }
+    public function deleteBooking(string $id): void
+    {
+        $booking = $this->bookingModel->findBooking((int) $id);
+
+        if (!$booking) {
+            Session::setMessage('error', 'Booking tidak ditemukan.');
+            $this->redirect('/admin/daftar-booking');
+            return;
+        }
+
+        $this->bookingModel->deleteBooking((int) $id);
+        Session::setMessage('success', 'Booking berhasil dihapus.');
+        $this->redirect('/admin/daftar-booking');
+    }
+
+    public function deleteCancelledByAdmin(): void
+    {
+        $deleted = $this->bookingModel->deleteCancelledBookings();
+        Session::setMessage('success', "Berhasil menghapus {$deleted} booking yang dibatalkan.");
+        $this->redirect('/admin/daftar-booking');
     }
 }

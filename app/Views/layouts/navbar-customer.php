@@ -31,6 +31,93 @@ $user = Auth::user('customer');
             color: #18181b;
             background-color: #f4f4f5;
         }
+
+        #desktop-nav .nav-pill {
+            position: relative;
+            transition: color .18s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-pill::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: #f4f4f5;
+            opacity: 0;
+            transform: scale(.88);
+            transition: opacity .18s ease, transform .2s cubic-bezier(.34, 1.4, .64, 1);
+        }
+
+        #desktop-nav .nav-pill:hover::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #desktop-nav .nav-pill:active::before {
+            transform: scale(.94);
+            transition-duration: .08s;
+        }
+
+        #desktop-nav .nav-pill span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── User Dropdown ── */
+        #user-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            min-width: 210px;
+            background: #ffffff;
+            border: 0.5px solid #e4e4e7;
+            border-radius: 12px;
+            padding: 6px;
+            z-index: 100;
+
+            /* hidden state */
+            opacity: 0;
+            transform: translateY(-6px) scale(0.97);
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s cubic-bezier(.34, 1.4, .64, 1);
+
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        #user-dropdown.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        #user-chevron {
+            transition: transform 0.15s ease;
+        }
+
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #dc2626;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.12s ease, color 0.12s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
     </style>
 </head>
 
@@ -53,13 +140,13 @@ $user = Auth::user('customer');
                 </a>
 
                 <!-- Desktop Nav Links (center) -->
-                <nav class="hidden md:flex items-center gap-1">
+                <nav id="desktop-nav" class="hidden md:flex items-center gap-1">
                     <?php
                     $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     $navItems = [
                         ['href' => '/dashboard',         'label' => 'Dashboard'],
-                        ['href' => '/history', 'label' => 'Riwayat Booking'],
-                        ['href' => '/create',           'label' => 'Buat Booking'],
+                        ['href' => '/create-booking',    'label' => 'Buat Booking'],
+                        ['href' => '/history-booking',   'label' => 'History Booking'],
                     ];
                     foreach ($navItems as $item):
                         $isActive = $currentPath === $item['href'];
@@ -76,28 +163,53 @@ $user = Auth::user('customer');
 
                 <!-- Right side: User + Mobile Toggle -->
                 <div class="flex items-center gap-2">
-                    <!-- User info (desktop) -->
-                    <div class="px-3 py-4 border-t border-slate-200">
-                <div id="user-footer" class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                    <div id="user-avatar" class="flex items-center gap-3 flex-1 min-w-0">
-                        <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 text-xs font-semibold shrink-0">
-                            <?= strtoupper(substr($user['fullname'] ?? 'C', 0, 1)) ?>
-                        </div>
-                        <div id="user-info" class="flex-1 min-w-0 sidebar-label">
-                            <p class="text-[12px] font-medium text-slate-900 truncate"><?= htmlspecialchars($user['fullname'] ?? '') ?></p>
-                            <p class="text-[10px] text-slate-400 truncate"><?= htmlspecialchars($user['email'] ?? '') ?></p>
-                        </div>
-                    </div>
-                    <form method="POST" action="/logout">
-                        <button type="submit" title="Logout"
-                            class="p-1.5 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0">
-                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+
+                    <!-- User pill (desktop) -->
+                    <div class="hidden md:block relative">
+                        <button id="user-pill-btn" type="button"
+                            class="flex items-center gap-2.5 h-8 pl-1 pr-2.5 rounded-full border border-zinc-200 bg-white cursor-pointer text-left hover:bg-zinc-50 transition-colors">
+                            <div class="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0">
+                                <?= strtoupper(substr($user['fullname'] ?? 'U', 0, 1)) ?>
+                            </div>
+                            <span class="text-xs font-medium text-zinc-700 max-w-[120px] truncate">
+                                <?= htmlspecialchars($user['fullname'] ?? '') ?>
+                            </span>
+                            <svg id="user-chevron" class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
-                    </form>
-                </div>
-            </div>
+
+                        <!-- Dropdown -->
+                        <div id="user-dropdown">
+                            <!-- User info row -->
+                            <div style="display:flex; align-items:center; gap:10px; padding:8px; margin-bottom:4px;">
+                                <div style="width:32px; height:32px; border-radius:50%; background:#18181b; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:600; flex-shrink:0;">
+                                    <?= strtoupper(substr($user['fullname'] ?? 'U', 0, 1)) ?>
+                                </div>
+                                <div style="min-width:0;">
+                                    <p style="font-size:12px; font-weight:600; color:#18181b; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                        <?= htmlspecialchars($user['fullname'] ?? '') ?>
+                                    </p>
+                                    <p style="font-size:11px; color:#a1a1aa; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                        <?= htmlspecialchars($user['email'] ?? '') ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div style="height:0.5px; background:#f4f4f5; margin:0 2px 4px;"></div>
+
+                            <!-- Logout -->
+                            <form method="POST" action="/logout">
+                                <button type="submit" class="btn-logout">
+                                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                    </svg>
+                                    Keluar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                     <!-- Mobile hamburger -->
                     <button id="menu-toggle" type="button"
@@ -132,31 +244,32 @@ $user = Auth::user('customer');
                     </a>
                 <?php endforeach; ?>
             </div>
+
             <!-- User row on mobile -->
             <div class="px-4 pb-3 pt-1 border-t border-zinc-100 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full bg-zinc-200 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                    <div class="w-7 h-7 rounded-full bg-zinc-800 flex items-center justify-center text-white text-[10px] font-semibold">
+                        <?= strtoupper(substr($user['fullname'] ?? 'U', 0, 1)) ?>
                     </div>
                     <span class="text-sm font-medium text-zinc-700">
-                        <?= htmlspecialchars($_SESSION['name'] ?? 'Pengguna') ?>
+                        <?= htmlspecialchars($user['fullname'] ?? 'Pengguna') ?>
                     </span>
                 </div>
-                <a href="/logout"
-                    class="text-xs font-medium px-2.5 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700 transition-colors">
-                    Keluar
-                </a>
+                <form method="POST" action="/logout">
+                    <button type="submit"
+                        class="text-xs font-medium px-2.5 py-1.5 rounded-md border border-zinc-200 text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700 transition-colors">
+                        Keluar
+                    </button>
+                </form>
             </div>
         </div>
     </header>
 
     <script>
-        const toggle = document.getElementById('menu-toggle');
-        const menu = document.getElementById('mobile-menu');
-        const iconOpen = document.getElementById('icon-open');
+        // ── Mobile menu toggle ──
+        const toggle   = document.getElementById('menu-toggle');
+        const menu     = document.getElementById('mobile-menu');
+        const iconOpen  = document.getElementById('icon-open');
         const iconClose = document.getElementById('icon-close');
 
         toggle.addEventListener('click', () => {
@@ -164,6 +277,31 @@ $user = Auth::user('customer');
             iconOpen.classList.toggle('hidden', isOpen);
             iconClose.classList.toggle('hidden', !isOpen);
         });
+
+        // ── User dropdown toggle ──
+        const userBtn      = document.getElementById('user-pill-btn');
+        const userDropdown = document.getElementById('user-dropdown');
+        const userChevron  = document.getElementById('user-chevron');
+
+        userBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = userDropdown.classList.toggle('open');
+            userChevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+        });
+
+        // Close when clicking anywhere else
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('open');
+            userChevron.style.transform = '';
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
     </script>
 
     <!-- Page content goes here -->
+</body>
+
+</html>

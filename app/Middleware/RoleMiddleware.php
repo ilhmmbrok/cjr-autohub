@@ -29,7 +29,7 @@ class RoleMiddleware
 
         if ($role === 'guest') {
             if (Auth::check('admin')) {
-                header('Location: /admin');
+                header('Location: /admin/dashboard');
                 exit;
             }
             if (Auth::check('customer')) {

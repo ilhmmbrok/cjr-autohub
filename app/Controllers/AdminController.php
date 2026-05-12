@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Controllers\Customer;
+namespace App\Controllers;
 
-use App\Core\Auth;
 use App\Core\Controller;
 use App\Models\BookingModel;
 use App\Models\ScheduleModel;
 
-class CustomerController extends Controller
+class AdminController extends Controller
 {
     private BookingModel $bookingModel;
     private ScheduleModel $scheduleModel;
@@ -18,12 +17,9 @@ class CustomerController extends Controller
         $this->scheduleModel = new ScheduleModel();
     }
 
-    public function index(): void
+    public function adminDashboard()
     {
-        $user = Auth::user('customer');
         $schedule = $this->scheduleModel->getBusinessHours();
-
-        // Hitung sisa slot untuk hari ini saja
         $slotInfo = [];
         if ($schedule) {
             $maxSlot = (int) $schedule['slot_capacity'];
@@ -36,18 +32,16 @@ class CustomerController extends Controller
                 'max'       => $maxSlot,
             ];
         }
+        $stats     = $this->bookingModel->countByStatus();
+        $chartData = $this->bookingModel->getMonthlyStats((int) date('Y'));
 
-        $bookings = $this->bookingModel->getBookingByCustomerId($user['id']);
-        $stats    = $this->bookingModel->countByStatus($user['id']);
-
-        $this->view('customer.Dashboard', [
-            'user'            => $user,
-            'bookings'        => $bookings,
+        $this->view('admin.Dashboard', [
             'totalPending'    => $stats['Pending'],
             'totalInProgress' => $stats['In Progress'],
             'totalCompleted'  => $stats['Completed'],
+            'chartData'       => $chartData,
             'schedule' => $schedule ?: [],
-            'slotInfo' => $slotInfo,
+            'slotInfo' => $slotInfo
         ]);
     }
 }

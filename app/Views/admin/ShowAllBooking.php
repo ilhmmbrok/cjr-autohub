@@ -95,7 +95,7 @@
             </div>
             <!-- Hapus Semua Cancelled -->
             <button type="button"
-                onclick="openDialog({title:'Hapus Semua Cancelled',description:'Semua booking berstatus Cancelled akan dihapus permanen. Lanjutkan?',action:'/admin/booking/delete-cancelled',confirmText:'Hapus Semua'})"
+                onclick="openDialog({title:'Hapus Semua Cancelled',description:'Semua booking berstatus Cancelled akan dihapus permanen. Lanjutkan?',action:'/admin/daftar-booking/delete-cancelled',confirmText:'Hapus Semua'})"
                 class="text-xs font-medium px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 transition-colors">
                 Hapus Semua Cancelled
             </button>

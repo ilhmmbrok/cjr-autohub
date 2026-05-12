@@ -161,7 +161,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
                 <p class="sidebar-section-label px-3 pt-2 pb-1 text-xs font-semibold text-slate-400 uppercase tracking-wider">Menu</p>
 
-                <a href="/admin"
+                <a href="/admin/dashboard"
                     data-tooltip="Dashboard"
                     class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
                     <?= $path === '/admin' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
@@ -171,7 +171,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     <span class="sidebar-label">Dashboard</span>
                 </a>
 
-                <a href="/admin/booking"
+                <a href="/admin/daftar-booking"
                     data-tooltip="Daftar Booking"
                     class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
                     <?= $path === '/admin/booking' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
@@ -180,27 +180,6 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     </svg>
                     <span class="sidebar-label">Daftar Booking</span>
                 </a>
-
-                <a href="/admin/customer"
-                    data-tooltip="Daftar Customer"
-                    class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    <?= $path === '/admin/customer' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span class="sidebar-label">Daftar Customer</span>
-                </a>
-
-                <!-- <a href="/admin/history"
-                    data-tooltip="Riwayat"
-                    class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    <?= $path === '/admin/history' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' ?>">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="sidebar-label">Riwayat</span>
-                </a> -->
-
                 <a href="/admin/jadwal"
                     data-tooltip="Jadwal Operasional"
                     class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors

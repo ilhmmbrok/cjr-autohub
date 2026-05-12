@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Admin;
+namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
@@ -16,7 +16,7 @@ class ScheduleController extends Controller
         $this->scheduleModel = new ScheduleModel();
     }
 
-    public function index(): void
+    public function scheduleView(): void
     {
         $schedule = $this->scheduleModel->getBusinessHours();
         $this->view('admin.CreateUpdateSchedule', [
@@ -24,7 +24,7 @@ class ScheduleController extends Controller
         ]);
     }
 
-    public function storeAndUpdate(): void
+    public function createUpdateSchedule(): void
     {
         // Ambil data dari form
         $slotCapacity = (int) trim($_POST['slot_capacity'] ?? 0);
