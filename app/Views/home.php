@@ -17,7 +17,11 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/assets/background.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
 
         .green {
@@ -46,26 +50,26 @@
     <div class="min-h-screen">
 
         <!-- Navbar -->
-        <nav class="bg-white border-b border-zinc-200">
+        <nav class="bg-transparent border-b border-white/10 backdrop-blur-sm">
 
             <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
 
-                    <div class="w-11 h-11 rounded-2xl border border-zinc-200 bg-white flex items-center justify-center">
+                    <div class="w-11 h-11 flex items-center justify-center">
 
-                        <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo" class="w-7 h-7"/>' ?>
+                        <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo" class="w-11 h-11"/>' ?>
 
                     </div>
 
                     <div>
 
-                        <h1 class="text-lg font-bold text-zinc-900">
+                        <h1 class="text-lg font-bold text-white">
                             AutoHub
                         </h1>
 
-                        <p class="text-xs text-zinc-500 -mt-1">
+                        <p class="text-xs text-zinc-300 -mt-1">
                             Booking Bengkel Online
                         </p>
 
@@ -77,7 +81,7 @@
                 <div class="flex gap-3">
 
                     <a href="/login"
-                        class="px-5 py-2 text-sm font-medium text-zinc-700 rounded-xl border border-zinc-200 transition-all hover-outline">
+                        class="px-5 py-2 text-sm font-medium text-white rounded-xl border border-white/20 transition-all hover:bg-white/10">
 
                         Sign In
 
@@ -105,15 +109,15 @@
                 <div>
 
                     <div
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-6">
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-full  border border-white/20 text-white text-sm font-medium mb-6">
 
                         <div class="w-2 h-2 rounded-full bg-green-custom"></div>
 
-                        Layanan Booking Bengkel Politeknik Negeri Jember
+                        Layanan Booking Bengkel Autohub
 
                     </div>
 
-                    <h2 class="text-5xl lg:text-6xl font-extrabold text-zinc-900 leading-tight tracking-tight">
+                    <h2 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight">
 
                         Booking Servis
                         <span class="green">Lebih Mudah</span>
@@ -121,7 +125,7 @@
 
                     </h2>
 
-                    <p class="mt-6 text-lg text-zinc-600 leading-relaxed max-w-xl">
+                    <p class="mt-6 text-lg text-zinc-200 leading-relaxed max-w-xl">
 
                         AutoHub membantu pelanggan melakukan booking servis kendaraan
                         secara online tanpa perlu antre. Sistem dibuat modern,
@@ -132,14 +136,14 @@
                     <div class="mt-8 flex flex-wrap gap-4">
 
                         <a href="/register"
-                            class="px-7 py-3 text-sm font-semibold text-white rounded-2xl bg-green-custom transition-all hover-green">
+                            class="px-7 py-3 text-sm font-semibold text-white rounded-2xl bg-green-600 transition-all hover:bg-green-700">
 
                             Daftar Sekarang
 
                         </a>
 
                         <a href="/login"
-                            class="px-7 py-3 text-sm font-semibold text-zinc-700 border border-zinc-300 rounded-2xl bg-white transition-all hover-outline">
+                            class="px-7 py-3 text-sm font-semibold text-white rounded-2xl bg-transparent border border-white/20 transition-all hover:bg-white/20 backdrop-blur-xl">
 
                             Masuk
 
@@ -166,7 +170,6 @@
                         class="relative bg-white border border-zinc-200 rounded-[36px] p-8 shadow-xl w-full max-w-xl overflow-hidden">
 
                         <!-- Top Accent -->
-                        <div class="absolute top-0 left-0 w-full h-1.5 bg-green-custom"></div>
 
                         <!-- Header -->
                         <div class="flex items-center gap-5">
@@ -212,7 +215,9 @@
                                 <div
                                     class="w-12 h-12 mx-auto rounded-2xl bg-green-100 flex items-center justify-center mb-3">
 
-                                    <div class="w-5 h-5 rounded-full bg-green-500"></div>
+                                    <div class="w-6 h-6 text-green-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor-smartphone-icon lucide-monitor-smartphone"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>
+                                    </div>
 
                                 </div>
 
