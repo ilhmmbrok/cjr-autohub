@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-@source "../app/Views/**/*.php";
-
+@source "../../app/Views/**/*.php";
 
 @theme {
   --font-sans: "Instrument Sans", "Inter", ui-sans-serif, system-ui;

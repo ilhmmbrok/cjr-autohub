@@ -1,6 +1,7 @@
-<?php
 
+<?php
 /**
+
  * Shadcn AlertDialog Component
  * 
  * Reusable confirmation dialog mirip shadcn AlertDialog.
@@ -16,51 +17,45 @@
  *   });
  */
 ?>
-
-<head>
-    <link rel="stylesheet" href="/css/app.css">
-    <style>
-        @import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600');
-
-        * {
-            font-family: 'Instrument Sans', sans-serif;
-        }
-    </style>
-</head>
-
 <!-- Overlay -->
-<div id="dialog-overlay"
-    class="hidden fixed inset-0 z-[9998] bg-black/50 opacity-0 transition-opacity duration-200"
-    onclick="closeDialog()"></div>
+<div id="dialog-overlay" 
+    onclick="closeDialog()"
+    class="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300">
+</div>
+
 
 <!-- Dialog -->
-<div id="dialog-card"
-    class="hidden fixed z-[9999] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-95 opacity-0 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] font-sans">
-
-    <div class="bg-white border border-zinc-200 rounded-lg shadow-xl w-[400px] max-w-[calc(100vw-32px)] p-6">
-
+<div id="dialog-card" 
+    class="fixed z-[9999] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[400px] px-4 opacity-0 invisible scale-90 transition-all duration-300 pointer-events-none ease-out">
+    
+    <div class="bg-white border border-zinc-200 rounded-2xl shadow-2xl p-6">
         <!-- Header -->
-        <h3 id="dialog-title" class="text-sm font-semibold text-zinc-900 mb-1"></h3>
-        <p id="dialog-description" class="text-sm text-zinc-500 mb-5"></p>
+        <h3 id="dialog-title" class="text-base font-semibold text-zinc-950 mb-1 tracking-tight"></h3>
+        <p id="dialog-description" class="text-sm text-zinc-500 mb-6 leading-relaxed"></p>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-2.5">
             <button id="dialog-cancel"
                 onclick="closeDialog()"
-                class="px-4 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-md hover:bg-zinc-100 transition">
+                class="h-9 px-4 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 hover:border-zinc-300 hover:scale-105 transition-all duration-200 active:scale-95 active:bg-zinc-100 cursor-pointer">
                 Batal
             </button>
 
-            <form id="dialog-form" method="POST">
+            <form id="dialog-form" method="POST" onsubmit="return handleConfirm(this)">
                 <button id="dialog-confirm"
                     type="submit"
-                    class="px-4 py-2 text-xs font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 transition">
-                    Lanjutkan
+                    class="relative h-9 px-4 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-lg hover:bg-red-700 hover:border-red-700 hover:scale-105 hover:shadow-lg hover:shadow-red-200/50 transition-all duration-200 active:scale-95 shadow-sm shadow-red-200/50 flex items-center justify-center gap-2 overflow-hidden cursor-pointer">
+                    <span id="confirm-text">Lanjutkan</span>
+                    <svg id="confirm-spinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                 </button>
             </form>
         </div>
     </div>
 </div>
+
 <script>
     (function() {
         const overlay = document.getElementById('dialog-overlay');
@@ -69,38 +64,44 @@
         const desc = document.getElementById('dialog-description');
         const form = document.getElementById('dialog-form');
         const confirmBtn = document.getElementById('dialog-confirm');
+        const confirmText = document.getElementById('confirm-text');
+        const confirmSpinner = document.getElementById('confirm-spinner');
         const cancelBtn = document.getElementById('dialog-cancel');
 
         window.openDialog = function(opts = {}) {
             title.textContent = opts.title || 'Konfirmasi';
             desc.textContent = opts.description || 'Apakah Anda yakin?';
             form.action = opts.action || '';
-            confirmBtn.textContent = opts.confirmText || 'Lanjutkan';
+            confirmText.textContent = opts.confirmText || 'Lanjutkan';
             cancelBtn.textContent = opts.cancelText || 'Batal';
 
-            overlay.classList.remove('hidden');
-            card.classList.remove('hidden');
+            // Reset loading state
+            confirmBtn.disabled = false;
+            confirmBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+            confirmText.classList.remove('hidden');
+            confirmSpinner.classList.add('hidden');
 
-            requestAnimationFrame(() => {
-                overlay.classList.remove('opacity-0');
-                overlay.classList.add('opacity-100');
-
-                card.classList.remove('opacity-0', 'scale-95');
-                card.classList.add('opacity-100', 'scale-100');
-            });
+            overlay.classList.remove('invisible', 'opacity-0');
+            overlay.classList.add('opacity-100');
+            
+            card.classList.remove('invisible', 'opacity-0', 'scale-90');
+            card.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
         };
 
         window.closeDialog = function() {
             overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0');
+            overlay.classList.add('opacity-0', 'invisible');
+            
+            card.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
+            card.classList.add('opacity-0', 'invisible', 'scale-90');
+        };
 
-            card.classList.remove('opacity-100', 'scale-100');
-            card.classList.add('opacity-0', 'scale-95');
-
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                card.classList.add('hidden');
-            }, 200);
+        window.handleConfirm = function(f) {
+            confirmBtn.disabled = true;
+            confirmBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            confirmText.classList.add('hidden');
+            confirmSpinner.classList.remove('hidden');
+            return true;
         };
 
         document.addEventListener('keydown', function(e) {

@@ -1,10 +1,6 @@
 <?php
-require __DIR__ . '/../layouts/navbar-customer.php';
+require __DIR__ . '/../layouts/sidebar-admin.php';
 
-
-use App\Core\Auth;
-
-$user = Auth::user('customer');
 $day = [
     'Sunday' => 'Minggu',
     'Monday' => 'Senin',
@@ -29,24 +25,26 @@ $statusMap = [
 
 $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-zinc-700 border-zinc-200', 'label' => $booking['progress_status']];
 ?>
-<title>Detail Booking</title>
-<div class="w-full bg-white min-h-[calc(100vh-56px)] px-4 sm:px-6 lg:px-8 py-8 print:p-0">
+
+<title>Detail Booking - Admin</title>
+
+<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8 print:p-0">
     <!-- Web View Content (Hidden when printing) -->
     <div class="print:hidden">
         <!-- Breadcrumbs -->
         <div class="mb-6">
             <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
-                <a href="/dashboard" class="hover:text-zinc-700 transition-colors">Dashboard</a>
+                <a href="/admin/dashboard" class="hover:text-zinc-950 transition-colors">Dashboard</a>
                 <span>/</span>
-                <a href="/history-booking" class="hover:text-zinc-700 transition-colors">Riwayat</a>
+                <a href="/admin/daftar-booking" class="hover:text-zinc-950 transition-colors">Daftar Booking</a>
                 <span>/</span>
-                <span class="text-zinc-700 font-medium">Detail Booking</span>
+                <span class="text-zinc-900 font-medium">Detail Booking</span>
             </div>
 
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-semibold text-zinc-950 tracking-tight">Detail Booking #<?= $booking['booking_id'] ?></h1>
-                    <p class="text-sm text-zinc-500 mt-0.5">Dibuat pada <?= date('d M Y, H:i', strtotime($booking['created_at'])) ?></p>
+                    <p class="text-sm text-zinc-500 mt-0.5">Customer: <span class="font-medium text-zinc-900"><?= htmlspecialchars($booking['customer_name']) ?></span></p>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <?= $cfg['badge'] ?>">
@@ -88,7 +86,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                             <div>
                                 <label class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Waktu Check-in</label>
                                 <p class="text-sm font-medium text-zinc-950 mt-1">
-                                    <?= date('d M Y', strtotime($booking['booking_date'])) ?> • <?= substr($booking['checkin_time'], 0, 5) ?>
+                                    <?= $formattedDate ?> • <?= substr($booking['checkin_time'], 0, 5) ?>
                                 </p>
                             </div>
                         </div>
@@ -137,54 +135,112 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
             <!-- Sidebar Actions -->
             <div class="space-y-4">
                 <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-                    <h3 class="text-sm font-semibold text-zinc-950 mb-4">Aksi Cepat</h3>
-                    <div class="space-y-2">
-                        <?php if ($booking['progress_status'] === 'Pending'): ?>
-                            <a href="/edit-booking/<?= $booking['booking_id'] ?>" 
-                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl hover:bg-zinc-50 hover:border-zinc-300 transition-all active:scale-95 shadow-sm">
-                                Edit Booking
-                            </a>
-                            <button 
-                                onclick="openDialog({
-                                    title: 'Batalkan Booking',
-                                    description: 'Apakah Anda yakin ingin membatalkan reservasi ini?',
-                                    action: '/history-booking/<?= $booking['booking_id'] ?>/cancel',
-                                    confirmText: 'Ya, Batalkan'
-                                })"
-                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all active:scale-95 shadow-sm">
-                                Batalkan Reservasi
+                    <h3 class="text-sm font-semibold text-zinc-950 mb-4">Kelola Status</h3>
+                    <form action="/admin/daftar-booking/<?= $booking['booking_id'] ?>/status" method="POST" class="space-y-4">
+                        <div class="relative" id="status-select-container">
+                            <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Status Booking</label>
+                            
+                            <!-- Custom Select Button -->
+                            <button type="button" 
+                                id="status-dropdown-btn"
+                                onclick="toggleStatusDropdown()"
+                                class="w-full flex items-center justify-between h-11 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all group active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <span id="status-dot" class="w-2 h-2 rounded-full <?= explode(' ', $cfg['badge'])[0] ?>"></span>
+                                    <span id="selected-status-label"><?= $cfg['label'] ?></span>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400 group-hover:text-zinc-600 transition-colors"><path d="m6 9 6 6 6-6"/></svg>
                             </button>
-                        <?php else: ?>
-                            <p class="text-xs text-zinc-500 text-center leading-relaxed italic">
-                                Booking dalam status <strong><?= $booking['progress_status'] ?></strong> tidak dapat diubah atau dibatalkan secara mandiri.
-                            </p>
-                        <?php endif; ?>
-                    </div>
+                            
+                            <!-- Dropdown Menu -->
+                            <div id="status-dropdown-menu" 
+                                class="absolute left-0 right-0 z-50 mt-2 bg-white border border-zinc-200 rounded-xl shadow-xl shadow-zinc-200/50 p-1.5 opacity-0 invisible -translate-y-2 scale-95 transition-all duration-200 pointer-events-none">
+                                <?php foreach ($statusMap as $val => $m): ?>
+                                    <button type="button" 
+                                        onclick="selectStatus('<?= $val ?>', '<?= $m['label'] ?>', '<?= explode(' ', $m['badge'])[0] ?>')"
+                                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">
+                                        <span class="w-2 h-2 rounded-full <?= explode(' ', $m['badge'])[0] ?>"></span>
+                                        <?= $m['label'] ?>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <input type="hidden" name="status" id="status-input" value="<?= $booking['progress_status'] ?>">
+                        </div>
+                        <button type="submit" 
+                            class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-white bg-zinc-950 rounded-xl hover:bg-zinc-900 transition-all active:scale-95 shadow-sm shadow-zinc-200">
+                            Update Status
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Bantuan Box -->
-                <div class="rounded-2xl border border-zinc-200 bg-white p-6">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        </div>
-                        <h3 class="text-sm font-semibold text-zinc-950">Butuh Bantuan?</h3>
-                    </div>
-                    <p class="text-xs text-zinc-500 leading-relaxed mb-4">
-                        Hubungi admin kami jika terdapat kendala atau pertanyaan mengenai status booking Anda.
-                    </p>
-                    <a href="#" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                        Hubungi via WhatsApp
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-                    </a>
+                <!-- Danger Zone -->
+                <div class="rounded-2xl border border-red-100 bg-red-50/30 p-6">
+                    <h3 class="text-sm font-semibold text-red-950 mb-4">Danger Zone</h3>
+                    <button 
+                        onclick="openDialog({
+                            title: 'Hapus Booking',
+                            description: 'Tindakan ini tidak dapat dibatalkan. Booking akan dihapus permanen dari sistem.',
+                            action: '/admin/daftar-booking/<?= $booking['booking_id'] ?>/delete',
+                            confirmText: 'Hapus Permanen'
+                        })"
+                        class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-xl hover:bg-red-50 transition-all active:scale-95 shadow-sm">
+                        Hapus Booking
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
+    </div> <!-- End of print:hidden -->
 
     <!-- Receipt Component -->
     <?php require __DIR__ . '/../components/BookingPdf.php'; ?>
-</div>
+</div> <!-- End of main container -->
+
+<script>
+    (function() {
+        const btn = document.getElementById('status-dropdown-btn');
+        const menu = document.getElementById('status-dropdown-menu');
+        const input = document.getElementById('status-input');
+        const label = document.getElementById('selected-status-label');
+        const dot = document.getElementById('status-dot');
+
+        window.toggleStatusDropdown = function() {
+            const isOpen = !menu.classList.contains('invisible');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        };
+
+        function openDropdown() {
+            menu.classList.remove('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
+            menu.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+        }
+
+        function closeDropdown() {
+            menu.classList.add('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
+            menu.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+        }
+
+        window.selectStatus = function(val, text, bgClass) {
+            input.value = val;
+            label.textContent = text;
+            
+            // Update dot color
+            dot.className = 'w-2 h-2 rounded-full ' + bgClass;
+            
+            closeDropdown();
+        };
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#status-select-container')) {
+                closeDropdown();
+            }
+        });
+    })();
+</script>
 
 <?php require __DIR__ . '/../components/dialog.php'; ?>
 <?php require __DIR__ . '/../components/toast.php'; ?>
