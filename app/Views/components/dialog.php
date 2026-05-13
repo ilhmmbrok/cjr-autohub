@@ -41,9 +41,10 @@
                 Batal
             </button>
 
-            <form id="dialog-form" method="POST" onsubmit="return handleConfirm(this)">
+            <form id="dialog-form" method="POST" action="">
                 <button id="dialog-confirm"
-                    type="submit"
+                    type="button"
+                    onclick="submitDialogForm()"
                     class="relative h-9 px-4 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-lg hover:bg-red-700 hover:border-red-700 hover:scale-105 hover:shadow-lg hover:shadow-red-200/50 transition-all duration-200 active:scale-95 shadow-sm shadow-red-200/50 flex items-center justify-center gap-2 overflow-hidden cursor-pointer">
                     <span id="confirm-text">Lanjutkan</span>
                     <svg id="confirm-spinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -57,55 +58,55 @@
 </div>
 
 <script>
-    (function() {
-        const overlay = document.getElementById('dialog-overlay');
-        const card = document.getElementById('dialog-card');
-        const title = document.getElementById('dialog-title');
-        const desc = document.getElementById('dialog-description');
-        const form = document.getElementById('dialog-form');
-        const confirmBtn = document.getElementById('dialog-confirm');
-        const confirmText = document.getElementById('confirm-text');
-        const confirmSpinner = document.getElementById('confirm-spinner');
-        const cancelBtn = document.getElementById('dialog-cancel');
+    const dialogOverlay = document.getElementById('dialog-overlay');
+    const dialogCard = document.getElementById('dialog-card');
+    const dialogTitle = document.getElementById('dialog-title');
+    const dialogDesc = document.getElementById('dialog-description');
+    const dialogForm = document.getElementById('dialog-form');
+    const dialogConfirmBtn = document.getElementById('dialog-confirm');
+    const dialogConfirmText = document.getElementById('confirm-text');
+    const dialogConfirmSpinner = document.getElementById('confirm-spinner');
+    const dialogCancelBtn = document.getElementById('dialog-cancel');
 
-        window.openDialog = function(opts = {}) {
-            title.textContent = opts.title || 'Konfirmasi';
-            desc.textContent = opts.description || 'Apakah Anda yakin?';
-            form.action = opts.action || '';
-            confirmText.textContent = opts.confirmText || 'Lanjutkan';
-            cancelBtn.textContent = opts.cancelText || 'Batal';
+    window.openDialog = function(opts = {}) {
+        dialogTitle.textContent = opts.title || 'Konfirmasi';
+        dialogDesc.textContent = opts.description || 'Apakah Anda yakin?';
+        dialogForm.action = opts.action || '';
+        dialogConfirmText.textContent = opts.confirmText || 'Lanjutkan';
+        dialogCancelBtn.textContent = opts.cancelText || 'Batal';
 
-            // Reset loading state
-            confirmBtn.disabled = false;
-            confirmBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-            confirmText.classList.remove('hidden');
-            confirmSpinner.classList.add('hidden');
+        // Reset loading state
+        dialogConfirmBtn.disabled = false;
+        dialogConfirmBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+        dialogConfirmText.classList.remove('hidden');
+        dialogConfirmSpinner.classList.add('hidden');
 
-            overlay.classList.remove('invisible', 'opacity-0');
-            overlay.classList.add('opacity-100');
-            
-            card.classList.remove('invisible', 'opacity-0', 'scale-90');
-            card.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
-        };
+        dialogOverlay.classList.remove('invisible', 'opacity-0');
+        dialogOverlay.classList.add('opacity-100');
+        
+        dialogCard.classList.remove('invisible', 'opacity-0', 'scale-90', 'pointer-events-none');
+        dialogCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto');
+    };
 
-        window.closeDialog = function() {
-            overlay.classList.remove('opacity-100');
-            overlay.classList.add('opacity-0', 'invisible');
-            
-            card.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
-            card.classList.add('opacity-0', 'invisible', 'scale-90');
-        };
+    window.closeDialog = function() {
+        dialogOverlay.classList.remove('opacity-100');
+        dialogOverlay.classList.add('opacity-0', 'invisible');
+        
+        dialogCard.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto');
+        dialogCard.classList.add('opacity-0', 'invisible', 'scale-90', 'pointer-events-none');
+    };
 
-        window.handleConfirm = function(f) {
-            confirmBtn.disabled = true;
-            confirmBtn.classList.add('opacity-80', 'cursor-not-allowed');
-            confirmText.classList.add('hidden');
-            confirmSpinner.classList.remove('hidden');
-            return true;
-        };
+    window.submitDialogForm = function() {
+        dialogConfirmBtn.disabled = true;
+        dialogConfirmBtn.classList.add('opacity-80', 'cursor-not-allowed');
+        dialogConfirmText.classList.add('hidden');
+        dialogConfirmSpinner.classList.remove('hidden');
+        
+        // Kirim form secara manual
+        dialogForm.submit();
+    };
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeDialog();
-        });
-    })();
-</script>
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDialog();
+    });
+</script>
