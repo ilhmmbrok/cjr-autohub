@@ -32,7 +32,7 @@ class BookingController extends Controller
             'bookings' => $bookings,
         ]);
     }
-    public function showAllBookingbyAdmin(): void
+    public function showAllBookingByAdmin(): void
     {
         $bookings = $this->bookingModel->getAllBookings();
         $this->view('admin.ShowAllBooking', [
@@ -171,6 +171,7 @@ class BookingController extends Controller
         $this->bookingModel->updateStatus((int) $id, $status);
         Session::setMessage('success', 'Status booking diperbarui.');
         $this->redirect('/admin/daftar-booking');
+        return;
     }
     public function cancelBooking(string $id): void
     {
@@ -193,7 +194,7 @@ class BookingController extends Controller
         Session::setMessage('success', 'Booking berhasil dibatalkan.');
         $this->redirect('/history-booking');
     }
-    public function deleteBooking(string $id): void
+    public function deleteBooking(int $id): void
     {
         $booking = $this->bookingModel->findBooking((int) $id);
 
@@ -206,6 +207,7 @@ class BookingController extends Controller
         $this->bookingModel->deleteBooking((int) $id);
         Session::setMessage('success', 'Booking berhasil dihapus.');
         $this->redirect('/admin/daftar-booking');
+        return;
     }
 
     public function deleteCancelledByAdmin(): void
@@ -213,5 +215,6 @@ class BookingController extends Controller
         $deleted = $this->bookingModel->deleteCancelledBookings();
         Session::setMessage('success', "Berhasil menghapus {$deleted} booking yang dibatalkan.");
         $this->redirect('/admin/daftar-booking');
+        return;
     }
 }

@@ -111,7 +111,7 @@ class BookingModel
     public function deleteCancelledBookings(): int
     {
         return Database::execute(
-            "DELETE FROM {$this->table} WHERE progress_status = 'Cancelled'"
+            "DELETE FROM {$this->table} WHERE progress_status IN ('Cancelled', 'cancelled')"
         );
     }
 
