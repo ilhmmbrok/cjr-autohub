@@ -47,6 +47,13 @@ class BookingController extends Controller
             'booking' => $booking,
         ]);
     }
+    public function detailBookingByAdmin(string $id): void
+    {
+        $booking = $this->bookingModel->findBooking((int) $id);
+        $this->view('admin.DetailBooking', [
+            'booking' => $booking,
+        ]);
+    }
 
     public function createView(): void
     {
@@ -157,7 +164,7 @@ class BookingController extends Controller
 
         if (!in_array($status, $allowed)) {
             Session::setMessage('error', 'Status tidak valid.');
-            $this->redirect('/admin/booking');
+            $this->redirect("/admin/detail-booking/{$id}");
             return;
         }
 

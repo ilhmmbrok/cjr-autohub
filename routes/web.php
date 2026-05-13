@@ -25,6 +25,7 @@ Router::group(['middleware' => 'admin'], function () {
     Router::get('/admin/dashboard', [AdminController::class, 'adminDashboard']);
     
     Router::get('/admin/daftar-booking', [BookingController::class, 'showAllBookingByAdmin']);
+    Router::get('/admin/detail-booking/:id', [BookingController::class, 'detailBookingByAdmin']);
     Router::post('/admin/daftar-booking/:id/status', [BookingController::class, 'updateStatusBookingByAdmin']);
     Router::post('/admin/daftar-booking/:id/delete', [BookingController::class, 'deleteBooking']);
     Router::post('/admin/daftar-booking/delete-cancelled', [BookingController::class, 'deleteCancelledByAdmin']);

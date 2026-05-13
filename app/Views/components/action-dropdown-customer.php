@@ -19,15 +19,14 @@
  *   - Edit   : /admin/booking/{id}/edit
  *   - Hapus  : /admin/booking/{id}/delete
  */
-
 function renderBookingActionDropdown(int $bookingId): void
 {
     $id = (int) $bookingId;
 ?>
-    <div class="drop-wrap">
+    <div class="relative inline-block text-left">
         <button
             type="button"
-            class="drop-btn"
+            class="inline-flex items-center justify-center w-8 h-8 border border-zinc-200 rounded-md bg-white text-zinc-400 hover:text-zinc-950 hover:bg-zinc-50 transition-all active:scale-90 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500"
             onclick="toggleDropMenu(this)"
             aria-expanded="false"
             aria-label="Menu aksi booking #<?= $id ?>">
@@ -40,19 +39,19 @@ function renderBookingActionDropdown(int $bookingId): void
             </svg>
         </button>
 
-        <div class="drop-menu" role="menu">
+        <div class="drop-menu-container fixed z-[9999] min-w-[160px] bg-white border border-zinc-200 rounded-lg shadow-lg p-1 opacity-0 invisible -translate-y-2 scale-95 transition-all duration-150 pointer-events-none" role="menu">
 
-            <a href="/detail-booking/<?= $id ?>" class="drop-item" role="menuitem">
+            <a href="/detail-booking/<?= $id ?>" class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors active:scale-[0.98]" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8" />
                     <circle cx="12" cy="12" r="3" />
                 </svg>
                 Detail
             </a>
 
-            <a href="/edit-booking/<?= $id ?>" class="drop-item" role="menuitem">
+            <a href="/edit-booking/<?= $id ?>" class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors active:scale-[0.98]" role="menuitem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -62,17 +61,17 @@ function renderBookingActionDropdown(int $bookingId): void
                 Edit
             </a>
 
-            <div class="drop-separator" role="separator"></div>
+            <div class="h-px bg-zinc-100 my-1" role="separator"></div>
 
             <button
                 type="button"
-                class="drop-item danger"
+                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left active:scale-[0.98]"
                 role="menuitem"
                 onclick="openDialog({
-                    title:       'Hapus Booking',
-                    description: 'Anda yakin ingin membatalkan booking #<?= $id ?> ?',
+                    title:       'Cancel Booking',
+                    description: 'Apakah Anda yakin ingin membatalkan reservasi?',
                     action:      '/history-booking/<?= $id ?>/cancel',
-                    confirmText: 'Hapus'
+                    confirmText: 'Batalkan Booking'
                 })">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -97,136 +96,39 @@ function renderBookingActionDropdownAssets(): void
     if ($rendered) return;
     $rendered = true;
 ?>
-    <style>
-        .drop-wrap {
-            position: relative;
-            display: inline-block;
-        }
-
-        .drop-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border: 1px solid #e4e4e7;
-            border-radius: 6px;
-            background: #fff;
-            cursor: pointer;
-            color: #71717a;
-            transition: all 120ms;
-        }
-
-        .drop-btn:active {
-            transform: scale(0.9);
-        }
-
-        .drop-btn:hover {
-            background: #f4f4f5;
-        }
-
-        .drop-btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
-        }
-
-        .drop-menu {
-            position: fixed;
-            z-index: 9999;
-            min-width: 148px;
-            background: #fff;
-            border: 1px solid #e4e4e7;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 4px;
-            
-            /* Smooth interaction */
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-8px) scale(0.95);
-            transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s;
-            pointer-events: none;
-        }
-
-        .drop-menu.open {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-
-        .drop-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #18181b;
-            cursor: pointer;
-            transition: all 120ms;
-            text-decoration: none;
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: left;
-        }
-
-        .drop-item:active {
-            transform: scale(0.97);
-        }
-
-        .drop-item:hover {
-            background: #f4f4f5;
-        }
-
-        .drop-item.danger {
-            color: #dc2626;
-        }
-
-        .drop-item.danger:hover {
-            background: #fef2f2;
-        }
-
-        .drop-separator {
-            height: 1px;
-            background: #f4f4f5;
-            margin: 4px 0;
-        }
-    </style>
-
     <script>
+
         (function() {
             function toggleDropMenu(btn) {
                 const menu = btn.nextElementSibling;
-                const isOpen = menu.classList.contains('open');
+                const isOpen = menu.classList.contains('!opacity-100');
                 closeAll();
                 if (!isOpen) {
                     const rect = btn.getBoundingClientRect();
                     menu.style.top = (rect.bottom + 4) + 'px';
                     
-                    /* Hitung posisi left agar rata kanan dengan tombol */
-                    const menuWidth = menu.offsetWidth || 148;
+                    const menuWidth = menu.offsetWidth || 160;
                     menu.style.left = (rect.right - menuWidth) + 'px';
                     
-                    menu.classList.add('open');
+                    menu.classList.remove('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
+                    menu.classList.add('!opacity-100', '!visible', '!translate-y-0', '!scale-100', '!pointer-events-auto');
                     btn.setAttribute('aria-expanded', 'true');
                 }
             }
 
             function closeAll() {
-                document.querySelectorAll('.drop-menu.open').forEach(function(m) {
-                    m.classList.remove('open');
+                document.querySelectorAll('.drop-menu-container').forEach(function(m) {
+                    m.classList.add('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
+                    m.classList.remove('!opacity-100', '!visible', '!translate-y-0', '!scale-100', '!pointer-events-auto');
                     const btn = m.previousElementSibling;
                     if (btn) btn.setAttribute('aria-expanded', 'false');
                 });
             }
 
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.drop-wrap')) {
+                if (!e.target.closest('.relative.inline-block')) {
                     closeAll();
-                } else if (e.target.closest('.drop-item')) {
-                    /* Close dropdown when an item is clicked */
+                } else if (e.target.closest('a[role="menuitem"], button[role="menuitem"]')) {
                     setTimeout(closeAll, 50);
                 }
             });
@@ -239,3 +141,4 @@ function renderBookingActionDropdownAssets(): void
     </script>
 <?php
 }
+

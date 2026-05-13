@@ -16,13 +16,13 @@
     <title>404 Not Found</title>
 </head>
 
-<body class="bg-zinc-50">
+<body class="bg-white">
     <div class="py-8 px-4 mx-auto max-w-3xl h-screen lg:py-16 lg:px-6">
         <div class="mx-auto max-w-xl h-full text-center justify-center flex flex-col items-center">
-            <h1 class="mb-10 text-7xl tracking-tight font-extrabold lg:text-9xl text-zinc-900">404</h1>
-            <p class="mb-4 text-3xl tracking-tight font-bold text-zinc-800 md:text-4xl">Halaman Tidak Ditemukan</p>
-            <p class="mb-4 text-lg text-zinc-500">Maaf, halaman yang kamu cari tidak ditemukan.</p>
-            <a href="/" class="inline-flex text-white bg-zinc-900 hover:bg-zinc-800 font-medium rounded-md text-sm px-5 py-2.5 text-center my-4 transition-all">Kembali ke Home</a>
+            <h1 class="mb-10 text-[72px] lg:text-[120px] tracking-tighter font-extrabold text-zinc-950">404</h1>
+            <p class="mb-4 text-[24px] tracking-tight font-bold text-zinc-900 md:text-[32px]">Halaman Tidak Ditemukan</p>
+            <p class="mb-8 text-[16px] text-zinc-400">Maaf, halaman yang kamu cari tidak ditemukan.</p>
+            <a href="/" class="h-[40px] inline-flex items-center text-white bg-zinc-950 hover:bg-zinc-900 font-medium rounded-[6px] text-[14px] px-6 py-2.5 text-center transition-all active:scale-95 shadow-[0px_4px_12px_rgba(0,0,0,0.1)]">Kembali ke Home</a>
         </div>
     </div>
 </body>

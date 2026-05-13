@@ -17,23 +17,23 @@
 </head>
 
 <body>
-    <div class="bg-zinc-50 min-h-screen">
+    <div class="bg-white min-h-screen">
         <!-- Navbar -->
-        <nav class="bg-white border-b border-zinc-200">
-            <div class="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <nav class="bg-white border-b border-zinc-200 sticky top-0 z-50">
+            <div class="w-full px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg  flex items-center justify-center">
-                        <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo"/>' ?>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden">
+                        <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo" class="w-full h-full object-contain"/>' ?>
                     </div>
-                    <span class="text-base font-bold text-zinc-900 tracking-tight">AutoHub</span>
+                    <span class="text-lg font-bold text-zinc-950 tracking-tight">AutoHub</span>
                 </div>
                 <div class="flex gap-3">
                     <a href="/login"
-                        class="px-4 py-2 text-sm font-medium text-zinc-700 rounded-md border border-zinc-200 hover:bg-zinc-100 active:scale-95 transition-all duration-200">
+                        class="px-4 py-2 text-sm font-medium text-zinc-700 rounded-md border border-zinc-200 hover:bg-zinc-50 active:scale-95 transition-all duration-200">
                         Sign In
                     </a>
                     <a href="/register"
-                        class="px-4 py-2 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 active:scale-95 transition-all duration-200">
+                        class="px-4 py-2 text-sm font-medium text-white bg-zinc-950 rounded-md hover:bg-zinc-900 active:scale-95 transition-all duration-200">
                         Sign Up
                     </a>
                 </div>
@@ -41,20 +41,20 @@
         </nav>
 
         <!-- Hero -->
-        <div class="max-w-5xl mx-auto px-4 py-20 text-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-zinc-900 leading-tight">
-                Booking Bengkel<br>Jadi Lebih Mudah
+        <div class="max-w-5xl mx-auto px-4 py-28 text-center">
+            <h2 class="text-5xl md:text-6xl font-extrabold text-zinc-950 leading-[1.1] tracking-tighter">
+                Booking Bengkel<br><span class="text-blue-600">Jadi Lebih Mudah</span>
             </h2>
-            <p class="mt-4 text-lg text-zinc-500 max-w-xl mx-auto">
-                Platform booking bengkel online. Pesan jadwal servis kendaraan kamu kapan saja, di mana saja.
+            <p class="mt-6 text-lg text-zinc-500 max-w-xl mx-auto leading-relaxed">
+                Platform booking bengkel online tercanggih. Pesan jadwal servis kendaraan kamu kapan saja, di mana saja dengan mudah.
             </p>
-            <div class="mt-8 flex gap-3 justify-center">
+            <div class="mt-10 flex gap-4 justify-center">
                 <a href="/register"
-                    class="px-6 py-2.5 text-sm font-medium text-white bg-zinc-900 rounded-md hover:bg-zinc-800 active:scale-95 transition-all duration-200">
+                    class="px-8 py-3 text-sm font-medium text-white bg-zinc-950 rounded-md hover:bg-zinc-900 active:scale-95 transition-all duration-200 shadow-[0px_4px_12px_rgba(0,0,0,0.1)]">
                     Daftar Sekarang
                 </a>
                 <a href="/login"
-                    class="px-6 py-2.5 text-sm font-medium text-zinc-700 border border-zinc-200 rounded-md hover:bg-zinc-100 active:scale-95 transition-all duration-200">
+                    class="px-8 py-3 text-sm font-medium text-zinc-700 border border-zinc-200 rounded-md hover:bg-zinc-50 active:scale-95 transition-all duration-200">
                     Masuk
                 </a>
             </div>
