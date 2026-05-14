@@ -286,7 +286,7 @@
                                 </p>
 
                                 <p class="font-semibold text-zinc-800 text-sm">
-                                    Politeknik Negeri Jember
+                                    Kelompok 
                                 </p>
 
                             </div>
