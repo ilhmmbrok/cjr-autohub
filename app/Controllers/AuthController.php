@@ -23,9 +23,10 @@ class AuthController extends Controller
 
     public function register(): void
     {
-        $fullname = trim($_POST['fullname'] ?? '');
-        $email    = trim($_POST['email']    ?? '');
-        $password = $_POST['password']      ?? '';
+        $data     = $this->input(['fullname', 'email', 'password']);
+        $fullname = $data['fullname'];
+        $email    = $data['email'];
+        $password = $data['password'];
 
         if (empty($fullname) || empty($email) || empty($password)) {
             Session::setMessage('error', 'Please fill in all fields.');
@@ -65,8 +66,9 @@ class AuthController extends Controller
 
     public function login(): void
     {
-        $email    = trim($_POST['email']    ?? '');
-        $password = $_POST['password']      ?? '';
+        $data     = $this->input(['email', 'password']);
+        $email    = $data['email'];
+        $password = $data['password'];
 
         if (empty($email) || empty($password)) {
             Session::setMessage('error', 'Please fill in all fields.');

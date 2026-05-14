@@ -18,6 +18,8 @@ class Session
             } else {
                 unset($_SESSION['message_old']);
             }
+
+            self::generateCsrfToken();
         }
     }
     // public static function set(string $key, mixed $value): void
@@ -66,8 +68,24 @@ class Session
     {
         return $_SESSION['message_old'][$key] ?? null;
     }
-    // public static function destroy(): void
-    // {
-    //     session_destroy();
-    // }
+    public static function generateCsrfToken(): void
+    {
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+    }
+
+    public static function getCsrfToken(): string
+    {
+        self::generateCsrfToken();
+        return $_SESSION['csrf_token'];
+    }
+
+    public static function verifyCsrfToken(?string $token): bool
+    {
+        if (!$token || !isset($_SESSION['csrf_token'])) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
+    }
 }

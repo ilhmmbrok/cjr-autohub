@@ -55,6 +55,17 @@ class Router
             return;
         }
 
+        // CSRF Verification for POST requests
+        if ($method === 'POST') {
+            $token = $_POST['csrf_token'] ?? '';
+            if (!Session::verifyCsrfToken($token)) {
+                http_response_code(403);
+                Session::setMessage('error', 'Token CSRF tidak valid.');
+                header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/'));
+                exit;
+            }
+        }
+
         RoleMiddleware::handle($route['middleware']);
 
         [$controllerClass, $methodName] = $route['action'];

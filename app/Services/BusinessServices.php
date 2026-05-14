@@ -22,6 +22,49 @@ class BusinessServices
         $this->timezone      = new DateTimeZone('Asia/Jakarta');
     }
 
+    private function getToday(): string
+    {
+        return (new DateTime('now', $this->timezone))->format('Y-m-d');
+    }
+
+    private function validateBookingDateTime(string $date, string $checkinTime, array $schedule): ?array
+    {
+        // Trim detik jika ada — "10:00:00" → "10:00"
+        $checkinTime = substr($checkinTime, 0, 5);
+
+        $today = $this->getToday();
+
+        // Tanggal harus minimal besok
+        $parsedDate = DateTime::createFromFormat('Y-m-d', $date);
+        if (!$parsedDate || $parsedDate->format('Y-m-d') !== $date) {
+            return ['success' => false, 'message' => 'Format tanggal tidak valid.'];
+        }
+        if ($date <= $today) {
+            return ['success' => false, 'message' => 'Tanggal booking minimal besok.'];
+        }
+
+        // Validasi format jam
+        $parsedTime = DateTime::createFromFormat('H:i', $checkinTime);
+        if (!$parsedTime || $parsedTime->format('H:i') !== $checkinTime) {
+            return ['success' => false, 'message' => 'Format waktu tidak valid.'];
+        }
+
+        // Jam check-in harus dalam jam operasional
+        $openTime  = $schedule['open_time'];
+        $closeTime = $schedule['close_time'];
+        $checkin   = $checkinTime . ':00';
+        $fmt       = fn($t) => date('H:i', strtotime($t));
+
+        if ($checkin < $openTime || $checkin > $closeTime) {
+            return [
+                'success' => false,
+                'message' => "Jam check-in harus antara {$fmt($openTime)} sampai {$fmt($closeTime)}.",
+            ];
+        }
+
+        return null;
+    }
+
     public function createBooking(array $data): array
     {
         // 1. Validasi field wajib
@@ -38,137 +81,47 @@ class BusinessServices
         ];
         foreach ($required as $field) {
             if (empty(trim((string)($data[$field] ?? '')))) {
-                return [
-                    'success' => false,
-                    'message' => 'Semua field wajib diisi.'
-                ];
+                return ['success' => false, 'message' => 'Semua field wajib diisi.'];
             }
         }
 
-        // 2. Ambil waktu lokal sekarang (WIB)
-        $nowDT   = new DateTime('now', $this->timezone);
-        $today   = $nowDT->format('Y-m-d');
-        $nowTime = $nowDT->format('H:i:s');
-
-        // 3. Validasi format tanggal
-        $parsedDate = DateTime::createFromFormat('Y-m-d', $data['booking_date']);
-        if (!$parsedDate || $parsedDate->format('Y-m-d') !== $data['booking_date']) {
-            return [
-                'success' => false,
-                'message' => 'Format tanggal tidak valid.'
-            ];
-        }
-        if ($data['booking_date'] < $today) {
-            return [
-                'success' => false,
-                'message' => 'Tanggal tidak boleh di masa lalu.'
-            ];
-        }
-
-        // 4. Validasi format waktu
-        $parsedTime = DateTime::createFromFormat('H:i', $data['checkin_time']);
-        if (!$parsedTime || $parsedTime->format('H:i') !== $data['checkin_time']) {
-            return [
-                'success' => false,
-                'message' => 'Format waktu tidak valid.'
-            ];
-        }
-
-        // 5. Ambil jadwal — dipakai untuk semua cek berikutnya
+        // 2. Ambil jadwal operasional
         $schedule = $this->scheduleModel->getBusinessHours();
         if (!$schedule) {
-            return [
-                'success' => false,
-                'message' => 'Jam operasional belum diatur oleh admin.'
-            ];
+            return ['success' => false, 'message' => 'Jam operasional belum diatur oleh admin.'];
         }
 
-        $openTime  = $schedule['open_time'];
-        $closeTime = $schedule['close_time'];
-        $maxSlot   = (int) $schedule['slot_capacity'];
+        // 3. Validasi tanggal & jam
+        $error = $this->validateBookingDateTime($data['booking_date'], $data['checkin_time'], $schedule);
+        if ($error) return $error;
 
-        $openFormatted  = date('H:i', strtotime($openTime));
-        $closeFormatted = date('H:i', strtotime($closeTime));
-
-        // 6. Cek jam operasional sekarang HANYA jika booking hari ini
-        if ($data['booking_date'] === $today) {
-            if ($nowTime < $openTime || $nowTime > $closeTime) {
-                return [
-                    'success' => false,
-                    'message' => "Jam operasional adalah $openFormatted sampai $closeFormatted.",
-                ];
-            }
-        }
-
-        // 7. Cek jam check-in dalam range operasional (berlaku untuk semua tanggal)
-        $checkin = $data['checkin_time'] . ':00';
-        if ($checkin < $openTime || $checkin > $closeTime) {
-            return [
-                'success' => false,
-                'message' => "Jam check-in harus antara $openFormatted sampai $closeFormatted.",
-            ];
-        }
-
-        // 8. Jika booking hari ini, jam check-in tidak boleh di masa lalu
-        if ($data['booking_date'] === $today && $checkin < $nowTime) {
-            return [
-                'success' => false,
-                'message' => 'Jam check-in tidak boleh di masa lalu.',
-            ];
-        }
-
-        // 9. Cek jam check-in dalam range operasional
-        $checkin = $data['checkin_time'] . ':00';
-        if ($checkin < $openTime || $checkin > $closeTime) {
-            return [
-                'success' => false,
-                'message' => "Jam check-in harus antara $openFormatted sampai $closeFormatted.",
-            ];
-        }
-
-        // 10. Jika booking hari ini, jam check-in tidak boleh di masa lalu
-        if ($data['booking_date'] === $today && $checkin < $nowTime) {
-            return [
-                'success' => false,
-                'message' => 'Jam check-in tidak boleh di masa lalu.',
-            ];
-        }
-
-        // 11. Cek slot + insert dalam satu transaksi (cegah race condition)
+        // 4. Cek slot + insert dalam satu transaksi
         try {
             $db = Database::connect();
             $db->beginTransaction();
 
-            $row   = Database::fetch(
+            $maxSlot = (int) $schedule['slot_capacity'];
+            $row     = Database::fetch(
                 "SELECT COUNT(*) AS total FROM bookings
-                     WHERE booking_date = ? AND progress_status != 'Cancelled'
-                     FOR UPDATE",
+                 WHERE booking_date = ? AND progress_status != 'Cancelled'
+                 FOR UPDATE",
                 [$data['booking_date']]
             );
             $total = (int)($row['total'] ?? 0);
 
             if ($total >= $maxSlot) {
                 $db->rollBack();
-                return [
-                    'success' => false,
-                    'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'
-                ];
+                return ['success' => false, 'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'];
             }
 
             $this->bookingModel->createBooking($data);
 
             $db->commit();
-            return [
-                'success' => true,
-                'message' => 'Booking berhasil.'
-            ];
+            return ['success' => true, 'message' => 'Booking berhasil.'];
         } catch (Exception $e) {
             $db->rollBack();
             error_log('BusinessServices::createBooking — ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan. Silahkan coba lagi.'
-            ];
+            return ['success' => false, 'message' => 'Terjadi kesalahan. Silahkan coba lagi.'];
         }
     }
 
@@ -187,105 +140,34 @@ class BusinessServices
         ];
         foreach ($required as $field) {
             if (empty(trim((string)($data[$field] ?? '')))) {
-                return [
-                    'success' => false,
-                    'message' => 'Semua field wajib diisi.'
-                ];
+                return ['success' => false, 'message' => 'Semua field wajib diisi.'];
             }
         }
 
         // 2. Ambil booking lama
         $booking = $this->bookingModel->findBooking($id);
         if (!$booking) {
-            return [
-                'success' => false,
-                'message' => 'Booking tidak ditemukan.'
-            ];
+            return ['success' => false, 'message' => 'Booking tidak ditemukan.'];
         }
 
-        // 3. Ambil waktu lokal sekarang (WIB)
-        $nowDT   = new DateTime('now', $this->timezone);
-        $today   = $nowDT->format('Y-m-d');
-        $nowTime = $nowDT->format('H:i:s');
-
-        // 4. Cek apakah booking lama sudah lewat (tidak bisa diubah)
-        if (
-            $booking['booking_date'] < $today ||
-            ($booking['booking_date'] === $today && $booking['checkin_time'] < $nowTime)
-        ) {
-            return [
-                'success' => false,
-                'message' => 'Booking sudah lewat dan tidak bisa diubah.'
-            ];
+        // 3. Cek booking lama — harus minimal H-1 (booking_date > hari ini)
+        $today = $this->getToday();
+        if ($booking['booking_date'] <= $today) {
+            return ['success' => false, 'message' => 'Booking tidak bisa diubah kurang dari H-1.'];
         }
 
-        // 5. Validasi format tanggal baru
-        $parsedDate = DateTime::createFromFormat('Y-m-d', $data['booking_date']);
-        if (!$parsedDate || $parsedDate->format('Y-m-d') !== $data['booking_date']) {
-            return [
-                'success' => false,
-                'message' => 'Format tanggal tidak valid.'
-            ];
-        }
-        if ($data['booking_date'] < $today) {
-            return [
-                'success' => false,
-                'message' => 'Tanggal tidak boleh di masa lalu.'
-            ];
-        }
-
-        // 6. Validasi format waktu baru
-        $parsedTime = DateTime::createFromFormat('H:i', $data['checkin_time']);
-        if (!$parsedTime || $parsedTime->format('H:i') !== $data['checkin_time']) {
-            return [
-                'success' => false,
-                'message' => 'Format waktu tidak valid.'
-            ];
-        }
-
-        // 7. Ambil jadwal operasional
+        // 4. Ambil jadwal operasional
         $schedule = $this->scheduleModel->getBusinessHours();
         if (!$schedule) {
-            return [
-                'success' => false,
-                'message' => 'Jam operasional belum diatur oleh admin.'
-            ];
+            return ['success' => false, 'message' => 'Jam operasional belum diatur oleh admin.'];
         }
 
-        $openTime  = $schedule['open_time'];
-        $closeTime = $schedule['close_time'];
-        $maxSlot   = (int) $schedule['slot_capacity'];
+        // 5. Validasi tanggal baru & jam
+        $error = $this->validateBookingDateTime($data['booking_date'], $data['checkin_time'], $schedule);
+        if ($error) return $error;
 
-        $openFormatted  = date('H:i', strtotime($openTime));
-        $closeFormatted = date('H:i', strtotime($closeTime));
-
-        // 8. Cek apakah sekarang dalam jam operasional (WIB)
-        if ($nowTime < $openTime || $nowTime > $closeTime) {
-            return [
-                'success' => false,
-                'message' => "Jam operasional adalah $openFormatted sampai $closeFormatted.",
-            ];
-        }
-
-        // 9. Cek jam check-in dalam range operasional
-        $checkin = $data['checkin_time'] . ':00';
-        if ($checkin < $openTime || $checkin > $closeTime) {
-            return [
-                'success' => false,
-                'message' => "Jam check-in harus antara $openFormatted sampai $closeFormatted.",
-            ];
-        }
-
-        // 10. Jika booking hari ini, jam check-in tidak boleh di masa lalu
-        if ($data['booking_date'] === $today && $checkin < $nowTime) {
-            return [
-                'success' => false,
-                'message' => 'Jam check-in tidak boleh di masa lalu.',
-            ];
-        }
-
-        // 11. Cek slot + update dalam satu transaksi (cegah race condition)
-        //     Hanya cek ulang slot jika tanggal booking berubah
+        // 6. Cek slot + update dalam satu transaksi
+        //    Hanya cek slot jika tanggal berubah
         try {
             $db = Database::connect();
             $db->beginTransaction();
@@ -293,20 +175,18 @@ class BusinessServices
             $dateChanged = $data['booking_date'] !== $booking['booking_date'];
 
             if ($dateChanged) {
-                $row   = Database::fetch(
+                $maxSlot = (int) $schedule['slot_capacity'];
+                $row     = Database::fetch(
                     "SELECT COUNT(*) AS total FROM bookings
-                 WHERE booking_date = ? AND progress_status != 'Cancelled'
-                 FOR UPDATE",
+                     WHERE booking_date = ? AND progress_status != 'Cancelled'
+                     FOR UPDATE",
                     [$data['booking_date']]
                 );
                 $total = (int)($row['total'] ?? 0);
 
                 if ($total >= $maxSlot) {
                     $db->rollBack();
-                    return [
-                        'success' => false,
-                        'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'
-                    ];
+                    return ['success' => false, 'message' => 'Slot booking sudah penuh. Silahkan pilih tanggal lain.'];
                 }
             }
 
@@ -317,10 +197,7 @@ class BusinessServices
         } catch (Exception $e) {
             $db->rollBack();
             error_log('BusinessServices::updateBooking — ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengubah booking. Silahkan coba lagi.'
-            ];
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengubah booking. Silahkan coba lagi.'];
         }
     }
 }

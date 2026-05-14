@@ -209,6 +209,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                         </div>
                     </div>
                     <form method="POST" action="/logout">
+                        <?= csrf_field() ?>
                         <button type="submit" title="Logout"
                             class="p-1.5 rounded-md text-zinc-400 hover:text-red-600 hover:bg-zinc-100 transition-colors cursor-pointer shrink-0">
                             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

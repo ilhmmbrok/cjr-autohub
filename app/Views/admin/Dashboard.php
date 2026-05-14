@@ -26,9 +26,9 @@ $hasSchedule = !empty($s);
             <!-- Pending -->
             <div class="group rounded-2xl border border-zinc-200 bg-white px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-zinc-300">
                 <div class="flex items-center justify-between mb-3">
-                    <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Pending</p>
-                    <div class="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center group-hover:bg-zinc-100 transition-colors">
-                        <svg class="w-5 h-5 text-zinc-400 group-hover:text-zinc-600 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <p class="text-xs font-medium text-zinc-800 uppercase tracking-wider">Pending</p>
+                    <div class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center group-hover:bg-orange-100 transition-colors">
+                        <svg class="w-5 h-5 text-orange-300 group-hover:text-orange-500 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <path d="M12 6v6l4 2" />
                         </svg>
@@ -41,9 +41,9 @@ $hasSchedule = !empty($s);
             <!-- In Progress -->
             <div class="group rounded-2xl border border-zinc-200 bg-white px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-zinc-300">
                 <div class="flex items-center justify-between mb-3">
-                    <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">In Progress</p>
-                    <div class="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center group-hover:bg-zinc-100 transition-colors">
-                        <svg class="w-5 h-5 text-zinc-400 group-hover:text-zinc-600 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <p class="text-xs font-medium text-zinc-800 uppercase tracking-wider">In Progress</p>
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                        <svg class="w-5 h-5 text-blue-300 group-hover:text-blue-500 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
                             <circle cx="12" cy="12" r="3" />
                         </svg>
@@ -56,9 +56,9 @@ $hasSchedule = !empty($s);
             <!-- Completed -->
             <div class="group rounded-2xl border border-zinc-200 bg-white px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-zinc-300">
                 <div class="flex items-center justify-between mb-3">
-                    <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Completed</p>
-                    <div class="w-8 h-8 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center group-hover:bg-zinc-100 transition-colors">
-                        <svg class="w-5 h-5 text-zinc-400 group-hover:text-zinc-600 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <p class="text-xs font-medium text-zinc-800 uppercase tracking-wider">Completed</p>
+                    <div class="w-8 h-8 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                        <svg class="w-5 h-5 text-green-300 group-hover:text-green-500 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 6 9 17l-5-5" />
                         </svg>
                     </div>
@@ -70,7 +70,7 @@ $hasSchedule = !empty($s);
         </div>
         <div>
             <?php if (empty($schedule)): ?>
-                <div class="rounded-2xl border border-zinc-200 bg-white">
+                <div class="rounded-2xl border border-zinc-200 bg-white hover:-translate-y-0.5 transition-all duration-300 hover:border-zinc-300 hover:shadow-md">
                     <div class="text-center py-16 text-zinc-400">
                         <svg class="w-10 h-10 mx-auto mb-3 text-zinc-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -88,7 +88,7 @@ $hasSchedule = !empty($s);
                 ?>
 
                 <!-- Jam Operasional & Slot Hari Ini -->
-                <div class="bg-white border border-zinc-200 rounded-2xl p-5 w-full shadow-[0px_1px_3px_rgba(0,0,0,0.1)]">
+                <div class="bg-white border border-zinc-200 rounded-2xl p-5 w-full hover:-translate-y-0.5 transition-all duration-300 hover:border-zinc-300 hover:shadow-md">
                     <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wide mb-4">Jam Operasional & Slot Hari Ini</p>
                     <div class="flex items-center gap-5">
 
@@ -113,9 +113,25 @@ $hasSchedule = !empty($s);
 
                         <!-- Slot Hari Ini -->
                         <?php if ($slot): ?>
+                            <?php
+                            // Logic warna berdasarkan persentase
+                            $statusColor = 'bg-green-600';
+                            $textColor   = 'text-green-600';
+                            $iconColor   = 'text-green-600';
+
+                            if ($isFull || $pct >= 90) {
+                                $statusColor = 'bg-red-600';
+                                $textColor   = 'text-red-600';
+                                $iconColor   = 'text-red-600';
+                            } elseif ($pct >= 60) {
+                                $statusColor = 'bg-yellow-500';
+                                $textColor   = 'text-yellow-600';
+                                $iconColor   = 'text-yellow-500';
+                            }
+                            ?>
                             <div class="flex items-center gap-3 flex-1">
                                 <div class="w-10 h-10 rounded-lg bg-zinc-50 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 <?= $isFull ? 'text-red-600' : 'text-green-600' ?>" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg class="w-5 h-5 <?= $iconColor ?>" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
                                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                                     </svg>
@@ -123,13 +139,13 @@ $hasSchedule = !empty($s);
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between mb-1">
                                         <p class="text-xs text-zinc-500">Slot hari ini</p>
-                                        <p class="text-xs font-semibold <?= $isFull ? 'text-red-600' : 'text-green-600' ?>">
+                                        <p class="text-xs font-semibold <?= $textColor ?>">
                                             <?= $isFull ? 'Penuh' : "Sisa {$slot['available']}" ?>
                                         </p>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <div class="flex-1 bg-zinc-100 rounded-full h-1.5 overflow-hidden">
-                                            <div class="h-full transition-all duration-500 <?= $isFull ? 'bg-red-600' : ($pct >= 75 ? 'bg-orange-500' : 'bg-zinc-950') ?>"
+                                            <div class="h-full transition-all duration-500 <?= $statusColor ?>"
                                                 style="width: <?= min($pct, 100) ?>%"></div>
                                         </div>
                                         <p class="text-xs text-zinc-500 whitespace-nowrap"><?= $slot['booked'] ?>/<?= $slot['max'] ?> terisi</p>
@@ -152,7 +168,7 @@ $hasSchedule = !empty($s);
                     <p class="text-xs text-zinc-500 mt-0.5">Total booking masuk sepanjang tahun ini.</p>
                 </div>
             </div>
-            <canvas id="chart" height="72"></canvas>
+            <canvas id="chart" height="42"></canvas>
         </div>
     </div>
 </div>
@@ -166,8 +182,8 @@ $hasSchedule = !empty($s);
                 datasets: [{
                     label: 'Booking',
                     data: <?= json_encode($chartData ?? array_fill(0, 12, 0)) ?>,
-                    backgroundColor: '#18181b', // zinc-950
-                    borderColor: '#18181b',
+                    backgroundColor: '#2563eb',
+                    borderColor: '#2563eb',
                     borderWidth: 0,
                     borderRadius: 6,
                     borderSkipped: false,
@@ -216,9 +232,9 @@ $hasSchedule = !empty($s);
                         display: false
                     },
                     tooltip: {
-                        backgroundColor: '#18181b',
-                        titleColor: '#a1a1aa',
-                        bodyColor: '#ffffff',
+                        backgroundColor: '#f4f4f5',
+                        titleColor: '#000000',
+                        bodyColor: '#000000',
                         padding: 10,
                         cornerRadius: 8,
                         titleFont: {
@@ -240,4 +256,4 @@ $hasSchedule = !empty($s);
 </div>
 </body>
 
-</html>
+</html>

@@ -57,7 +57,10 @@ class BookingController extends Controller
 
     public function createView(): void
     {
-        $this->view('customer.CreateBooking');
+        $schedule = $this->scheduleModel->getBusinessHours();
+        $this->view('customer.CreateBooking', [
+            'schedule' => $schedule
+        ]);
     }
 
     public function createBooking(): void
@@ -106,7 +109,9 @@ class BookingController extends Controller
             return;
         }
 
+        $schedule = $this->scheduleModel->getBusinessHours();
         $this->view('customer.EditBooking', [
+            'schedule' => $schedule ?: [],
             'booking' => $booking,
         ]);
     }
@@ -154,7 +159,8 @@ class BookingController extends Controller
     }
     public function updateStatusBookingByAdmin(string $id): void
     {
-        $status  = trim($_POST['status'] ?? '');
+        $data    = $this->input(['status']);
+        $status  = $data['status'];
         $allowed = [
             'Admin Approved',
             'In Progress',
@@ -194,7 +200,7 @@ class BookingController extends Controller
         Session::setMessage('success', 'Booking berhasil dibatalkan.');
         $this->redirect('/history-booking');
     }
-    public function deleteBooking(int $id): void
+    public function deleteBooking(string $id): void
     {
         $booking = $this->bookingModel->findBooking((int) $id);
 

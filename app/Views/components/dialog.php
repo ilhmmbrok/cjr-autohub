@@ -42,6 +42,7 @@
             </button>
 
             <form id="dialog-form" method="POST" action="">
+                <?= csrf_field() ?>
                 <button id="dialog-confirm"
                     type="button"
                     onclick="submitDialogForm()"

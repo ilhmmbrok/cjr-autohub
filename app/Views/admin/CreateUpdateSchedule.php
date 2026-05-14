@@ -76,6 +76,7 @@ $hasSchedule = !empty($s);
         </div>
 
         <form action="/admin/jadwal/create-update" method="POST" class="px-6 py-6 space-y-5">
+            <?= csrf_field() ?>
 
             <!-- Kuota Slot -->
             <div>

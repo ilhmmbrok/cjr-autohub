@@ -46,18 +46,6 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                     <h1 class="text-2xl font-semibold text-zinc-950 tracking-tight">Detail Booking #<?= $booking['booking_id'] ?></h1>
                     <p class="text-sm text-zinc-500 mt-0.5">Customer: <span class="font-medium text-zinc-900"><?= htmlspecialchars($booking['customer_name']) ?></span></p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <?= $cfg['badge'] ?>">
-                        <?= $cfg['label'] ?>
-                    </span>
-                    <button onclick="window.print()" class="p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-50 border border-zinc-200 rounded-lg transition-all active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 6 2 18 2 18 9" />
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                            <rect x="6" y="14" width="12" height="8" />
-                        </svg>
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -66,8 +54,20 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
             <div class="md:col-span-2 space-y-6">
                 <!-- Kendaraan & Layanan -->
                 <div class="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
-                    <div class="px-6 py-4 border-b border-zinc-100 bg-zinc-50/50">
+                    <div class="px-6 py-4 border-b border-zinc-100 bg-zinc-50/50 flex justify-between items-center">
                         <h2 class="text-sm font-semibold text-zinc-950">Informasi Kendaraan & Layanan</h2>
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <?= $cfg['badge'] ?>">
+                                <?= $cfg['label'] ?>
+                            </span>
+                            <button onclick="window.print()" class="p-2 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-50 border border-zinc-200 rounded-lg transition-all active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 6 2 18 2 18 9" />
+                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                    <rect x="6" y="14" width="12" height="8" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="p-6">
                         <div class="grid grid-cols-2 gap-y-6 gap-x-4">
@@ -137,6 +137,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                 <div class="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
                     <h3 class="text-sm font-semibold text-zinc-950 mb-4">Kelola Status</h3>
                     <form action="/admin/daftar-booking/<?= $booking['booking_id'] ?>/status" method="POST" class="space-y-4">
+                        <?= csrf_field() ?>
                         <div class="relative" id="status-select-container">
                             <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Status Booking</label>
                             
@@ -157,7 +158,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                                 class="absolute left-0 right-0 z-50 mt-2 bg-white border border-zinc-200 rounded-xl shadow-xl shadow-zinc-200/50 p-1.5 opacity-0 invisible -translate-y-2 scale-95 transition-all duration-200 pointer-events-none">
                                 <?php foreach ($statusMap as $val => $m): ?>
                                     <button type="button" 
-                                        onclick="selectStatus('<?= $val ?>', '<?= $m['label'] ?>', '<?= explode(' ', $m['badge'])[0] ?>')"
+                                        onclick="selectStatus('<?= $val ?>', '<?= $m['label'] ?>', '<?= $m['badge'] ?>')"
                                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">
                                         <span class="w-2 h-2 rounded-full <?= explode(' ', $m['badge'])[0] ?>"></span>
                                         <?= $m['label'] ?>
