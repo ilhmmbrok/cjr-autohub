@@ -12,7 +12,30 @@ $hasSchedule = !empty($s);
 <?php require __DIR__ . '/../layouts/sidebar-admin.php'; ?>
 
 <title>Form Jadwal</title>
-<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+        #main-content-area::-webkit-scrollbar {
+        display: none;
+    }
+    #main-content-area {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+<div class="flex-1 w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
 
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
@@ -31,7 +54,7 @@ $hasSchedule = !empty($s);
 
     <!-- Current Status Card -->
     <?php if ($hasSchedule): ?>
-        <div class="mb-6 bg-zinc-50 border border-zinc-200 rounded-2xl p-5">
+        <div class="mb-6 bg-zinc-50 border border-zinc-200 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
             <p class="text-xs font-semibold text-zinc-900 uppercase tracking-wide mb-3">Jadwal Aktif Saat Ini</p>
             <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-2">
@@ -102,7 +125,7 @@ $hasSchedule = !empty($s);
                         Jam Buka <span class="text-red-600">*</span>
                     </label>
                     <div class="relative custom-select" id="open-time-select">
-                        <button type="button" 
+                        <button type="button"
                             class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all cursor-pointer">
                             <?php $ot = $_POST['open_time'] ?? $curOpen; ?>
                             <span class="selected-label"><?= !empty($ot) ? $ot : 'Pilih jam' ?></span>
@@ -125,7 +148,7 @@ $hasSchedule = !empty($s);
                         Jam Tutup <span class="text-red-600">*</span>
                     </label>
                     <div class="relative custom-select" id="close-time-select">
-                        <button type="button" 
+                        <button type="button"
                             class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all cursor-pointer">
                             <?php $ct = $_POST['close_time'] ?? $curClose; ?>
                             <span class="selected-label"><?= !empty($ct) ? $ct : 'Pilih jam' ?></span>
@@ -147,14 +170,11 @@ $hasSchedule = !empty($s);
             <!-- Actions -->
             <div class="flex justify-end gap-3 pt-2 border-t border-zinc-50">
                 <a href="/admin/dashboard"
-                    class="h-9 flex items-center text-xs px-4 py-2 rounded-md border border-zinc-200 bg-white font-medium text-zinc-700 hover:bg-zinc-50 transition-all active:scale-95">
+                    class="h-9 flex items-center text-sm px-4 py-2 rounded-md border border-zinc-200 bg-white font-medium text-zinc-700 hover:bg-zinc-50 transition-all active:scale-95">
                     Batal
                 </a>
                 <button type="submit"
-                    class="h-9 text-xs px-4 py-2 rounded-md bg-zinc-950 font-medium text-white hover:bg-zinc-900 active:scale-95 transition-all duration-200 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                    class="h-9 text-sm px-4 py-2 rounded-md bg-zinc-950 font-medium text-white hover:bg-zinc-900 active:scale-95 transition-all duration-200 flex items-center gap-2">
                     Simpan Jadwal
                 </button>
             </div>
@@ -162,59 +182,63 @@ $hasSchedule = !empty($s);
     </div>
 
     <script>
-    function setupCustomSelect(containerId) {
-        const container = document.getElementById(containerId);
-        const btn = container.querySelector('.dropdown-btn');
-        const menu = container.querySelector('.dropdown-menu');
-        const input = container.querySelector('input[type="hidden"]');
-        const label = container.querySelector('.selected-label');
+        function setupCustomSelect(containerId) {
+            const container = document.getElementById(containerId);
+            const btn = container.querySelector('.dropdown-btn');
+            const menu = container.querySelector('.dropdown-menu');
+            const input = container.querySelector('input[type="hidden"]');
+            const label = container.querySelector('.selected-label');
 
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            const isOpen = !menu.classList.contains('invisible');
-            
-            // Close other dropdowns
-            document.querySelectorAll('.dropdown-menu').forEach(m => {
-                if (m !== menu) {
-                    m.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
-                    m.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const isOpen = !menu.classList.contains('invisible');
+
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(m => {
+                    if (m !== menu) {
+                        m.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
+                        m.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+                    }
+                });
+
+                if (isOpen) {
+                    menu.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
+                    menu.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+                } else {
+                    menu.classList.remove('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
+                    menu.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
                 }
-            });
-
-            if (isOpen) {
-                menu.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
-                menu.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-            } else {
-                menu.classList.remove('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
-                menu.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-            }
-        };
-
-        container.querySelectorAll('.dropdown-item').forEach(item => {
-            item.onclick = () => {
-                const val = item.dataset.value;
-                const text = item.dataset.label;
-                input.value = val;
-                label.textContent = text;
-                menu.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
-                menu.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-                input.dispatchEvent(new Event('change'));
             };
+
+            container.querySelectorAll('.dropdown-item').forEach(item => {
+                item.onclick = () => {
+                    const val = item.dataset.value;
+                    const text = item.dataset.label;
+                    input.value = val;
+                    label.textContent = text;
+                    menu.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
+                    menu.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+                    input.dispatchEvent(new Event('change'));
+                };
+            });
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu').forEach(m => {
+                m.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
+                m.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
+            });
         });
-    }
 
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.dropdown-menu').forEach(m => {
-            m.classList.add('opacity-0', 'invisible', 'translate-y-2', 'scale-95', 'pointer-events-none');
-            m.classList.remove('opacity-100', 'translate-y-0', 'scale-100', 'pointer-events-auto');
-        });
-    });
+        setupCustomSelect('open-time-select');
+        setupCustomSelect('close-time-select');
+    </script>
 
-    setupCustomSelect('open-time-select');
-    setupCustomSelect('close-time-select');
-</script>
+    <?php require __DIR__ . '/../components/toast.php'; ?>
+    </div> <!-- flex-1 content wrapper -->
+</div> <!-- flex container from sidebar-admin -->
+</div> <!-- flex-1 inner from sidebar-admin -->
 
-<?php require __DIR__ . '/../components/toast.php'; ?>
 </body>
 
 </html>

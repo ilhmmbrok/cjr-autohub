@@ -15,7 +15,7 @@ $statusMap = [
         'iconBg'     => 'bg-yellow-50 border border-yellow-200',
         'iconStroke' => '#ca8a04',
         'iconPath'   => '<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
-        'hint'       => 'Menunggu konfirmasi dari admin bengkel',
+        'hint'       => 'Menunggu konfirmasi dari admin autohub',
     ],
     'Admin Approved' => [
         'label'      => 'Approved',
@@ -31,7 +31,7 @@ $statusMap = [
         'iconBg'     => 'bg-orange-50 border border-orange-200',
         'iconStroke' => '#ea580c',
         'iconPath'   => '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/>',
-        'hint'       => 'Kendaraan Anda sedang dikerjakan oleh teknisi',
+        'hint'       => 'Kendaraan Anda sedang dikerjakan oleh mekanik',
     ],
     'Completed'      => [
         'label'      => 'Done',
@@ -56,22 +56,32 @@ $stepKeys = array_keys($statusMap);
 <title>Dashboard</title>
 <style>
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-fadeInUp {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     .hover-lift {
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .hover-lift:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px -10px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.1);
     }
 </style>
 
-<div class="w-full bg-white min-h-[calc(100vh-56px)] px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
+<div class="w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
 
     <!-- Header -->
     <div class="mb-6">
@@ -113,7 +123,6 @@ $stepKeys = array_keys($statusMap);
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-baseline gap-2 flex-wrap">
                                     <span class="text-sm font-bold text-zinc-950"><?= htmlspecialchars($activeBooking['model_year']) ?></span>
-                                    <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-tighter">#<?= $activeBooking['booking_id'] ?></span>
                                 </div>
                                 <p class="text-[11px] font-mono text-zinc-500 mt-0.5 uppercase tracking-wider">
                                     <?= htmlspecialchars($activeBooking['plate_number']) ?>
@@ -133,29 +142,29 @@ $stepKeys = array_keys($statusMap);
                         <div class="absolute top-[18px] left-0 w-full px-[18px]">
                             <div class="w-full h-0.5 bg-zinc-100"></div>
                         </div>
-                        
+
                         <?php
-                            $currentStatus = $activeBooking['progress_status'];
-                            $currentIndex = array_search($currentStatus, $stepKeys);
+                        $currentStatus = $activeBooking['progress_status'];
+                        $currentIndex = array_search($currentStatus, $stepKeys);
                         ?>
-                        
+
                         <!-- Progress line fill -->
                         <div class="absolute top-[18px] left-0 w-full px-[18px] z-0">
-                            <div class="h-0.5 bg-blue-600 transition-all duration-1000 ease-in-out shadow-[0_0_8px_rgba(37,99,235,0.3)]" 
-                                 style="width: <?= ($currentIndex / (count($stepKeys) - 1)) * 100 ?>%"></div>
+                            <div class="h-0.5 bg-blue-600 transition-all duration-1000 ease-in-out shadow-[0_0_8px_rgba(37,99,235,0.3)]"
+                                style="width: <?= ($currentIndex / (count($stepKeys) - 1)) * 100 ?>%"></div>
                         </div>
 
                         <div class="relative flex justify-between">
                             <?php foreach ($statusMap as $key => $data): ?>
-                                <?php 
-                                    $index = array_search($key, $stepKeys);
-                                    $isPast = $index < $currentIndex;
-                                    $isCurrent = $index === $currentIndex;
-                                    
-                                    $iconClass = $isPast ? 'bg-blue-600 text-white border-blue-600' : ($isCurrent ? 'bg-white text-blue-600 border-blue-600 ring-4 ring-blue-50' : 'bg-white text-zinc-300 border-zinc-200');
+                                <?php
+                                $index = array_search($key, $stepKeys);
+                                $isPast = $index < $currentIndex;
+                                $isCurrent = $index === $currentIndex;
+
+                                $iconClass = $isPast ? 'bg-blue-600 text-white border-blue-600' : ($isCurrent ? 'bg-white text-blue-600 border-blue-600 ring-4 ring-blue-50' : 'bg-white text-zinc-300 border-zinc-200');
                                 ?>
                                 <div class="flex flex-col items-center">
-                                    <div class="w-9 h-9 rounded-xl border-2 <?= $iconClass ?> z-10 flex items-center justify-center transition-all duration-500 shadow-sm">
+                                    <div class="w-9 h-9 rounded-xl border-2 <?= $iconClass ?> z-10 flex items-center justify-center transition-all duration-500 shadow-sm md:w-9 md:h-9">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <?= $data['iconPath'] ?>
                                         </svg>
@@ -177,18 +186,21 @@ $stepKeys = array_keys($statusMap);
                     </div>
 
                 <?php else: ?>
-                    <div class="flex items-center justify-center h-full gap-3.5">
-                        <!-- <div class="w-9 h-9 rounded-lg bg-zinc-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                    <div class="flex flex-col items-center justify-center h-full gap-3.5">
+                        <div class="w-9 h-9 rounded-lg bg-zinc-50 border border-zinc-100 hover:bg-zinc-100 hover:border-zinc-300 transition-all flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
                                 <line x1="8" y1="2" x2="8" y2="6" />
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
-                        </div> -->
-                        <div class="text-center">
+                        </div>
+                        <div class="text-center mb-12">
                             <p class="text-sm font-medium text-zinc-950">Tidak ada booking aktif</p>
-                            <p class="text-xs text-zinc-500 mt-0.5">Buat booking baru untuk mulai servis kendaraan Anda.</p>
+                            <p class="text-xs text-zinc-800 md:text-sm">
+                                hubungi admin untuk ketersediaan slot booking.
+                            </p>
+                            <a href="/create-booking" class="mt-4 text-xs md:text-sm inline-block px-4 py-2 rounded-lg border border-zinc-200 bg-white text-zinc-950 focus:outline-none hover:bg-zinc-100 hover:border-zinc-300 transition-all active:scale-95">Buat Booking</a>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -233,8 +245,9 @@ $stepKeys = array_keys($statusMap);
                             <!-- Jam Buka -->
                             <div class="flex items-center gap-3">
                                 <div class="w-9 h-9 rounded-lg bg-zinc-50 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 6v6l4 2" />
                                     </svg>
                                 </div>
                                 <div>
@@ -246,29 +259,30 @@ $stepKeys = array_keys($statusMap);
                             </div>
 
                             <?php if ($slot): ?>
-                                <?php 
-                                    // Logic warna berdasarkan persentase
-                                    $statusColor = 'bg-green-600';
-                                    $textColor   = 'text-green-600';
-                                    $iconColor   = 'text-green-600';
-                                    
-                                    if ($isFull || $pct >= 90) {
-                                        $statusColor = 'bg-red-600';
-                                        $textColor   = 'text-red-600';
-                                        $iconColor   = 'text-red-600';
-                                    } elseif ($pct >= 60) {
-                                        $statusColor = 'bg-yellow-500';
-                                        $textColor   = 'text-yellow-600';
-                                        $iconColor   = 'text-yellow-500';
-                                    }
+                                <?php
+                                // Logic warna berdasarkan persentase
+                                $statusColor = 'bg-green-600';
+                                $textColor   = 'text-green-600';
+                                $iconColor   = 'text-green-600';
+
+                                if ($isFull || $pct >= 90) {
+                                    $statusColor = 'bg-red-600';
+                                    $textColor   = 'text-red-600';
+                                    $iconColor   = 'text-red-600';
+                                } elseif ($pct >= 60) {
+                                    $statusColor = 'bg-yellow-500';
+                                    $textColor   = 'text-yellow-600';
+                                    $iconColor   = 'text-yellow-500';
+                                }
                                 ?>
                                 <div class="border-t border-zinc-100"></div>
 
                                 <!-- Slot bar -->
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-lg bg-zinc-50 flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-4 h-4 <?= $iconColor ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        <svg class="w-5 h-5 <?= $iconColor ?>" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard">
+                                            <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                                         </svg>
                                     </div>
                                     <div class="flex-1">
@@ -299,16 +313,22 @@ $stepKeys = array_keys($statusMap);
                 <div class="rounded-[14px] border border-zinc-200 bg-white p-6 shadow-[0px_1px_3px_rgba(0,0,0,0.1)] hover-lift">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
                         </div>
                         <h3 class="text-sm font-semibold text-zinc-950">Butuh Bantuan?</h3>
                     </div>
                     <p class="text-xs text-zinc-500 leading-relaxed mb-4">
-                        Hubungi admin kami jika terdapat kendala atau pertanyaan mengenai status booking Anda.
+                        Hubungi admin kami jika terdapat kendala atau pertanyaan mengenai status booking anda.
                     </p>
                     <a href="https://wa.me/6281234567890" target="_blank" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors group">
                         Hubungi via WhatsApp
-                        <svg class="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg class="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M7 7h10v10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </a>
                 </div>
             </div>

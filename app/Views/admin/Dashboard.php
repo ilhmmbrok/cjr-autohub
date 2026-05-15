@@ -11,8 +11,31 @@ $hasSchedule = !empty($s);
 
 <?php require __DIR__ . '/../layouts/sidebar-admin.php'; ?>
 <title>Dashboard</title>
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+    .animate-fadeIn {
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+        #main-content-area::-webkit-scrollbar {
+        display: none;
+    }
+    #main-content-area {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<div class="flex-1 bg-white px-4 sm:px-6 lg:px-8 py-6 animate-fadeIn">
 
     <!-- Header -->
     <div class="mb-6">
@@ -161,14 +184,16 @@ $hasSchedule = !empty($s);
         </div>
 
         <!-- Chart -->
-        <div class="rounded-2xl border border-zinc-200 bg-white p-6 mb-6 shadow-[0px_1px_3px_rgba(0,0,0,0.1)]">
-            <div class="flex items-center justify-between mb-5">
+        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-[0px_1px_3px_rgba(0,0,0,0.1)]">
+            <div class="flex items-center justify-between mb-4">
                 <div>
                     <h2 class="text-base font-semibold text-zinc-950">Booking per Bulan</h2>
                     <p class="text-xs text-zinc-500 mt-0.5">Total booking masuk sepanjang tahun ini.</p>
                 </div>
             </div>
-            <canvas id="chart" height="42"></canvas>
+            <div class="relative w-full h-[200px]">
+                <canvas id="chart"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -192,7 +217,7 @@ $hasSchedule = !empty($s);
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         grid: {
@@ -254,6 +279,10 @@ $hasSchedule = !empty($s);
 </script>
 
 </div>
+    </div> <!-- flex-1 content wrapper -->
+</div> <!-- flex container from sidebar-admin -->
+</div> <!-- flex-1 inner from sidebar-admin -->
+
 </body>
 
 </html>

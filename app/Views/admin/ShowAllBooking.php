@@ -2,9 +2,26 @@
 <?php require __DIR__ . '/../components/action-dropdown-admin.php'; ?>
 
 <title>Daftar Booking</title>
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 
+    .animate-fadeIn {
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    /* Hide scrollbars but keep functionality */
+    #main-content-area::-webkit-scrollbar {
+        display: none;
+    }
+    #main-content-area {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 
-<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex-1 bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
 
     <!-- Breadcrumb + Header -->
     <div class="mb-6">
@@ -65,14 +82,14 @@
                 <table class="w-full text-sm" id="bookingTable">
                     <thead>
                         <tr class="border-b border-zinc-200 bg-zinc-50 text-left">
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Telepon</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Customer</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Kendaraan</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Polisi</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Check-in</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Status</th>
-                            <th class="px-5 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Aksi</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Telepon</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Kendaraan</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Polisi</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Check-in</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Status</th>
+                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="bookingBody" class="divide-y divide-zinc-200">
@@ -94,25 +111,25 @@
                             <tr class="booking-row group hover:bg-zinc-50/50 transition-colors"
                                 data-status="<?= htmlspecialchars($status) ?>"
                                 data-search="<?= strtolower($customer . ' ' . $plate . ' ' . $modelType) ?>">
-                                <td class="px-5 py-3.5 text-zinc-700 whitespace-nowrap">
+                                <td class="px-4 py-3.5 text-zinc-700 whitespace-nowrap">
                                     <?= date('d M Y', strtotime($b['booking_date'])) ?>
                                 </td>
-                                <td class="px-5 py-3.5">
+                                <td class="px-4 py-3.5">
                                     <?= htmlspecialchars($b['phone'] ?? '—') ?>
                                 </td>
-                                <td class="px-5 py-3.5 font-medium text-zinc-950"><?= $customer ?></td>
-                                <td class="px-5 py-3.5">
+                                <td class="px-4 py-3.5 font-medium text-zinc-950"><?= $customer ?></td>
+                                <td class="px-4 py-3.5">
                                     <div class="font-medium text-zinc-900"><?= htmlspecialchars($b['model_year'] ?? '-') ?></div>
                                     <div class="text-xs text-zinc-400 capitalize mt-0.5"><?= htmlspecialchars($b['vehicle_type'] ?? '-') ?></div>
                                 </td>
-                                <td class="px-5 py-3.5 font-mono text-sm text-zinc-700 uppercase"><?= $plate ?></td>
-                                <td class="px-5 py-3.5 text-zinc-700 whitespace-nowrap">
+                                <td class="px-4 py-3.5 font-mono text-sm text-zinc-700 uppercase"><?= $plate ?></td>
+                                <td class="px-4 py-3.5 text-zinc-700 whitespace-nowrap">
                                     <?= htmlspecialchars(substr($b['checkin_time'] ?? '-', 0, 5)) ?>
                                 </td>
-                                <td class="px-5 py-3.5">
+                                <td class="px-4 py-3.5">
                                     <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border <?= $badge ?>"><?= htmlspecialchars($status) ?></span>
                                 </td>
-                                <td class="px-5 py-3.5">
+                                <td class="px-4 py-3.5 text-right">
                                     <?php renderBookingActionDropdown($b['booking_id']); ?>
                                 </td>
                             </tr>
@@ -133,47 +150,67 @@
         <?php endif; ?>
     </div>
 
-<script>
-    let activeStatus = '';
+    <script>
+        let activeStatus = '';
 
-    function filterStatus(status) {
-        activeStatus = status;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            if (btn.dataset.status === status) {
-                btn.classList.add('border-zinc-950', 'bg-zinc-950', 'text-white');
-                btn.classList.remove('border-zinc-200', 'hover:bg-zinc-50');
-            } else {
-                btn.classList.remove('border-zinc-950', 'bg-zinc-950', 'text-white');
-                btn.classList.add('border-zinc-200', 'hover:bg-zinc-50');
-            }
-        });
-        applyFilters();
-    }
+        function filterStatus(status) {
+            activeStatus = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.status === status) {
+                    btn.classList.add('border-zinc-950', 'bg-zinc-950', 'text-white');
+                    btn.classList.remove('border-zinc-200', 'hover:bg-zinc-50');
+                } else {
+                    btn.classList.remove('border-zinc-950', 'bg-zinc-950', 'text-white');
+                    btn.classList.add('border-zinc-200', 'hover:bg-zinc-50');
+                }
+            });
+            applyFilters();
+        }
 
-    document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+        document.getElementById('searchInput')?.addEventListener('input', applyFilters);
 
-    function applyFilters() {
-        const q = (document.getElementById('searchInput')?.value ?? '').toLowerCase().trim();
-        const rows = [...document.querySelectorAll('#bookingBody tr.booking-row')];
-        let visible = 0;
+        function applyFilters() {
+            const q = (document.getElementById('searchInput')?.value ?? '').toLowerCase().trim();
+            const rows = [...document.querySelectorAll('#bookingBody tr.booking-row')];
+            let visible = 0;
 
-        rows.forEach(row => {
-            const ok = (!activeStatus || row.dataset.status === activeStatus) &&
-                (!q || row.dataset.search.includes(q));
-            row.style.display = ok ? '' : 'none';
-            if (ok) visible++;
-        });
+            rows.forEach((row, index) => {
+                const ok = (!activeStatus || row.dataset.status === activeStatus) &&
+                    (!q || row.dataset.search.includes(q));
+                
+                if (ok) {
+                    if (row.style.display === 'none') {
+                        row.style.display = '';
+                        row.animate([
+                            { opacity: 0, transform: 'translateY(4px)' },
+                            { opacity: 1, transform: 'translateY(0)' }
+                        ], { 
+                            duration: 400, 
+                            delay: Math.min(visible * 30, 150),
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            fill: 'forwards'
+                        });
+                    }
+                    visible++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
 
-        const total = rows.length;
-        document.getElementById('rowCount').textContent =
-            `Menampilkan ${visible} dari ${total} booking`;
-        document.getElementById('emptyFilter')?.classList.toggle('hidden', visible > 0);
-    }
-</script>
+            const total = rows.length;
+            document.getElementById('rowCount').textContent =
+                `Menampilkan ${visible} dari ${total} booking`;
+            document.getElementById('emptyFilter')?.classList.toggle('hidden', visible > 0);
+        }
+    </script>
 
-<?php require __DIR__ . '/../components/dialog.php'; ?>
-<?php require __DIR__ . '/../components/toast.php'; ?>
-<?php renderBookingActionDropdownAssets(); ?>
+    <?php require __DIR__ . '/../components/dialog.php'; ?>
+    <?php require __DIR__ . '/../components/toast.php'; ?>
+    <?php renderBookingActionDropdownAssets(); ?>
+
+    </div> <!-- flex-1 content wrapper -->
+</div> <!-- flex container from sidebar-admin -->
+</div> <!-- flex-1 inner from sidebar-admin -->
 
 </body>
 

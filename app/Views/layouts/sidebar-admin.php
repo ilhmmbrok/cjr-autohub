@@ -23,7 +23,19 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
         /* Sidebar transition */
         #sidebar {
+            width: 256px;
             transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        #sidebar.collapsed {
+            width: 64px !important;
             overflow: hidden;
         }
 
@@ -124,9 +136,9 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     </style>
 </head>
 
-<body class="bg-zinc-50 min-h-screen text-zinc-950">
+<body class="bg-zinc-50 h-screen overflow-hidden text-zinc-950">
 
-    <div class="flex min-h-screen">
+    <div class="flex h-full">
 
         <!-- Sidebar -->
         <aside id="sidebar" class="w-64 shrink-0 bg-white border-r border-zinc-200 flex flex-col relative print:hidden">
@@ -223,7 +235,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </aside>
 
         <!-- Main Content Wrapper -->
-        <div class="flex-1 flex flex-col min-w-0">
+        <div id="main-content-area" class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
 
             <script>
                 (function() {
@@ -235,12 +247,10 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     const isCollapsed = localStorage.getItem(STORAGE_KEY) === 'true';
                     if (isCollapsed) {
                         sidebar.classList.add('collapsed');
-                        sidebar.style.width = '64px';
                     }
 
                     toggleBtn.addEventListener('click', () => {
                         const collapsed = sidebar.classList.toggle('collapsed');
-                        sidebar.style.width = collapsed ? '64px' : '256px';
                         localStorage.setItem(STORAGE_KEY, collapsed);
                     });
                 })();

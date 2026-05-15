@@ -1,3 +1,39 @@
+<style>
+    @media print {
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        img {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            margin: 1.6cm;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        #print-receipt,
+        #print-receipt * {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            visibility: visible;
+        }
+
+        #print-receipt {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+</style>
+
 <!-- Print-Only Receipt Section -->
 <div id="print-receipt" class="hidden print:block">
     <div class="max-w-2xl mx-auto p-10 rounded-2xl">
@@ -17,6 +53,7 @@
             <div class="text-right">
                 <h2 class="text-2xl font-bold text-zinc-950 tracking-tighter mb-1">Bukti Booking</h2>
                 <p class="text-sm text-zinc-500">No. Ref: #<?= $booking['booking_id'] ?></p>
+                <p id="print-date" class="text-xs text-zinc-400 mt-2"></p>
             </div>
         </div>
 
@@ -40,7 +77,7 @@
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
                     <p class="text-xs text-zinc-400 mb-1">Unit Kendaraan</p>
-                    <p class="text-sm font-medium text-zinc-950"><?= htmlspecialchars($booking['model_year']) ?> (<?= htmlspecialchars($booking['vehicle_type']) ?>)</p>
+                    <p class="text-sm capitalize font-medium text-zinc-950"><?= htmlspecialchars($booking['model_year']) ?> (<?= htmlspecialchars($booking['vehicle_type']) ?>)</p>
                 </div>
                 <div>
                     <p class="text-xs text-zinc-400 mb-1">Nomor Polisi</p>
@@ -59,12 +96,33 @@
         <div class="text-center pt-10 border-t border-zinc-100">
             <p class="text-sm font-medium text-zinc-950 mb-1">Terima kasih telah mempercayakan kendaraan Anda pada AutoHub.</p>
             <p class="text-xs text-zinc-400">Harap datang 15 menit sebelum waktu check-in yang ditentukan.</p>
-            
+
             <div class="mt-10 flex justify-center">
                 <div class="w-24 h-24 opacity-10 grayscale">
-                     <img src="/assets/autohub.webp" class="w-full h-full object-contain" alt="Logo">
+                    <img src="/assets/autohub.webp" class="w-full h-full object-contain" alt="Logo">
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script id="7n6qqh">
+    function setPrintDate() {
+        const el = document.getElementById("print-date");
+        const now = new Date();
+
+        const formatted = now.toLocaleString("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+        el.innerText = formatted;
+    }
+
+    /* Trigger saat print */
+    window.onbeforeprint = setPrintDate;
+</script>

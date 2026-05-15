@@ -27,8 +27,32 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
 ?>
 
 <title>Detail Booking - Admin</title>
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-<div class="flex-1 w-full bg-white min-h-screen px-4 sm:px-6 lg:px-8 py-8 print:p-0">
+    .animate-fadeIn {
+        animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+        #main-content-area::-webkit-scrollbar {
+        display: none;
+    }
+    #main-content-area {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<div class="flex-1 w-full bg-white px-4 sm:px-6 lg:px-8 py-8 print:p-0 animate-fadeIn">
     <!-- Web View Content (Hidden when printing) -->
     <div class="print:hidden">
         <!-- Breadcrumbs -->
@@ -90,7 +114,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                                 </p>
                             </div>
                         </div>
-                        
+
                         <div class="mt-8 pt-6 border-t border-zinc-100">
                             <label class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Keluhan / Catatan</label>
                             <div class="mt-2 p-4 rounded-xl bg-zinc-50 border border-zinc-100">
@@ -111,7 +135,9 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg>
                                 </div>
                                 <div>
                                     <p class="text-[11px] text-zinc-400 uppercase font-medium tracking-wider">Telepon</p>
@@ -120,7 +146,10 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                        <circle cx="12" cy="10" r="3" />
+                                    </svg>
                                 </div>
                                 <div>
                                     <p class="text-[11px] text-zinc-400 uppercase font-medium tracking-wider">Alamat</p>
@@ -140,9 +169,9 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                         <?= csrf_field() ?>
                         <div class="relative" id="status-select-container">
                             <label class="text-xs font-medium text-zinc-500 mb-1.5 block">Status Booking</label>
-                            
+
                             <!-- Custom Select Button -->
-                            <button type="button" 
+                            <button type="button"
                                 id="status-dropdown-btn"
                                 onclick="toggleStatusDropdown()"
                                 class="w-full flex items-center justify-between h-11 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all group active:scale-[0.98]">
@@ -150,14 +179,16 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                                     <span id="status-dot" class="w-2 h-2 rounded-full <?= explode(' ', $cfg['badge'])[0] ?>"></span>
                                     <span id="selected-status-label"><?= $cfg['label'] ?></span>
                                 </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400 group-hover:text-zinc-600 transition-colors"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400 group-hover:text-zinc-600 transition-colors">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
                             </button>
-                            
+
                             <!-- Dropdown Menu -->
-                            <div id="status-dropdown-menu" 
+                            <div id="status-dropdown-menu"
                                 class="absolute left-0 right-0 z-50 mt-2 bg-white border border-zinc-200 rounded-xl shadow-xl shadow-zinc-200/50 p-1.5 opacity-0 invisible -translate-y-2 scale-95 transition-all duration-200 pointer-events-none">
                                 <?php foreach ($statusMap as $val => $m): ?>
-                                    <button type="button" 
+                                    <button type="button"
                                         onclick="selectStatus('<?= $val ?>', '<?= $m['label'] ?>', '<?= $m['badge'] ?>')"
                                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">
                                         <span class="w-2 h-2 rounded-full <?= explode(' ', $m['badge'])[0] ?>"></span>
@@ -165,11 +196,11 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                                     </button>
                                 <?php endforeach; ?>
                             </div>
-                            
+
                             <input type="hidden" name="status" id="status-input" value="<?= $booking['progress_status'] ?>">
                         </div>
-                        <button type="submit" 
-                            class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-white bg-zinc-950 rounded-xl hover:bg-zinc-900 transition-all active:scale-95 shadow-sm shadow-zinc-200">
+                        <button type="submit"
+                            class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium rounded-xl text-zinc-900 border border-zinc-200  hover:bg-zinc-950 hover:text-white hover:border-zinc-950 transition-all">
                             Update Status
                         </button>
                     </form>
@@ -178,14 +209,14 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                 <!-- Danger Zone -->
                 <div class="rounded-2xl border border-red-100 bg-red-50/30 p-6">
                     <h3 class="text-sm font-semibold text-red-950 mb-4">Danger Zone</h3>
-                    <button 
+                    <button
                         onclick="openDialog({
                             title: 'Hapus Booking',
                             description: 'Tindakan ini tidak dapat dibatalkan. Booking akan dihapus permanen dari sistem.',
                             action: '/admin/daftar-booking/<?= $booking['booking_id'] ?>/delete',
                             confirmText: 'Hapus Permanen'
                         })"
-                        class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-xl hover:bg-red-50 transition-all active:scale-95 shadow-sm">
+                        class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-white bg-red-500 border border-zinc-200 rounded-xl hover:bg-red-600  hover:text-white transition-all active:scale-95 shadow-sm">
                         Hapus Booking
                     </button>
                 </div>
@@ -227,10 +258,10 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
         window.selectStatus = function(val, text, bgClass) {
             input.value = val;
             label.textContent = text;
-            
+
             // Update dot color
             dot.className = 'w-2 h-2 rounded-full ' + bgClass;
-            
+
             closeDropdown();
         };
 
@@ -246,5 +277,10 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
 <?php require __DIR__ . '/../components/dialog.php'; ?>
 <?php require __DIR__ . '/../components/toast.php'; ?>
 
+    </div> <!-- flex-1 content wrapper -->
+</div> <!-- flex container from sidebar-admin -->
+</div> <!-- flex-1 inner from sidebar-admin -->
+
 </body>
+
 </html>

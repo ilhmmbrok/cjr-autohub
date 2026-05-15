@@ -6,7 +6,6 @@ $user = Auth::user('customer');
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $navItems = [
     ['href' => '/dashboard',         'label' => 'Dashboard'],
-    ['href' => '/create-booking',    'label' => 'Booking'],
     ['href' => '/history-booking',   'label' => 'History'],
 ];
 ?>
@@ -49,24 +48,24 @@ $navItems = [
                     <span class="text-base font-semibold text-zinc-950 tracking-tight">AutoHub</span>
                 </a>
 
-                <!-- Desktop Nav Links (center) -->
-                <nav id="desktop-nav" class="hidden md:flex items-center gap-1">
-                    <?php
-                    foreach ($navItems as $item):
-                        $isActive = $currentPath === $item['href'];
-                    ?>
-                        <a href="<?= $item['href'] ?>"
-                            class="px-3 py-1.5 text-sm font-medium rounded-md transition-all active:scale-95
-                                <?= $isActive
-                                    ? 'text-zinc-950 bg-zinc-100'
-                                    : 'text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50' ?>">
-                            <?= $item['label'] ?>
-                        </a>
-                    <?php endforeach; ?>
-                </nav>
+                <!-- Right side: Nav + User + Mobile Toggle -->
+                <div class="flex items-center gap-2 md:gap-4">
 
-                <!-- Right side: User + Mobile Toggle -->
-                <div class="flex items-center gap-2">
+                    <!-- Desktop Nav Links -->
+                    <nav id="desktop-nav" class="hidden md:flex items-center gap-1">
+                        <?php
+                        foreach ($navItems as $item):
+                            $isActive = $currentPath === $item['href'];
+                        ?>
+                            <a href="<?= $item['href'] ?>"
+                                class="px-3 py-1.5 text-sm font-medium rounded-md transition-all active:scale-95
+                                    <?= $isActive
+                                        ? 'text-zinc-950 bg-zinc-100'
+                                        : 'text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50' ?>">
+                                <?= $item['label'] ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </nav>
 
                     <!-- User pill (desktop) -->
                     <div class="hidden md:block relative">

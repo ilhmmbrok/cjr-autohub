@@ -14,9 +14,14 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
     .animate-fadeInUp {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    body {
+        height: 100vh;
+        overflow: hidden;
+    }
 </style>
 
-<div class="w-full bg-white min-h-[calc(100vh-56px)] px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
+<div class="w-full h-[calc(100vh-56px)] overflow-y-auto bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
             <a href="/dashboard" class="hover:text-zinc-950 transition-colors">Dashboard</a>
