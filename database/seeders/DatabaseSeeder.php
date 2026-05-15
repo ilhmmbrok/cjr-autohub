@@ -9,20 +9,22 @@ class DatabaseSeeder
     public static function run(): void
     {
         Database::execute(
-            "INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (fullname, email, phone, password, role) VALUES (?, ?, ?, ?, ?)",
             [
-                'eva',
+                'Eva Customer',
                 'eva@example.com',
-                password_hash('password123', PASSWORD_DEFAULT),
+                '081234567890',
+                password_hash('Eva@2026!', PASSWORD_DEFAULT),
                 'customer'
             ]
         );
         Database::execute(
-            "INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (fullname, email, phone, password, role) VALUES (?, ?, ?, ?, ?)",
             [
                 'Administrator',
                 'admin@autohub.com',
-                password_hash('password123', PASSWORD_DEFAULT),
+                null,
+                password_hash('Admin@2026!', PASSWORD_DEFAULT),
                 'admin'
             ]
         );
