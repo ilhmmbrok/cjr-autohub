@@ -6,9 +6,9 @@ use App\Core\Database;
 
 class BookingModel
 {
-    protected $table = 'bookings';
+    protected string $table = 'bookings';
 
-    public function findBooking(int $id)
+    public function findBooking(int $id): array|false
     {
         return Database::fetch(
             "SELECT b.*, u.fullname AS customer_name
@@ -29,13 +29,13 @@ class BookingModel
         );
     }
 
-    public function getBookingByCustomerId(int $id): array
+    public function getBookingByCustomerId(int $customerId): array
     {
         return Database::fetchAll(
             "SELECT * FROM {$this->table}
              WHERE customer_id = ?
              ORDER BY booking_date DESC, checkin_time DESC",
-            [$id]
+            [$customerId]
         );
     }
 
@@ -105,29 +105,31 @@ class BookingModel
              WHERE booking_date = ? AND progress_status != 'Cancelled'",
             [$date]
         );
-        return (int)($result['total'] ?? 0);
+
+        return (int) ($result['total'] ?? 0);
     }
 
     public function deleteCancelledBookings(): int
     {
         return Database::execute(
-            "DELETE FROM {$this->table} WHERE progress_status IN ('Cancelled', 'cancelled')"
+            "DELETE FROM {$this->table} WHERE progress_status = 'Cancelled'"
         );
     }
 
     /**
-     * Hitung jumlah booking berdasarkan status.
-     * Jika $customerId diberikan, hitung hanya untuk customer tersebut.
+     * Hitung jumlah booking per status.
+     * Jika $customerId diberikan, filter hanya untuk customer tersebut.
+     *
+     * @return array{Pending:int, 'Admin Approved':int, 'In Progress':int, Completed:int, Cancelled:int}
      */
     public function countByStatus(?int $customerId = null): array
     {
-        $where = $customerId ? " WHERE customer_id = ?" : "";
+        $where  = $customerId ? 'WHERE customer_id = ?' : '';
         $params = $customerId ? [$customerId] : [];
 
         $rows = Database::fetchAll(
             "SELECT progress_status, COUNT(*) AS total
-             FROM {$this->table}
-             {$where}
+             FROM {$this->table} $where
              GROUP BY progress_status",
             $params
         );
@@ -141,14 +143,18 @@ class BookingModel
         ];
 
         foreach ($rows as $row) {
-            $stats[$row['progress_status']] = (int) $row['total'];
+            if (array_key_exists($row['progress_status'], $stats)) {
+                $stats[$row['progress_status']] = (int) $row['total'];
+            }
         }
 
         return $stats;
     }
 
     /**
-     * Data booking per bulan untuk tahun tertentu (chart admin dashboard).
+     * Data booking per bulan untuk tahun tertentu (grafik dashboard admin).
+     *
+     * @return int[] Array 12 elemen, index 0 = Januari
      */
     public function getMonthlyStats(int $year): array
     {

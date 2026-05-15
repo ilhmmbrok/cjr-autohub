@@ -125,7 +125,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
                                     <button type="button" data-value="motor" data-label="Motor" class="dropdown-item w-full flex items-center px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">Motor</button>
                                     <button type="button" data-value="mobil" data-label="Mobil" class="dropdown-item w-full flex items-center px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">Mobil</button>
                                 </div>
-                                <input type="hidden" name="vehicle_type" id="vehicle_type" value="<?= $booking['vehicle_type'] ?? '' ?>" required>
+                                <input type="hidden" name="vehicle_type" id="vehicle_type" value="<?= htmlspecialchars($booking['vehicle_type'] ?? '') ?>" required>
                             </div>
                         </div>
                         <div>

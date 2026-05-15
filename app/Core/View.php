@@ -10,11 +10,15 @@ class View
         $file = __DIR__ . '/../Views/' . $path . '.php';
 
         if (!file_exists($file)) {
-            View::render('error.404');
+            // Hindari infinite loop jika 404 view juga tidak ada
+            if ($view !== 'error.404') {
+                self::render('error.404');
+            }
             return;
         }
 
-        extract($data);
+        // EXTR_SKIP agar variable lokal tidak bisa di-override
+        extract($data, EXTR_SKIP);
         require $file;
     }
 }

@@ -1,0 +1,3 @@
+# Blok akses langsung ke semua file di root kecuali public/
+Options -Indexes
+Deny from all

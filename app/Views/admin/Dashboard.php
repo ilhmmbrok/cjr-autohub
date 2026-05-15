@@ -110,9 +110,9 @@ $hasSchedule = !empty($s);
                 $pct    = ($slot && $slot['max'] > 0) ? round(($slot['booked'] / $slot['max']) * 100) : 0;
                 ?>
 
-                <!-- Jam Operasional & Slot Hari Ini -->
+                <!-- Jam Operasional & Slot Besok -->
                 <div class="bg-white border border-zinc-200 rounded-2xl p-5 w-full hover:-translate-y-0.5 transition-all duration-300 hover:border-zinc-300 hover:shadow-md">
-                    <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wide mb-4">Jam Operasional & Slot Hari Ini</p>
+                    <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wide mb-4">Jam Operasional & Slot Besok</p>
                     <div class="flex items-center gap-5">
 
                         <!-- Jam Operasional -->
@@ -134,7 +134,7 @@ $hasSchedule = !empty($s);
                         <!-- Divider -->
                         <div class="w-px bg-zinc-100 self-stretch"></div>
 
-                        <!-- Slot Hari Ini -->
+                        <!-- Slot Besok -->
                         <?php if ($slot): ?>
                             <?php
                             // Logic warna berdasarkan persentase
@@ -161,7 +161,7 @@ $hasSchedule = !empty($s);
                                 </div>
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between mb-1">
-                                        <p class="text-xs text-zinc-500">Slot hari ini</p>
+                                        <p class="text-xs text-zinc-500">Slot besok</p>
                                         <p class="text-xs font-semibold <?= $textColor ?>">
                                             <?= $isFull ? 'Penuh' : "Sisa {$slot['available']}" ?>
                                         </p>

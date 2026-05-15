@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Session;
 use App\Models\ScheduleModel;
 
 class ScheduleController extends Controller
@@ -18,63 +17,46 @@ class ScheduleController extends Controller
 
     public function scheduleView(): void
     {
-        $schedule = $this->scheduleModel->getBusinessHours();
         $this->view('admin.CreateUpdateSchedule', [
-            'schedule' => $schedule ?: [],
+            'schedule' => $this->scheduleModel->getBusinessHours() ?: [],
         ]);
     }
 
     public function createUpdateSchedule(): void
     {
-        // Ambil data dari form
-        $slotCapacity = (int) trim($_POST['slot_capacity'] ?? 0);
-        $openTime     = trim($_POST['open_time']  ?? '');
-        $closeTime    = trim($_POST['close_time'] ?? '');
+        ['slot_capacity' => $slotRaw, 'open_time' => $openTime, 'close_time' => $closeTime]
+            = $this->input(['slot_capacity', 'open_time', 'close_time']);
 
-        // Validasi slot capacity antara 1 sampai 100
+        $slotCapacity = (int) $slotRaw;
+        $redirect     = '/admin/jadwal';
+
         if ($slotCapacity < 1 || $slotCapacity > 100) {
-            Session::setMessage('error', 'Kuota slot harus antara 1 – 100.');
-            $this->redirect('/admin/jadwal');
-            return;
+            $this->abort('error', 'Kuota slot harus antara 1 – 100.', $redirect);
         }
 
-        // Validasi format jam
-        if (!preg_match('/^\d{2}:\d{2}$/', $openTime) || !preg_match('/^\d{2}:\d{2}$/', $closeTime)) {
-            Session::setMessage('error', 'Format jam tidak valid.');
-            $this->redirect('/admin/jadwal');
-            return;
+        $timePattern = '/^\d{2}:\d{2}$/';
+        if (!preg_match($timePattern, $openTime) || !preg_match($timePattern, $closeTime)) {
+            $this->abort('error', 'Format jam tidak valid.', $redirect);
         }
 
-        // Validasi jam buka lebih awal dari jam tutup
         if ($openTime >= $closeTime) {
-            Session::setMessage('error', 'Jam buka harus lebih awal dari jam tutup.');
-            $this->redirect('/admin/jadwal');
-            return;
+            $this->abort('error', 'Jam buka harus lebih awal dari jam tutup.', $redirect);
         }
 
-        // Simpan data ke database
-        $admin    = Auth::user('admin');
+        $payload  = [
+            'slot_capacity' => $slotCapacity,
+            'open_time'     => $openTime . ':00',
+            'close_time'    => $closeTime . ':00',
+            'updated_by'    => Auth::user('admin')['id'],
+        ];
         $existing = $this->scheduleModel->getBusinessHours();
 
-        // Jika data sudah ada, update, jika belum ada, buat baru
         if ($existing) {
-            $this->scheduleModel->updateBusinessHours([
-                'slot_capacity' => $slotCapacity,
-                'open_time'     => $openTime . ':00',
-                'close_time'    => $closeTime . ':00',
-                'updated_by'    => $admin['id'],
-                'id'            => $existing['id'],
-            ]);
+            $this->scheduleModel->updateBusinessHours(array_merge($payload, ['id' => $existing['id']]));
         } else {
-            $this->scheduleModel->createBusinessHours([
-                'slot_capacity' => $slotCapacity,
-                'open_time'     => $openTime . ':00',
-                'close_time'    => $closeTime . ':00',
-                'updated_by'    => $admin['id'],
-            ]);
+            $this->scheduleModel->createBusinessHours($payload);
         }
 
-        Session::setMessage('success', 'Jadwal operasional berhasil disimpan.');
-        $this->redirect('/admin/jadwal');
+        $this->abort('success', 'Jadwal operasional berhasil disimpan.', $redirect);
     }
 }

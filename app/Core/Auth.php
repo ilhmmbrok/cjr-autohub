@@ -11,6 +11,7 @@ class Auth
             'id'       => $userData['id'],
             'fullname' => $userData['fullname'],
             'email'    => $userData['email'],
+            'phone'    => $userData['phone'] ?? null,
         ]);
     }
 
@@ -38,5 +39,16 @@ class Auth
             return 'customer';
         }
         return null;
+    }
+
+    /**
+     * Refresh session data setelah profile update tanpa perlu logout-login.
+     */
+    public static function updateSession(string $role, array $data): void
+    {
+        $current = Session::getAuth($role);
+        if ($current) {
+            Session::setAuth($role, array_merge($current, $data));
+        }
     }
 }

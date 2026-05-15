@@ -6,6 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\BookingController;
 use App\Controllers\CustomerController;
 use App\Controllers\HomeController;
+use App\Controllers\ProfileController;
 use App\Core\Router;
 
 Router::get('/', [HomeController::class, 'index']);
@@ -47,4 +48,9 @@ Router::group(['middleware' => 'customer'], function () {
     
     Router::get('/edit-booking/:id', [BookingController::class, 'updateViewByCustomer']);
     Router::post('/edit-booking/:id', [BookingController::class, 'updateBookingByCustomer']);
+
+    // Profile
+    Router::get('/profile', [ProfileController::class, 'profileView']);
+    Router::post('/profile', [ProfileController::class, 'updateProfile']);
+    Router::post('/profile/password', [ProfileController::class, 'updatePassword']);
 });

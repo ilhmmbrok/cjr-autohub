@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Core;
 
 use PDO;
@@ -14,35 +13,33 @@ class Database
     public static function connect(): PDO
     {
         if (self::$connection === null) {
-            self::$connection = self::createConnection();
+            self::$connection = self::makeConnection();
         }
+
         return self::$connection;
     }
 
-    public static function createConnection(): PDO
+    private static function makeConnection(): PDO
     {
-        $host = $_ENV['DB_HOST'];
-        $name = $_ENV['DB_NAME'];
-        $user = $_ENV['DB_USER'];
-        $pass = $_ENV['DB_PASS'];
-        $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
+        $dsn = sprintf(
+            'mysql:host=%s;dbname=%s;charset=%s',
+            $_ENV['DB_HOST'],
+            $_ENV['DB_NAME'],
+            $_ENV['DB_CHARSET'] ?? 'utf8mb4'
+        );
 
         try {
-                return new PDO(
-                    "mysql:host={$host};dbname={$name};charset={$charset}",
-                    $user,
-                    $pass,
-                    [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                        PDO::ATTR_EMULATE_PREPARES => false
-                    ]
-                );
-            } catch (PDOException $e) {
-                error_log('Database connection failed: ' . $e->getMessage());
-                http_response_code(500);
-                die(View::render('error.500'));
-            }
+            return new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS'], [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ]);
+        } catch (PDOException $e) {
+            error_log('Database connection failed: ' . $e->getMessage());
+            http_response_code(500);
+            View::render('error.500');
+            exit;
+        }
     }
 
     public static function query(string $sql, array $params = []): PDOStatement
@@ -54,7 +51,8 @@ class Database
         } catch (PDOException $e) {
             error_log('Query failed: ' . $e->getMessage());
             http_response_code(500);
-            die("Query failed." . $e->getMessage());
+            View::render('error.500');
+            exit;
         }
     }
 

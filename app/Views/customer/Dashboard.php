@@ -213,7 +213,7 @@ $stepKeys = array_keys($statusMap);
                     <div class="flex items-start justify-between mb-4">
                         <div>
                             <h2 class="text-base font-semibold text-zinc-950">Jam Operasional</h2>
-                            <p class="text-xs text-zinc-500 mt-0.5">Jam buka bengkel & ketersediaan slot hari ini</p>
+                            <p class="text-xs text-zinc-500 mt-0.5">Jam buka bengkel & ketersediaan slot besok</p>
                         </div>
                         <?php if (!empty($schedule)): ?>
                             <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border
@@ -287,7 +287,7 @@ $stepKeys = array_keys($statusMap);
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center justify-between mb-1.5">
-                                            <p class="text-xs text-zinc-500">Slot Hari Ini</p>
+                                            <p class="text-xs text-zinc-500">Slot Besok</p>
                                             <p class="text-xs font-semibold <?= $textColor ?>">
                                                 <?= $isFull ? 'Penuh' : "Sisa {$slot['available']} slot" ?>
                                             </p>

@@ -9,45 +9,51 @@ use App\Models\ScheduleModel;
 
 class CustomerController extends Controller
 {
-    private BookingModel $bookingModel;
+    private BookingModel  $bookingModel;
     private ScheduleModel $scheduleModel;
 
     public function __construct()
     {
-        $this->bookingModel = new BookingModel();
+        $this->bookingModel  = new BookingModel();
         $this->scheduleModel = new ScheduleModel();
     }
 
     public function customerDashboard(): void
     {
-        $user = Auth::user('customer');
+        $user     = Auth::user('customer');
         $schedule = $this->scheduleModel->getBusinessHours();
-
-        // Hitung sisa slot untuk hari ini saja
-        $slotInfo = [];
-        if ($schedule) {
-            $maxSlot = (int) $schedule['slot_capacity'];
-            $date    = date('Y-m-d');
-            $booked  = $this->bookingModel->countBookingsByDate($date);
-            $slotInfo[] = [
-                'date'      => $date,
-                'booked'    => $booked,
-                'available' => max(0, $maxSlot - $booked),
-                'max'       => $maxSlot,
-            ];
-        }
-
-        $bookings = $this->bookingModel->getBookingByCustomerId($user['id']);
         $stats    = $this->bookingModel->countByStatus($user['id']);
 
         $this->view('customer.Dashboard', [
             'user'            => $user,
-            'bookings'        => $bookings,
+            'bookings'        => $this->bookingModel->getBookingByCustomerId($user['id']),
             'totalPending'    => $stats['Pending'],
             'totalInProgress' => $stats['In Progress'],
             'totalCompleted'  => $stats['Completed'],
-            'schedule' => $schedule ?: [],
-            'slotInfo' => $slotInfo,
+            'schedule'        => $schedule ?: [],
+            'slotInfo'        => $this->buildSlotInfo($schedule),
         ]);
+    }
+
+    /**
+     * Hitung info slot besok (H-1) jika jadwal tersedia.
+     * Karena booking minimal H-1, tampilkan ketersediaan besok.
+     */
+    private function buildSlotInfo(array|false $schedule): array
+    {
+        if (!$schedule) {
+            return [];
+        }
+
+        $maxSlot = (int) $schedule['slot_capacity'];
+        $date    = date('Y-m-d', strtotime('+1 day'));
+        $booked  = $this->bookingModel->countBookingsByDate($date);
+
+        return [[
+            'date'      => $date,
+            'booked'    => $booked,
+            'available' => max(0, $maxSlot - $booked),
+            'max'       => $maxSlot,
+        ]];
     }
 }

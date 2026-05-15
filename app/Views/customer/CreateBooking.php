@@ -43,7 +43,7 @@ $closeHour = !empty($schedule['close_time']) ? (int) substr($schedule['close_tim
                         </label>
                         <input type="tel" id="phone" name="phone"
                             placeholder="0812345678"
-                            value="<?= htmlspecialchars($_POST['phone'] ?? '') ?>"
+                            value="<?= htmlspecialchars($_POST['phone'] ?? $user['phone'] ?? '') ?>"
                             required
                             class="h-9 w-full px-3 py-2 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all placeholder:text-zinc-400">
                     </div>
@@ -122,7 +122,7 @@ $closeHour = !empty($schedule['close_time']) ? (int) substr($schedule['close_tim
                                     <button type="button" data-value="motor" data-label="Motor" class="dropdown-item w-full flex items-center px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">Motor</button>
                                     <button type="button" data-value="mobil" data-label="Mobil" class="dropdown-item w-full flex items-center px-3 py-2 rounded-md text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors">Mobil</button>
                                 </div>
-                                <input type="hidden" name="vehicle_type" id="vehicle_type" value="<?= $_POST['vehicle_type'] ?? '' ?>" required>
+                                <input type="hidden" name="vehicle_type" id="vehicle_type" value="<?= htmlspecialchars($_POST['vehicle_type'] ?? '') ?>" required>
                             </div>
                         </div>
                         <div>

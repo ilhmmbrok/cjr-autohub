@@ -9,10 +9,19 @@ class Controller
         View::render($view, $data);
     }
 
-    protected function redirect(string $url): void
+    protected function redirect(string $url): never
     {
         header("Location: $url");
-        exit();
+        exit;
+    }
+
+    /**
+     * Flash pesan lalu redirect — shorthand agar tidak perlu 2 baris di setiap controller.
+     */
+    protected function abort(string $type, string $message, string $url): never
+    {
+        Session::setMessage($type, $message);
+        $this->redirect($url);
     }
 
     protected function input(array $fields): array

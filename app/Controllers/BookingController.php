@@ -4,15 +4,14 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Session;
 use App\Models\BookingModel;
 use App\Models\ScheduleModel;
 use App\Services\BusinessServices;
 
 class BookingController extends Controller
 {
-    private BookingModel $bookingModel;
-    private ScheduleModel $scheduleModel;
+    private BookingModel     $bookingModel;
+    private ScheduleModel    $scheduleModel;
     private BusinessServices $businessServices;
 
     private const ALLOWED_STATUSES = [
@@ -52,25 +51,23 @@ class BookingController extends Controller
 
     public function createView(): void
     {
+        $user = Auth::user('customer');
+
         $this->view('customer.CreateBooking', [
             'schedule' => $this->scheduleModel->getBusinessHours(),
+            'user'     => $user,
         ]);
     }
 
     public function createBooking(): void
     {
-        $result = $this->businessServices->createBooking(
-            $this->buildBookingPayload()
-        );
+        $result = $this->businessServices->createBooking($this->buildBookingPayload());
 
         if (!$result['success']) {
-            Session::setMessage('error', $result['message']);
-            $this->redirect('/create-booking');
-            return;
+            $this->abort('error', $result['message'], '/create-booking');
         }
 
-        Session::setMessage('success', 'Booking berhasil dibuat.');
-        $this->redirect('/history-booking');
+        $this->abort('success', 'Booking berhasil dibuat.', '/history-booking');
     }
 
     public function updateViewByCustomer(string $id): void
@@ -87,19 +84,13 @@ class BookingController extends Controller
     {
         $this->authorizeCustomerBooking($id);
 
-        $result = $this->businessServices->updateBooking(
-            (int) $id,
-            $this->buildBookingPayload()
-        );
+        $result = $this->businessServices->updateBooking((int) $id, $this->buildBookingPayload());
 
         if (!$result['success']) {
-            Session::setMessage('error', $result['message']);
-            $this->redirect("/edit-booking/{$id}");
-            return;
+            $this->abort('error', $result['message'], "/edit-booking/{$id}");
         }
 
-        Session::setMessage('success', 'Booking berhasil diperbarui.');
-        $this->redirect("/detail-booking/{$id}");
+        $this->abort('success', 'Booking berhasil diperbarui.', "/detail-booking/{$id}");
     }
 
     public function cancelBooking(string $id): void
@@ -107,8 +98,7 @@ class BookingController extends Controller
         $this->authorizeCustomerBooking($id);
 
         $this->bookingModel->updateStatus((int) $id, 'Cancelled');
-        Session::setMessage('success', 'Booking berhasil dibatalkan.');
-        $this->redirect('/history-booking');
+        $this->abort('success', 'Booking berhasil dibatalkan.', '/history-booking');
     }
 
     // -------------------------------------------------------------------------
@@ -134,34 +124,27 @@ class BookingController extends Controller
         $status = $this->input(['status'])['status'];
 
         if (!in_array($status, self::ALLOWED_STATUSES, strict: true)) {
-            Session::setMessage('error', 'Status tidak valid.');
-            $this->redirect("/admin/detail-booking/{$id}");
-            return;
+            $this->abort('error', 'Status tidak valid.', "/admin/detail-booking/{$id}");
         }
 
         $this->bookingModel->updateStatus((int) $id, $status);
-        Session::setMessage('success', 'Status booking diperbarui.');
-        $this->redirect('/admin/daftar-booking');
+        $this->abort('success', 'Status booking diperbarui.', '/admin/daftar-booking');
     }
 
     public function deleteBooking(string $id): void
     {
         if (!$this->bookingModel->findBooking((int) $id)) {
-            Session::setMessage('error', 'Booking tidak ditemukan.');
-            $this->redirect('/admin/daftar-booking');
-            return;
+            $this->abort('error', 'Booking tidak ditemukan.', '/admin/daftar-booking');
         }
 
         $this->bookingModel->deleteBooking((int) $id);
-        Session::setMessage('success', 'Booking berhasil dihapus.');
-        $this->redirect('/admin/daftar-booking');
+        $this->abort('success', 'Booking berhasil dihapus.', '/admin/daftar-booking');
     }
 
     public function deleteCancelledByAdmin(): void
     {
         $deleted = $this->bookingModel->deleteCancelledBookings();
-        Session::setMessage('success', "Berhasil menghapus {$deleted} booking yang dibatalkan.");
-        $this->redirect('/admin/daftar-booking');
+        $this->abort('success', "Berhasil menghapus {$deleted} booking yang dibatalkan.", '/admin/daftar-booking');
     }
 
     // -------------------------------------------------------------------------
@@ -169,8 +152,8 @@ class BookingController extends Controller
     // -------------------------------------------------------------------------
 
     /**
-     * Validasi kepemilikan booking oleh customer + status harus Pending.
-     * Langsung redirect & exit jika gagal, return $booking jika lolos.
+     * Validasi kepemilikan booking oleh customer yang sedang login + status harus Pending.
+     * Jika gagal, langsung abort (redirect + exit). Jika lolos, return $booking.
      */
     private function authorizeCustomerBooking(string $id): array
     {
@@ -178,15 +161,11 @@ class BookingController extends Controller
         $booking = $this->bookingModel->findBooking((int) $id);
 
         if (!$booking || (int) $booking['customer_id'] !== (int) $user['id']) {
-            Session::setMessage('error', 'Booking tidak ditemukan.');
-            $this->redirect('/history-booking');
-            exit;
+            $this->abort('error', 'Booking tidak ditemukan.', '/history-booking');
         }
 
         if ($booking['progress_status'] !== 'Pending') {
-            Session::setMessage('error', 'Hanya booking dengan status Pending yang bisa diubah.');
-            $this->redirect('/history-booking');
-            exit;
+            $this->abort('error', 'Hanya booking dengan status Pending yang bisa diubah.', '/history-booking');
         }
 
         return $booking;
@@ -198,14 +177,8 @@ class BookingController extends Controller
     private function buildBookingPayload(): array
     {
         $data = $this->input([
-            'phone',
-            'address',
-            'vehicle_type',
-            'model_year',
-            'plate_number',
-            'customer_complaint',
-            'date',
-            'checkin_time',
+            'phone', 'address', 'vehicle_type', 'model_year',
+            'plate_number', 'customer_complaint', 'date', 'checkin_time',
         ]);
 
         return array_merge($data, [

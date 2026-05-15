@@ -4,12 +4,15 @@ namespace App\Controllers;
 
 use App\Core\Auth;
 use App\Core\Controller;
-use App\Core\Session;
 use App\Models\UserModel;
 
 class AuthController extends Controller
 {
     private UserModel $userModel;
+
+    // Maksimal percobaan login & durasi lockout (detik)
+    private const LOGIN_MAX_ATTEMPTS = 5;
+    private const LOGIN_LOCKOUT_TTL  = 300; // 5 menit
 
     public function __construct()
     {
@@ -23,29 +26,23 @@ class AuthController extends Controller
 
     public function register(): void
     {
-        $data     = $this->input(['fullname', 'email', 'password']);
-        $fullname = $data['fullname'];
-        $email    = $data['email'];
-        $password = $data['password'];
+        ['fullname' => $fullname, 'email' => $email, 'password' => $password]
+            = $this->input(['fullname', 'email', 'password']);
 
         if (empty($fullname) || empty($email) || empty($password)) {
-            Session::setMessage('error', 'Please fill in all fields.');
-            $this->redirect('/register');
+            $this->abort('error', 'Please fill in all fields.', '/register');
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            Session::setMessage('error', 'Invalid email format.');
-            $this->redirect('/register');
+            $this->abort('error', 'Invalid email format.', '/register');
         }
 
         if (strlen($password) < 8) {
-            Session::setMessage('error', 'Password must be at least 8 characters.');
-            $this->redirect('/register');
+            $this->abort('error', 'Password must be at least 8 characters.', '/register');
         }
 
         if ($this->userModel->findByEmail($email)) {
-            Session::setMessage('error', 'Email already exists.');
-            $this->redirect('/register');
+            $this->abort('error', 'Email already exists.', '/register');
         }
 
         $this->userModel->create([
@@ -55,8 +52,7 @@ class AuthController extends Controller
             'role'     => 'customer',
         ]);
 
-        Session::setMessage('success', 'Registration successful. Please login.');
-        $this->redirect('/login');
+        $this->abort('success', 'Registration successful. Please login.', '/login');
     }
 
     public function loginView(): void
@@ -66,29 +62,28 @@ class AuthController extends Controller
 
     public function login(): void
     {
-        $data     = $this->input(['email', 'password']);
-        $email    = $data['email'];
-        $password = $data['password'];
+        // Rate limiting berbasis session
+        $this->checkLoginRateLimit();
+
+        ['email' => $email, 'password' => $password]
+            = $this->input(['email', 'password']);
 
         if (empty($email) || empty($password)) {
-            Session::setMessage('error', 'Please fill in all fields.');
-            $this->redirect('/login');
+            $this->abort('error', 'Please fill in all fields.', '/login');
         }
 
         $user = $this->userModel->findByEmail($email);
 
         if (!$user || !password_verify($password, $user['password'])) {
-            Session::setMessage('error', 'Invalid email or password.');
-            $this->redirect('/login');
+            $this->incrementLoginAttempts();
+            $this->abort('error', 'Invalid email or password.', '/login');
         }
 
+        // Login berhasil — reset counter
+        $this->resetLoginAttempts();
         Auth::login($user['role'], $user);
 
-        if ($user['role'] === 'admin') {
-            $this->redirect('/admin/dashboard');
-        }
-
-        $this->redirect('/dashboard');
+        $this->redirect($user['role'] === 'admin' ? '/admin/dashboard' : '/dashboard');
     }
 
     public function logout(): void
@@ -97,7 +92,39 @@ class AuthController extends Controller
         if ($role) {
             Auth::logout($role);
         }
-        Session::setMessage('success', 'Logout successful.');
-        $this->redirect('/login');
+
+        $this->abort('success', 'Logout successful.', '/login');
+    }
+
+    // -------------------------------------------------------------------------
+    // Rate limiting helpers
+    // -------------------------------------------------------------------------
+
+    private function checkLoginRateLimit(): void
+    {
+        $attempts    = $_SESSION['login_attempts']    ?? 0;
+        $lastAttempt = $_SESSION['login_last_attempt'] ?? 0;
+        $elapsed     = time() - $lastAttempt;
+
+        if ($attempts >= self::LOGIN_MAX_ATTEMPTS && $elapsed < self::LOGIN_LOCKOUT_TTL) {
+            $wait = self::LOGIN_LOCKOUT_TTL - $elapsed;
+            $this->abort('error', "Terlalu banyak percobaan login. Coba lagi dalam {$wait} detik.", '/login');
+        }
+
+        // Reset otomatis jika lockout sudah lewat
+        if ($elapsed >= self::LOGIN_LOCKOUT_TTL) {
+            $this->resetLoginAttempts();
+        }
+    }
+
+    private function incrementLoginAttempts(): void
+    {
+        $_SESSION['login_attempts']    = ($_SESSION['login_attempts'] ?? 0) + 1;
+        $_SESSION['login_last_attempt'] = time();
+    }
+
+    private function resetLoginAttempts(): void
+    {
+        unset($_SESSION['login_attempts'], $_SESSION['login_last_attempt']);
     }
 }

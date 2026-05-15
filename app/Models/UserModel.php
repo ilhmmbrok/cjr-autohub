@@ -6,14 +6,14 @@ use App\Core\Database;
 
 class UserModel
 {
-    protected $table = 'users';
+    protected string $table = 'users';
 
-    public function findByEmail(string $email)
+    public function findByEmail(string $email): array|false
     {
         return Database::fetch("SELECT * FROM {$this->table} WHERE email = ?", [$email]);
     }
 
-    public function findById(int $id)
+    public function findById(int $id): array|false
     {
         return Database::fetch("SELECT * FROM {$this->table} WHERE id = ?", [$id]);
     }
@@ -42,6 +42,17 @@ class UserModel
         return Database::execute(
             "UPDATE {$this->table} SET fullname = ?, email = ? WHERE id = ?",
             [$data['fullname'], $data['email'], $id]
+        );
+    }
+
+    /**
+     * Update profil customer (fullname, email, phone).
+     */
+    public function updateProfile(int $id, array $data): int
+    {
+        return Database::execute(
+            "UPDATE {$this->table} SET fullname = ?, email = ?, phone = ? WHERE id = ?",
+            [$data['fullname'], $data['email'], $data['phone'] ?? null, $id]
         );
     }
 

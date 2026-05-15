@@ -9,33 +9,33 @@ class RoleMiddleware
 {
     public static function handle(?string $role): void
     {
-        if ($role === null) return;
+        match ($role) {
+            'admin' => self::requireRole('admin', '/login', 'You are not authorized to access this page.'),
+            'customer' => self::requireRole('customer', '/login', 'Please login first.'),
+            'guest' => self::redirectIfLoggedIn(),
+            default => null,
+        };
+    }
 
-        if ($role === 'admin') {
-            if (!Auth::check('admin')) {
-                Session::setMessage('error', 'You are not authorized to access this page.');
-                header('Location: /login');
-                exit;
-            }
+    private static function requireRole(string $role, string $redirectTo, string $message): void
+    {
+        if (!Auth::check($role)) {
+            Session::setMessage('error', $message);
+            header("Location: $redirectTo");
+            exit;
+        }
+    }
+
+    private static function redirectIfLoggedIn(): void
+    {
+        if (Auth::check('admin')) {
+            header('Location: /admin/dashboard');
+            exit;
         }
 
-        if ($role === 'customer') {
-            if (!Auth::check('customer')) {
-                Session::setMessage('error', 'Please login first.');
-                header('Location: /login');
-                exit;
-            }
-        }
-
-        if ($role === 'guest') {
-            if (Auth::check('admin')) {
-                header('Location: /admin/dashboard');
-                exit;
-            }
-            if (Auth::check('customer')) {
-                header('Location: /dashboard');
-                exit;
-            }
+        if (Auth::check('customer')) {
+            header('Location: /dashboard');
+            exit;
         }
     }
 }
