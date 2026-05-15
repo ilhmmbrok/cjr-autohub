@@ -43,16 +43,9 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
         animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     
-        #main-content-area::-webkit-scrollbar {
-        display: none;
-    }
-    #main-content-area {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
 </style>
 
-<div class="flex-1 w-full bg-white px-4 sm:px-6 lg:px-8 py-8 print:p-0 animate-fadeIn">
+<div class="w-full bg-white px-4 sm:px-6 lg:px-8 py-8 print:p-0 animate-fadeIn">
     <!-- Web View Content (Hidden when printing) -->
     <div class="print:hidden">
         <!-- Breadcrumbs -->
@@ -276,10 +269,6 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
 
 <?php require __DIR__ . '/../components/dialog.php'; ?>
 <?php require __DIR__ . '/../components/toast.php'; ?>
-
-    </div> <!-- flex-1 content wrapper -->
-</div> <!-- flex container from sidebar-admin -->
-</div> <!-- flex-1 inner from sidebar-admin -->
 
 </body>
 

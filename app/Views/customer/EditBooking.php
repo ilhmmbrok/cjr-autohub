@@ -5,7 +5,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
 ?>
 
 <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
-
+<title>Edit Booking</title>
 <style>
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(10px); }
@@ -14,14 +14,9 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
     .animate-fadeInUp {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
-    body {
-        height: 100vh;
-        overflow: hidden;
-    }
 </style>
 
-<div class="w-full h-[calc(100vh-56px)] overflow-y-auto bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
+<div class="w-full mb-10 min-h-screen bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
             <a href="/dashboard" class="hover:text-zinc-950 transition-colors">Dashboard</a>
@@ -30,7 +25,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
             <span>/</span>
             <span class="text-zinc-900 font-medium">Edit Booking</span>
         </div>
-        <h1 class="text-3xl font-semibold text-zinc-950 tracking-tight">Ubah Booking</h1>
+        <h1 class="text-3xl font-semibold text-zinc-950 tracking-tight">Edit Booking</h1>
         <p class="text-sm text-zinc-500 mt-0.5">Perbarui informasi booking kendaraan Anda.</p>
     </div>
 
@@ -59,14 +54,15 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-zinc-950 mb-1.5" for="date">
+                        <label class="block text-sm font-medium text-zinc-950 mb-1.5">
                             Tanggal Booking <span class="text-red-600">*</span>
                         </label>
-                        <input type="date" id="date" name="date"
-                            min="<?= date('Y-m-d') ?>"
-                            value="<?= htmlspecialchars($booking['booking_date'] ?? '') ?>"
-                            required
-                            class="h-9 w-full px-3 py-2 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all">
+                        <?php
+                            $calendarInitDate = htmlspecialchars($booking['booking_date'] ?? '');
+                            $calendarMinDate  = date('Y-m-d');
+                            $calendarId       = 'edit-booking';
+                        ?>
+                        <?php require __DIR__ . '/../components/calendar.php'; ?>
                     </div>
 
                     <div>
@@ -158,7 +154,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
                         </label>
                         <textarea name="customer_complaint" id="customer_complaint" rows="5"
                             placeholder="Servis Rutin, Ganti Oli, dll." required
-                            class="w-full h-20 md:h-41 px-3 py-2 rounded-lg border text-sm border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all resize-none placeholder:text-zinc-400"><?= htmlspecialchars($booking['customer_complaint'] ?? '') ?></textarea>
+                            class="w-full h-20 md:h-44 px-3 py-2 rounded-lg border text-sm border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all resize-none placeholder:text-zinc-400"><?= htmlspecialchars($booking['customer_complaint'] ?? '') ?></textarea>
                     </div>
                 </div>
             </div>

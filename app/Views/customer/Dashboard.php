@@ -186,7 +186,7 @@ $stepKeys = array_keys($statusMap);
                     </div>
 
                 <?php else: ?>
-                    <div class="flex flex-col items-center justify-center h-full gap-3.5">
+                    <div class="flex flex-col items-center justify-center py-8 gap-3.5">
                         <div class="w-9 h-9 rounded-lg bg-zinc-50 border border-zinc-100 hover:bg-zinc-100 hover:border-zinc-300 transition-all flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4 text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -324,7 +324,7 @@ $stepKeys = array_keys($statusMap);
                     <p class="text-xs text-zinc-500 leading-relaxed mb-4">
                         Hubungi admin kami jika terdapat kendala atau pertanyaan mengenai status booking anda.
                     </p>
-                    <a href="https://wa.me/6281234567890" target="_blank" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors group">
+                    <a href="https://wa.me/6281132211515" target="_blank" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors group">
                         Hubungi via WhatsApp
                         <svg class="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M7 17L17 7M7 7h10v10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

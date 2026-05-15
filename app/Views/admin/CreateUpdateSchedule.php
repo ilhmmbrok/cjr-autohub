@@ -27,15 +27,8 @@ $hasSchedule = !empty($s);
     .animate-fadeIn {
         animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-        #main-content-area::-webkit-scrollbar {
-        display: none;
-    }
-    #main-content-area {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
 </style>
-<div class="flex-1 w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+<div class="w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
 
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
@@ -235,9 +228,7 @@ $hasSchedule = !empty($s);
     </script>
 
     <?php require __DIR__ . '/../components/toast.php'; ?>
-    </div> <!-- flex-1 content wrapper -->
-</div> <!-- flex container from sidebar-admin -->
-</div> <!-- flex-1 inner from sidebar-admin -->
+    </div> <!-- flex-1 content -->
 
 </body>
 

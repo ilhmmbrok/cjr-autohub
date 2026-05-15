@@ -1,6 +1,6 @@
 <?php require __DIR__ . '/../layouts/navbar-customer.php'; ?>
 
-<title>Profil - AutoHub</title>
+<title>Profil</title>
 <style>
     @keyframes fadeInUp {
         from {

@@ -14,14 +14,9 @@ $closeHour = !empty($schedule['close_time']) ? (int) substr($schedule['close_tim
     .animate-fadeInUp {
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
-    body {
-        height: 100vh;
-        overflow: hidden;
-    }
 </style>
 
-<div class="w-full h-[calc(100vh-56px)] overflow-y-auto bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
+<div class="w-full mb-10 min-h-screen bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeInUp">
     <div class="mb-6">
         <div class="flex items-center gap-2 text-sm text-zinc-400 mb-3">
             <a href="/dashboard" class="hover:text-zinc-950 transition-colors">Dashboard</a>
@@ -57,14 +52,15 @@ $closeHour = !empty($schedule['close_time']) ? (int) substr($schedule['close_tim
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-zinc-950 mb-1.5" for="date">
+                        <label class="block text-sm font-medium text-zinc-950 mb-1.5">
                             Tanggal Booking <span class="text-red-600">*</span>
                         </label>
-                        <input type="date" id="date" name="date"
-                            min="<?= date('Y-m-d') ?>"
-                            value="<?= htmlspecialchars($_POST['date'] ?? '') ?>"
-                            required
-                            class="h-9 w-full px-3 py-2 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all">
+                        <?php
+                            $calendarInitDate = $_POST['date'] ?? '';
+                            $calendarMinDate  = date('Y-m-d');
+                            $calendarId       = 'create-booking';
+                        ?>
+                        <?php require __DIR__ . '/../components/calendar.php'; ?>
                     </div>
 
                     <div>
@@ -155,7 +151,7 @@ $closeHour = !empty($schedule['close_time']) ? (int) substr($schedule['close_tim
                         </label>
                         <textarea name="customer_complaint" id="customer_complaint" rows="5"
                             placeholder="Servis Rutin, Ganti Oli, dll." required
-                            class="w-full h-20 md:h-41 px-3 py-2 rounded-lg border text-sm border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all resize-none placeholder:text-zinc-400"><?= htmlspecialchars($_POST['customer_complaint'] ?? '') ?></textarea>
+                            class="w-full h-20 md:h-44 px-3 py-2 rounded-lg border text-sm border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all resize-none placeholder:text-zinc-400"><?= htmlspecialchars($_POST['customer_complaint'] ?? '') ?></textarea>
                     </div>
                 </div>
             </div>

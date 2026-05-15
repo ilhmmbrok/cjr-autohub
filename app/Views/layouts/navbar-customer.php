@@ -32,7 +32,7 @@ $navItems = [
     </style>
 </head>
 
-<body class="min-h-screen bg-white">
+<body class="bg-white">
 
     <!-- Floating Capsule Navbar -->
     <header class="sticky top-0 z-50 w-full print:hidden">
@@ -41,7 +41,7 @@ $navItems = [
 
                 <!-- Brand -->
                 <a href="/dashboard" class="flex items-center gap-2 pl-0.5 group">
-                    <div class="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 ring-1 ring-zinc-200/50">
+                    <div class="w-7 h-7 overflow-hidden flex-shrink-0">
                         <?php echo '<img src="/assets/autohub.webp" alt="AutoHub" class="w-7 h-7 object-cover"/>' ?>
                     </div>
                     <span class="text-[13px] font-semibold text-zinc-950 tracking-tight">AutoHub</span>

@@ -25,18 +25,12 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         #sidebar {
             width: 256px;
             transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            overflow-x: hidden;
-            height: 100vh;
-            position: sticky;
-            top: 0;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
 
         #sidebar.collapsed {
             width: 64px !important;
-            overflow: hidden;
         }
 
         /* Labels & text fade */
@@ -136,12 +130,12 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     </style>
 </head>
 
-<body class="bg-zinc-50 h-screen overflow-hidden text-zinc-950">
+<body class="bg-zinc-50 text-zinc-950">
 
-    <div class="flex h-full">
+    <div class="flex min-h-screen">
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 shrink-0 bg-white border-r border-zinc-200 flex flex-col relative print:hidden">
+        <aside id="sidebar" class="w-64 shrink-0 bg-white border-r border-zinc-200 flex flex-col print:hidden" style="position: sticky; top: 0; height: 100vh; overflow-y: auto; overflow-x: hidden; flex-shrink: 0;">
 
             <!-- Logo + Toggle -->
             <div class="px-4 py-5 border-b border-zinc-200 flex items-center justify-between">
@@ -235,7 +229,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </aside>
 
         <!-- Main Content Wrapper -->
-        <div id="main-content-area" class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto">
+        <div id="main-content-area" class="flex-1 flex flex-col min-w-0">
 
             <script>
                 (function() {
@@ -243,15 +237,15 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                     const toggleBtn = document.getElementById('toggle-btn');
                     const STORAGE_KEY = 'autohub_sidebar_collapsed';
 
-                    // Restore state from localStorage
-                    const isCollapsed = localStorage.getItem(STORAGE_KEY) === 'true';
-                    if (isCollapsed) {
-                        sidebar.classList.add('collapsed');
-                    }
+                    // Restore state dari localStorage
+                    try {
+                        const isCollapsed = localStorage.getItem(STORAGE_KEY) === 'true';
+                        if (isCollapsed) sidebar.classList.add('collapsed');
+                    } catch(e) {}
 
                     toggleBtn.addEventListener('click', () => {
                         const collapsed = sidebar.classList.toggle('collapsed');
-                        localStorage.setItem(STORAGE_KEY, collapsed);
+                        try { localStorage.setItem(STORAGE_KEY, collapsed); } catch(e) {}
                     });
                 })();
             </script>

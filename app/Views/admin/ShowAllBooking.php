@@ -11,17 +11,9 @@
     .animate-fadeIn {
         animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    /* Hide scrollbars but keep functionality */
-    #main-content-area::-webkit-scrollbar {
-        display: none;
-    }
-    #main-content-area {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
 </style>
 
-<div class="flex-1 bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+<div class="w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
 
     <!-- Breadcrumb + Header -->
     <div class="mb-6">
@@ -208,9 +200,7 @@
     <?php require __DIR__ . '/../components/toast.php'; ?>
     <?php renderBookingActionDropdownAssets(); ?>
 
-    </div> <!-- flex-1 content wrapper -->
-</div> <!-- flex container from sidebar-admin -->
-</div> <!-- flex-1 inner from sidebar-admin -->
+</div>
 
 </body>
 

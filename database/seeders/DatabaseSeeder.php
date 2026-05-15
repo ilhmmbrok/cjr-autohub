@@ -11,11 +11,11 @@ class DatabaseSeeder
         Database::execute(
             "INSERT INTO users (fullname, email, phone, password, role) VALUES (?, ?, ?, ?, ?)",
             [
-                'Eva Customer',
-                'eva@example.com',
-                '081234567890',
-                password_hash('Eva@2026!', PASSWORD_DEFAULT),
-                'customer'
+                'Administrator 2',
+                'admin2@autohub.com',
+                null,
+                password_hash('@AdminAutohub', PASSWORD_DEFAULT),
+                'admin'
             ]
         );
         Database::execute(
@@ -24,7 +24,7 @@ class DatabaseSeeder
                 'Administrator',
                 'admin@autohub.com',
                 null,
-                password_hash('Admin@2026!', PASSWORD_DEFAULT),
+                password_hash('@AdminAutohub', PASSWORD_DEFAULT),
                 'admin'
             ]
         );

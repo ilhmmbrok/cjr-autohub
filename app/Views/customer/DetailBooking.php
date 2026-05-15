@@ -164,7 +164,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                             href="https://wa.me/6281132211515"
                             target="_blank"
                             aria-label="Hubungi Admin via WhatsApp"
-                            class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-zinc-800 bg-white border border-zinc-200 rounded-xl hover:text-white hover:bg-green-500 hover:border-green-500 transition-all active:scale-95 shadow-sm group">
+                            class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-zinc-800 bg-white border border-zinc-200 rounded-xl hover:text-white hover:bg-green-500 hover:border-green-500 transition-all active:scale-95 shadow-sm group active:bg-green-500 active:border-green-500">
                             <svg
                                 class="w-4 h-4 mr-2 text-green-500 group-hover:text-white transition-colors"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +176,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                         </a>
                         <?php if ($booking['progress_status'] === 'Pending'): ?>
                             <a href="/edit-booking/<?= $booking['booking_id'] ?>"
-                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-zinc-800 bg-white border border-zinc-200 rounded-xl hover:text-white hover:bg-black hover:border-zinc-300 transition-all active:scale-95 shadow-sm">
+                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-zinc-800 bg-white border border-zinc-200 rounded-xl hover:text-white hover:bg-black hover:border-zinc-300 transition-all active:scale-95 shadow-sm active:bg-black active:border-zinc-300">
                                 <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line-icon lucide-pen-line">
                                     <path d="M13 21h8" />
                                     <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
@@ -190,7 +190,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                                     action: '/history-booking/<?= $booking['booking_id'] ?>/cancel',
                                     confirmText: 'Ya, Batalkan'
                                 })"
-                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-red-500 bg-white border border-red-100 rounded-xl hover:text-white hover:bg-red-500 hover:border-zinc-200 transition-all active:scale-95 shadow-sm">
+                                class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-red-500 bg-white border border-red-100 rounded-xl hover:text-white hover:bg-red-500 hover:border-zinc-200 transition-all active:scale-95 shadow-sm active:bg-red-500 active:border-zinc-200">
                                 <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2">
                                     <path d="M10 11v6" />
                                     <path d="M14 11v6" />
@@ -223,7 +223,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                     <p class="text-xs text-zinc-500 leading-relaxed mb-4">
                         Hubungi admin kami jika terdapat kendala atau pertanyaan mengenai status booking Anda.
                     </p>
-                    <a href="#" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                    <a href="https://wa.me/6281132211515" class="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                         Hubungi via WhatsApp
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="7" y1="17" x2="17" y2="7" />
