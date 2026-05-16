@@ -27,7 +27,7 @@ function renderBookingActionDropdown(int $bookingId): void
         <button
             type="button"
             class="inline-flex items-center justify-center w-8 h-8 border border-zinc-200 rounded-md bg-white text-zinc-400 hover:text-zinc-950 hover:bg-zinc-50 transition-all active:scale-90 focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500"
-            onclick="toggleDropMenu(this)"
+            onclick="toggleDropMenu(this, event)"
             aria-expanded="false"
             aria-label="Menu aksi booking #<?= $id ?>">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -88,43 +88,79 @@ function renderBookingActionDropdownAssets(): void
     <script>
 
         (function() {
-            function toggleDropMenu(btn) {
-                const menu = btn.nextElementSibling;
+            function toggleDropMenu(btn, event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+
+                let menu = btn._dropMenu;
+                if (!menu) {
+                    menu = btn.nextElementSibling;
+                    if (!menu) return;
+                    btn._dropMenu = menu;
+                }
+
                 const isOpen = menu.classList.contains('!opacity-100');
+                
                 closeAll();
+                
                 if (!isOpen) {
-                    const rect = btn.getBoundingClientRect();
-                    menu.style.top = (rect.bottom + 4) + 'px';
+                    if (menu.parentNode !== document.body) {
+                        document.body.appendChild(menu);
+                    }
                     
-                    const menuWidth = menu.offsetWidth || 160;
-                    menu.style.left = (rect.right - menuWidth) + 'px';
+                    const rect = btn.getBoundingClientRect();
+                    const menuHeight = menu.offsetHeight || 120;
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Positioning Fixed
+                    menu.style.position = 'fixed';
+                    menu.style.left = (rect.right - 160) + 'px'; // 160 is min-width
+
+                    // Smart Positioning: Cek apakah muat di bawah, jika tidak taruh di atas
+                    if (rect.bottom + menuHeight > viewportHeight - 20) {
+                        menu.style.top = (rect.top - menuHeight - 4) + 'px';
+                        menu.classList.add('origin-bottom');
+                        menu.classList.remove('origin-top');
+                    } else {
+                        menu.style.top = (rect.bottom + 4) + 'px';
+                        menu.classList.add('origin-top');
+                        menu.classList.remove('origin-bottom');
+                    }
                     
                     menu.classList.remove('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
                     menu.classList.add('!opacity-100', '!visible', '!translate-y-0', '!scale-100', '!pointer-events-auto');
                     btn.setAttribute('aria-expanded', 'true');
+                    menu._triggerBtn = btn;
                 }
             }
 
             function closeAll() {
                 document.querySelectorAll('.drop-menu-container').forEach(function(m) {
+                    if (!m.classList.contains('!opacity-100')) return;
+                    
                     m.classList.add('opacity-0', 'invisible', '-translate-y-2', 'scale-95', 'pointer-events-none');
                     m.classList.remove('!opacity-100', '!visible', '!translate-y-0', '!scale-100', '!pointer-events-auto');
-                    const btn = m.previousElementSibling;
-                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                    
+                    if (m._triggerBtn) {
+                        m._triggerBtn.setAttribute('aria-expanded', 'false');
+                    }
                 });
             }
 
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.relative.inline-block')) {
+                if (!e.target.closest('.drop-menu-container')) {
                     closeAll();
-                } else if (e.target.closest('a[role="menuitem"], button[role="menuitem"]')) {
-                    setTimeout(closeAll, 50);
                 }
             });
+
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeAll();
             });
 
+            window.addEventListener('scroll', closeAll, true);
+            window.addEventListener('resize', closeAll);
             window.toggleDropMenu = toggleDropMenu;
         })();
     </script>

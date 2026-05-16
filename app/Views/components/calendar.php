@@ -87,7 +87,7 @@ $minDateStr = $calendarMinDate  ?? '';
     <!-- Trigger Button -->
     <button type="button"
         id="cal-trigger-<?= $calId ?>"
-        class="w-full h-9 flex items-center gap-2.5 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-950/10 focus:border-zinc-950 transition-all"
+        class="w-full h-9 flex items-center gap-2.5 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 hover:border-zinc-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 transition-all"
         aria-haspopup="dialog"
         aria-expanded="false">
         <svg class="w-4 h-4 text-zinc-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">

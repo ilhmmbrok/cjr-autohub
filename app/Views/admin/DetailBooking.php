@@ -167,7 +167,7 @@ $cfg = $statusMap[$booking['progress_status']] ?? ['badge' => 'bg-zinc-50 text-z
                             <button type="button"
                                 id="status-dropdown-btn"
                                 onclick="toggleStatusDropdown()"
-                                class="w-full flex items-center justify-between h-11 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all group active:scale-[0.98]">
+                                class="w-full flex items-center justify-between h-11 px-4 rounded-xl border border-zinc-200 bg-white text-sm font-medium text-zinc-950 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all group active:scale-[0.98]">
                                 <div class="flex items-center gap-2.5">
                                     <span id="status-dot" class="w-2 h-2 rounded-full <?= explode(' ', $cfg['badge'])[0] ?>"></span>
                                     <span id="selected-status-label"><?= $cfg['label'] ?></span>

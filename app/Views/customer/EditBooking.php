@@ -71,7 +71,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
                         </label>
                         <div class="relative custom-select" id="checkin-time-select">
                             <button type="button"
-                                class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 hover:border-zinc-300 transition-all cursor-pointer">
+                                class="dropdown-btn w-full flex items-center justify-between h-9 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all cursor-pointer">
                                 <span class="selected-label"><?= $savedTime ?: 'Pilih jam kedatangan' ?></span>
                                 <svg class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -107,7 +107,7 @@ $savedTime = !empty($booking['checkin_time']) ? substr($booking['checkin_time'],
                             </label>
                             <div class="relative custom-select" id="vehicle-type-select">
                                 <button type="button"
-                                    class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 hover:border-zinc-300 transition-all cursor-pointer">
+                                    class="dropdown-btn w-full flex items-center justify-between h-9 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10 hover:border-zinc-300 transition-all cursor-pointer">
                                     <?php
                                     $vt = $booking['vehicle_type'] ?? '';
                                     $vtLabel = ($vt === 'mobil' ? 'Mobil' : ($vt === 'motor' ? 'Motor' : 'Pilih jenis kendaraan'));

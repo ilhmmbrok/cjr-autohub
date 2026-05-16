@@ -119,7 +119,7 @@ $hasSchedule = !empty($s);
                     </label>
                     <div class="relative custom-select" id="open-time-select">
                         <button type="button"
-                            class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all cursor-pointer">
+                            class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all cursor-pointer">
                             <?php $ot = $_POST['open_time'] ?? $curOpen; ?>
                             <span class="selected-label"><?= !empty($ot) ? $ot : 'Pilih jam' ?></span>
                             <svg class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@ $hasSchedule = !empty($s);
                     </label>
                     <div class="relative custom-select" id="close-time-select">
                         <button type="button"
-                            class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-zinc-950/5 focus:border-zinc-950 transition-all cursor-pointer">
+                            class="dropdown-btn w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm border border-zinc-200 bg-white text-zinc-950 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all cursor-pointer">
                             <?php $ct = $_POST['close_time'] ?? $curClose; ?>
                             <span class="selected-label"><?= !empty($ct) ? $ct : 'Pilih jam' ?></span>
                             <svg class="h-4 w-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

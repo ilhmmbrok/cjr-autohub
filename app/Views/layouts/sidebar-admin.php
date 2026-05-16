@@ -229,7 +229,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         </aside>
 
         <!-- Main Content Wrapper -->
-        <div id="main-content-area" class="flex-1 flex flex-col min-w-0">
+        <div id="main-content-area" class="flex-1 flex flex-col min-w-0 overflow-x-hidden">
 
             <script>
                 (function() {

@@ -11,9 +11,37 @@
     .animate-fadeIn {
         animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    /* Modern Thin Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e4e4e7;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #d4d4d8;
+    }
+    
+    /* Ensure table fits & looks good */
+    .compact-table th, .compact-table td {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    .compact-table th:first-child, .compact-table td:first-child {
+        padding-left: 2rem !important;
+    }
+    .compact-table th:last-child, .compact-table td:last-child {
+        padding-right: 3.5rem !important;
+    }
 </style>
 
-<div class="w-full bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+<div class="bg-white px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn overflow-x-hidden max-w-full">
 
     <!-- Breadcrumb + Header -->
     <div class="mb-6">
@@ -70,65 +98,63 @@
                 <p class="text-xs mt-1">Data booking akan muncul di sini.</p>
             </div>
         <?php else: ?>
-            <div class="overflow-x-auto overflow-y-visible">
-                <table class="w-full text-sm" id="bookingTable">
-                    <thead>
-                        <tr class="border-b border-zinc-200 bg-zinc-50 text-left">
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Telepon</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Customer</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Kendaraan</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">No. Polisi</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Check-in</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider text-right">Aksi</th>
+            <table class="w-full text-sm compact-table" id="bookingTable">
+                <thead>
+                    <tr class="border-b border-zinc-200 bg-zinc-50 text-left">
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider">Telepon</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider">Customer</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider">Kendaraan</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider">Plat</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap">Check-in</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider">Status</th>
+                        <th class="py-3 font-medium text-zinc-500 uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingBody" class="divide-y divide-zinc-200">
+                    <?php foreach ($bookings as $b): ?>
+                        <?php
+                        $status   = $b['progress_status'] ?? '-';
+                        $badge    = match ($status) {
+                            'Pending'        => 'bg-yellow-50 text-yellow-800 border-yellow-200',
+                            'Admin Approved' => 'bg-blue-50 text-blue-700 border-blue-200',
+                            'In Progress'    => 'bg-orange-50 text-orange-700 border-orange-200',
+                            'Completed'      => 'bg-green-50 text-green-700 border-green-200',
+                            'Cancelled'      => 'bg-red-50 text-red-700 border-red-200',
+                            default          => 'bg-zinc-50 text-zinc-700 border-zinc-200',
+                        };
+                        $customer  = htmlspecialchars($b['customer_name'] ?? 'Customer #' . $b['customer_id']);
+                        $plate     = htmlspecialchars($b['plate_number'] ?? '-');
+                        $modelType = htmlspecialchars($b['model_year'] ?? '-');
+                        ?>
+                        <tr class="booking-row group hover:bg-zinc-50/50 transition-colors"
+                            data-status="<?= htmlspecialchars($status) ?>"
+                            data-search="<?= strtolower($customer . ' ' . $plate . ' ' . $modelType) ?>">
+                            <td class="py-3 text-zinc-700 whitespace-nowrap">
+                                <?= date('d M Y', strtotime($b['booking_date'])) ?>
+                            </td>
+                            <td class="py-3">
+                                <?= htmlspecialchars($b['phone'] ?? '—') ?>
+                            </td>
+                            <td class="py-3 font-medium text-zinc-950"><?= $customer ?></td>
+                            <td class="py-3">
+                                <div class="font-medium text-zinc-900"><?= htmlspecialchars($b['model_year'] ?? '-') ?></div>
+                                <div class="text-[10px] text-zinc-400 capitalize"><?= htmlspecialchars($b['vehicle_type'] ?? '-') ?></div>
+                            </td>
+                            <td class="py-3 font-mono text-zinc-700 uppercase"><?= $plate ?></td>
+                            <td class="py-3 text-zinc-700 whitespace-nowrap">
+                                <?= htmlspecialchars(substr($b['checkin_time'] ?? '-', 0, 5)) ?>
+                            </td>
+                            <td class="py-3">
+                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border <?= $badge ?>"><?= htmlspecialchars($status) ?></span>
+                            </td>
+                            <td class="py-3 text-right">
+                                <?php renderBookingActionDropdown($b['booking_id']); ?>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="bookingBody" class="divide-y divide-zinc-200">
-                        <?php foreach ($bookings as $b): ?>
-                            <?php
-                            $status   = $b['progress_status'] ?? '-';
-                            $badge    = match ($status) {
-                                'Pending'        => 'bg-yellow-50 text-yellow-800 border-yellow-200',
-                                'Admin Approved' => 'bg-blue-50 text-blue-700 border-blue-200',
-                                'In Progress'    => 'bg-orange-50 text-orange-700 border-orange-200',
-                                'Completed'      => 'bg-green-50 text-green-700 border-green-200',
-                                'Cancelled'      => 'bg-red-50 text-red-700 border-red-200',
-                                default          => 'bg-zinc-50 text-zinc-700 border-zinc-200',
-                            };
-                            $customer  = htmlspecialchars($b['customer_name'] ?? 'Customer #' . $b['customer_id']);
-                            $plate     = htmlspecialchars($b['plate_number'] ?? '-');
-                            $modelType = htmlspecialchars($b['model_year'] ?? '-');
-                            ?>
-                            <tr class="booking-row group hover:bg-zinc-50/50 transition-colors"
-                                data-status="<?= htmlspecialchars($status) ?>"
-                                data-search="<?= strtolower($customer . ' ' . $plate . ' ' . $modelType) ?>">
-                                <td class="px-4 py-3.5 text-zinc-700 whitespace-nowrap">
-                                    <?= date('d M Y', strtotime($b['booking_date'])) ?>
-                                </td>
-                                <td class="px-4 py-3.5">
-                                    <?= htmlspecialchars($b['phone'] ?? '—') ?>
-                                </td>
-                                <td class="px-4 py-3.5 font-medium text-zinc-950"><?= $customer ?></td>
-                                <td class="px-4 py-3.5">
-                                    <div class="font-medium text-zinc-900"><?= htmlspecialchars($b['model_year'] ?? '-') ?></div>
-                                    <div class="text-xs text-zinc-400 capitalize mt-0.5"><?= htmlspecialchars($b['vehicle_type'] ?? '-') ?></div>
-                                </td>
-                                <td class="px-4 py-3.5 font-mono text-sm text-zinc-700 uppercase"><?= $plate ?></td>
-                                <td class="px-4 py-3.5 text-zinc-700 whitespace-nowrap">
-                                    <?= htmlspecialchars(substr($b['checkin_time'] ?? '-', 0, 5)) ?>
-                                </td>
-                                <td class="px-4 py-3.5">
-                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border <?= $badge ?>"><?= htmlspecialchars($status) ?></span>
-                                </td>
-                                <td class="px-4 py-3.5 text-right">
-                                    <?php renderBookingActionDropdown($b['booking_id']); ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
             <div id="emptyFilter" class="hidden py-14 text-center">
                 <p class="text-sm font-medium text-zinc-900">Tidak ada hasil ditemukan</p>
@@ -203,5 +229,5 @@
 </div>
 
 </body>
-
 </html>
+
