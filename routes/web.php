@@ -6,7 +6,6 @@ use App\Controllers\AuthController;
 use App\Controllers\BookingController;
 use App\Controllers\CustomerController;
 use App\Controllers\HomeController;
-use App\Controllers\ProfileController;
 use App\Core\Router;
 
 Router::get('/', [HomeController::class, 'index']);
@@ -33,6 +32,10 @@ Router::group(['middleware' => 'admin'], function () {
     
     Router::get('/admin/jadwal', [ScheduleController::class, 'scheduleView']);
     Router::post('/admin/jadwal/create-update', [ScheduleController::class, 'createUpdateSchedule']);
+
+    Router::get('/admin/profile', [AdminController::class, 'profileView']);
+    Router::post('/admin/profile', [AdminController::class, 'updateProfile']);
+    Router::post('/admin/profile/password', [AdminController::class, 'updatePassword']);
 });
 
 // Customer
@@ -50,7 +53,7 @@ Router::group(['middleware' => 'customer'], function () {
     Router::post('/edit-booking/:id', [BookingController::class, 'updateBookingByCustomer']);
 
     // Profile
-    Router::get('/profile', [ProfileController::class, 'profileView']);
-    Router::post('/profile', [ProfileController::class, 'updateProfile']);
-    Router::post('/profile/password', [ProfileController::class, 'updatePassword']);
+    Router::get('/profile', [CustomerController::class, 'profileView']);
+    Router::post('/profile', [CustomerController::class, 'updateProfile']);
+    Router::post('/profile/password', [CustomerController::class, 'updatePassword']);
 });
