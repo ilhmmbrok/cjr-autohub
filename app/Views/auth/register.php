@@ -72,7 +72,7 @@
                 </div>
 
                 <!-- Header -->
-                <div class="mb-6 anim-fade delay-1">
+                <div class="mb-6 anim-fade delay-1 text-center">
                     <h1 class="text-2xl font-semibold text-zinc-950 tracking-tight">Buat akun</h1>
                     <p class="text-sm text-zinc-500 mt-1">Isi data berikut untuk membuat akun baru</p>
                 </div>
@@ -84,20 +84,20 @@
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-zinc-950 leading-none anim-fade delay-2" for="fullname">Nama Lengkap</label>
                         <input type="text" id="fullname" name="fullname" placeholder="Nama lengkap Anda" required
-                            class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-600 anim-fade delay-2">
+                            class="flex h-9 w-full rounded-full border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600/10 anim-fade delay-2">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-zinc-950 leading-none anim-fade delay-3" for="email">Email</label>
                         <input type="email" id="email" name="email" placeholder="nama@email.com" required
-                            class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-600 anim-fade delay-3">
+                            class="flex h-9 w-full rounded-full border border-zinc-200 bg-transparent px-3 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600/10 anim-fade delay-3">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-zinc-950 leading-none anim-fade delay-4" for="password">Password</label>
                         <div class="relative">
                             <input type="password" id="password" name="password" placeholder="Minimal 8 karakter" required
-                                class="flex h-9 w-full rounded-md border border-zinc-200 bg-transparent px-3 pr-9 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-600 anim-fade delay-5">
+                                class="flex h-9 w-full rounded-full border border-zinc-200 bg-transparent px-3 pr-9 py-1 text-sm shadow-xs transition-colors placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-600 anim-fade delay-5">
                             <button type="button" class="pw-toggle absolute right-0 top-0 h-9 w-9 flex items-center justify-center text-zinc-400 hover:text-zinc-600 transition-colors" data-target="password" tabindex="-1">
                                 <svg class="eye-show w-4 h-4 anim-fade delay-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg class="eye-hide w-4 h-4 hidden anim-fade delay-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
@@ -106,7 +106,7 @@
                     </div>
 
                     <button type="submit"
-                        class="inline-flex items-center justify-center h-9 w-full rounded-md bg-zinc-950 px-4 text-sm font-medium text-white shadow-xs hover:bg-zinc-800 transition-colors active:scale-[0.98] cursor-pointer anim-fade delay-4">
+                        class="inline-flex items-center justify-center h-9 w-full rounded-full bg-zinc-950 px-4 text-sm font-medium text-white shadow-xs hover:bg-zinc-800 transition-colors active:scale-[0.98] cursor-pointer anim-fade delay-4">
                         Buat Akun
                     </button>
                 </form>

@@ -1,651 +1,491 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="/css/app.css">
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoHub — Booking Bengkel Online</title>
     <?php echo '<link rel="icon" href="/assets/autohub.webp" type="image/x-icon"/>' ?>
+    <link rel="stylesheet" href="/css/app.css" />
 
     <style>
-        @import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800');
+        @import url('https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800,900');
 
         * {
             font-family: 'Instrument Sans', sans-serif;
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         :root {
             --green: #25bf33;
             --green-dark: #1ea52b;
-            --green-light: #d1fad5;
-            --green-mid: #a3f0a9;
+            --green-rgb: 37, 191, 51;
         }
 
+        /* ── Body background ── */
         body {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('/assets/background.webp');
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+                url('/assets/background.webp');
+            background-color: white;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
         }
 
-        .green { color: var(--green); }
-        .bg-green-custom { background-color: var(--green); }
-        .hover-green:hover { background-color: var(--green-dark); }
-        .hover-outline:hover { border-color: var(--green); color: var(--green); }
-
-        /* ===== NAVBAR ===== */
-        nav {
-            background: transparent;
-            border-bottom: 1px solid rgba(255,255,255,0.10);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        /* ── Navbar pill glass ── */
+        .nav-pill {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transition: background .25s, box-shadow .25s;
         }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+        .nav-pill:hover {
+            background: rgba(255, 255, 255, 0.09);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
         }
 
-        .logo-wrap { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .logo-wrap img { width: 40px; height: 40px; }
-        .logo-wrap h1 { font-size: 1.05rem; font-weight: 800; color: #fff; line-height: 1.2; }
-        .logo-wrap p { font-size: 0.70rem; color: #c8c8c8; margin-top: -2px; }
+        /* ── Phone float ── */
+        @keyframes floatA {
 
-        .nav-btns { display: flex; gap: 8px; flex-shrink: 0; }
-        .btn-outline {
-            padding: 8px 18px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #fff;
-            border-radius: 14px;
-            border: 1.5px solid rgba(255,255,255,0.22);
-            background: transparent;
-            text-decoration: none;
-            transition: background 0.18s;
-            white-space: nowrap;
-        }
-        .btn-outline:hover { background: rgba(255,255,255,0.10); }
-        .btn-solid {
-            padding: 8px 18px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #fff;
-            border-radius: 14px;
-            background: var(--green);
-            border: none;
-            text-decoration: none;
-            transition: background 0.18s;
-            white-space: nowrap;
-        }
-        .btn-solid:hover { background: var(--green-dark); }
-
-        /* ===== HERO ===== */
-        .hero {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 48px 24px 60px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 16px;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.20);
-            color: #fff;
-            font-size: 0.80rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-        .badge-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            flex-shrink: 0;
-        }
-
-        .hero-title {
-            font-size: clamp(2rem, 5vw, 3.6rem);
-            font-weight: 900;
-            color: #fff;
-            line-height: 1.10;
-            letter-spacing: -1.5px;
-        }
-        .hero-title .accent { color: var(--green); }
-
-        .hero-desc {
-            margin-top: 20px;
-            font-size: 1rem;
-            color: #d4d4d4;
-            line-height: 1.7;
-            max-width: 480px;
-        }
-
-        .hero-cta {
-            margin-top: 32px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .btn-hero-primary {
-            padding: 13px 28px;
-            font-size: 0.90rem;
-            font-weight: 700;
-            color: #fff;
-            border-radius: 18px;
-            background: var(--green);
-            text-decoration: none;
-            transition: background 0.18s, transform 0.15s;
-        }
-        .btn-hero-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
-        .btn-hero-secondary {
-            padding: 13px 28px;
-            font-size: 0.90rem;
-            font-weight: 700;
-            color: #fff;
-            border-radius: 18px;
-            background: rgba(255,255,255,0.08);
-            border: 1.5px solid rgba(255,255,255,0.22);
-            text-decoration: none;
-            backdrop-filter: blur(8px);
-            transition: background 0.18s;
-        }
-        .btn-hero-secondary:hover { background: rgba(255,255,255,0.16); }
-
-        /* ===== HERO MOCKUP ===== */
-        .hero-right { display: flex; 
-            justify-content: center; 
-            position: relative; 
-        }
-
-        .glow-1 {
-            position: absolute; top: 30px; right: 20px;
-            width: 160px; height: 160px;
-            background: rgba(37, 191, 51, 0.18);
-            border-radius: 50%; filter: blur(48px);
-            pointer-events: none;
-        }
-        
-        .glow-2 {
-            position: absolute; bottom: 0; left: 0;
-            width: 140px; height: 140px;
-            background: rgba(37, 191, 51, 0.12);
-            border-radius: 50%; filter: blur(44px);
-            pointer-events: none;
-        }
-
-        .mockup-wrap {
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            height: 480px;
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .phone { position: absolute; }
-        .phone-back {
-            left: 0;
-            bottom: 0;
-            transform: rotate(-4deg) translateY(-20px);
-            z-index: 1;
-        }
-        .phone-front {
-            right: 0;
-            bottom: 0;
-            transform: rotate(3deg);
-            z-index: 2;
-        }
-        .phone-frame {
-            width: 195px;
-            background: transparent;
-            border-radius: 36px;
-            padding: 0;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        }
-        .phone-screen {
-            background: #fff;
-            border-radius: 28px;
-            overflow: hidden;
-            min-height: 390px;
-        }
-        .phone-screen::after { display: none !important; }
-        .phone-screen-img {
-            background: transparent !important;
-            padding: 0;
-            overflow: hidden;
-            border-radius: 28px;
-            min-height: unset;
-            line-height: 0;
-        }
-        .mockup-screen-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            border-radius: 28px;
-            display: block;
-        }
-
-        /* ===== DIVIDER ===== */
-        .section-divider { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .divider-line { border: none; border-top: 1px solid rgba(255,255,255,0.10); margin: 0; }
-
-        /* ===== FEATURES SECTION ===== */
-        .features-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 24px 56px;
-        }
-
-        .section-header { text-align: center; margin-bottom: 44px; }
-        .section-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(37,191,51,0.13);
-            border: 1px solid rgba(37,191,51,0.25);
-            border-radius: 999px;
-            padding: 5px 16px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #6ee87a;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-        .section-title {
-            font-size: clamp(1.6rem, 3.5vw, 2.6rem);
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: -1px;
-            line-height: 1.15;
-        }
-        .section-title .accent { color: var(--green); }
-        .section-desc {
-            margin-top: 12px;
-            color: #a0a0a0;
-            font-size: 0.95rem;
-            max-width: 520px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.65;
-        }
-
-        /* Feature Grid — 4 cards: 2x2 */
-        .feat-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 960px;
-            margin: 0 auto;
-        }
-
-        .feat-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.10);
-            border-radius: 22px;
-            padding: 28px 24px;
-            transition: background 0.22s, border-color 0.22s, transform 0.18s;
-            cursor: default;
-        }
-        .feat-card:hover {
-            background: rgba(37,191,51,0.07);
-            border-color: rgba(37,191,51,0.30);
-            transform: translateY(-3px);
-        }
-        .feat-card-icon {
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            background: rgba(37,191,51,0.14);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 18px;
-        }
-        .feat-card-icon svg { color: var(--green); width: 24px; height: 24px; }
-        .feat-card-title { font-size: 1rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
-        .feat-card-desc { font-size: 0.85rem; color: #9ca3af; line-height: 1.65; }
-
-        /* ===== STEPS SECTION ===== */
-        .steps-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px 60px;
-        }
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .step-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.09);
-            border-radius: 22px;
-            padding: 28px 18px;
-            text-align: center;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        .step-card:hover { background: rgba(37,191,51,0.06); border-color: rgba(37,191,51,0.22); }
-        .step-num {
-            width: 42px; height: 42px;
-            border-radius: 50%;
-            background: var(--green);
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 900;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 14px;
-        }
-        .step-title { font-size: 0.92rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
-        .step-desc { font-size: 0.81rem; color: #9ca3af; line-height: 1.6; }
-
-        /* ===== CTA BANNER ===== */
-        .cta-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px 56px;
-        }
-        .cta-banner {
-            background: linear-gradient(135deg, rgba(37,191,51,0.18) 0%, rgba(37,191,51,0.06) 100%);
-            border: 1px solid rgba(37,191,51,0.28);
-            border-radius: 28px;
-            padding: 52px 40px;
-            text-align: center;
-        }
-        .cta-title { font-size: clamp(1.4rem, 3vw, 2.1rem); font-weight: 900; color: #fff; margin-bottom: 12px; }
-        .cta-desc { color: #b0b0b0; font-size: 0.95rem; max-width: 600px; margin: 0 auto 28px; line-height: 1.6; }
-        .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-        /* ===== FOOTER ===== */
-        footer {
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding: 20px 24px;
-            text-align: center;
-        }
-        .footer-inner { max-width: 1200px; margin: 0 auto; }
-        .footer-text { color: #666; font-size: 0.82rem; }
-        .footer-text span { color: var(--green); font-weight: 700; }
-
-        /* ===== RESPONSIVE ===== */
-
-        /* Tablet landscape */
-        @media (max-width: 1024px) {
-            .hero { gap: 40px; }
-            .steps-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* Tablet portrait / large mobile */
-        @media (max-width: 900px) {
-            .hero {
-                grid-template-columns: 1fr;
-                gap: 36px;
-                padding: 36px 20px 48px;
-                text-align: center;
+            0%,
+            100% {
+                transform: rotate(-4deg) translateY(-20px);
             }
-            .hero-desc { max-width: 100%; margin-left: auto; margin-right: auto; }
-            .hero-cta { justify-content: center; }
-            .badge { display: inline-flex; }
-            .hero-right { justify-content: center; }
 
-            .mockup-wrap { height: 380px; max-width: 340px; }
-            .phone-frame { width: 155px; }
-            .phone-screen { min-height: 310px; }
-
-            .feat-grid { max-width: 100%; }
+            50% {
+                transform: rotate(-4deg) translateY(-34px);
+            }
         }
 
-        /* Mobile */
-        @media (max-width: 600px) {
-            /* Navbar */
-            .logo-wrap p { display: none; }
-            .btn-outline { padding: 7px 14px; font-size: 0.78rem; }
-            .btn-solid  { padding: 7px 14px; font-size: 0.78rem; }
+        @keyframes floatB {
 
-            /* Hero */
-            .hero { padding: 28px 16px 40px; gap: 28px; }
-            .badge { font-size: 0.74rem; padding: 6px 13px; }
-            .hero-cta { gap: 10px; }
-            .btn-hero-primary,
-            .btn-hero-secondary { width: 100%; text-align: center; padding: 13px 20px; }
+            0%,
+            100% {
+                transform: rotate(3deg) translateY(0);
+            }
 
-            /* Mockup */
-            .mockup-wrap { height: 300px; max-width: 280px; }
-            .phone-frame { width: 125px; }
-            .phone-screen { min-height: 250px; }
-
-            /* Features */
-            .features-section { padding: 40px 16px 40px; }
-            .feat-grid { grid-template-columns: 1fr; gap: 14px; }
-            .section-header { margin-bottom: 32px; }
-
-            /* Steps */
-            .steps-section { padding: 0 16px 48px; }
-            .steps-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-            .step-card { padding: 22px 14px; }
-
-            /* CTA */
-            .cta-section { padding: 0 16px 44px; }
-            .cta-banner { padding: 36px 20px; border-radius: 20px; }
-            .cta-btns { flex-direction: column; align-items: center; }
-            .cta-btns .btn-hero-primary,
-            .cta-btns .btn-hero-secondary { width: 100%; max-width: 320px; }
-
-            /* Footer */
-            footer { padding: 16px 16px; }
+            50% {
+                transform: rotate(3deg) translateY(-14px);
+            }
         }
 
-        /* Very small phones */
-        @media (max-width: 380px) {
-            .steps-grid { grid-template-columns: 1fr; }
-            .mockup-wrap { height: 260px; max-width: 240px; }
-            .phone-frame { width: 108px; }
-            .phone-screen { min-height: 220px; }
+        .phone-back {
+            animation: floatA 5s ease-in-out infinite;
+        }
+
+        .phone-front {
+            animation: floatB 5s ease-in-out 0.8s infinite;
+        }
+
+        /* ── Badge dot pulse ── */
+        @keyframes pulseDot {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(var(--green-rgb), 0.55);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(var(--green-rgb), 0);
+            }
+        }
+
+        .badge-dot {
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        /* ── Hero stagger ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-1 {
+            animation: fadeUp .65s .05s both;
+        }
+
+        .hero-2 {
+            animation: fadeUp .65s .15s both;
+        }
+
+        .hero-3 {
+            animation: fadeUp .65s .25s both;
+        }
+
+        .hero-4 {
+            animation: fadeUp .65s .35s both;
+        }
+
+        .hero-5 {
+            animation: fadeUp .65s .55s both;
+        }
+
+        /* ── Scroll reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .65s ease, transform .65s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Card shine sweep ── */
+        .card-shine {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-shine::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.045) 50%, transparent 62%);
+            transform: translateX(-100%);
+            transition: transform .55s ease;
+        }
+
+        .card-shine:hover::after {
+            transform: translateX(100%);
         }
     </style>
-
-    <title>AutoHub — Booking Bengkel Online</title>
 </head>
 
-<body>
+<body class="min-h-screen text-white antialiased">
 
-    <!-- ===== NAVBAR ===== -->
-    <nav>
-        <div class="nav-inner">
-            <div class="logo-wrap">
-                <div>
-                    <?php echo '<img src="/assets/autohub.webp" alt="AutoHub Logo"/>' ?>
+    <!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+    <nav class="sticky top-3 z-50 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="nav-pill rounded-full flex items-center justify-between gap-3 px-5 py-3">
+
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-2.5 flex-shrink-0">
+                    <?php echo '<img src="/assets/autohub.webp" alt="AutoHub" class="w-8 h-8 rounded-full"/>' ?>
+                    <div class="leading-tight">
+                        <p class="text-white font-bold text-[0.95rem] tracking-tight">AutoHub</p>
+                        <p class="hidden sm:block text-white/40 text-[0.60rem] font-medium">Booking Online</p>
+                    </div>
+                </a>
+
+                <!-- Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="/login"
+                        class="px-4 py-2 rounded-full text-[0.82rem] font-semibold text-white
+                          border border-white/20 hover:bg-white/10 transition-all duration-200 whitespace-nowrap">
+                        Sign In
+                    </a>
+                    <a href="/register"
+                        class="px-4 py-2 rounded-full text-[0.82rem] font-semibold text-white
+                          bg-[#25bf33] hover:bg-[#1ea52b] transition-all duration-200 whitespace-nowrap">
+                        Sign Up
+                    </a>
                 </div>
-                <div>
-                    <h1>AutoHub</h1>
-                    <p>Booking Online</p>
-                </div>
-            </div>
-            <div class="nav-btns">
-                <a href="/login" class="btn-outline">Sign In</a>
-                <a href="/register" class="btn-solid">Sign Up</a>
             </div>
         </div>
     </nav>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero">
 
-        <!-- Left -->
+    <!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8
+                pt-12 pb-16 sm:pt-16 sm:pb-20
+                grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+        <!-- Left: copy -->
         <div>
-            <div class="badge">
-                <div class="badge-dot"></div>
-                Layanan Booking Online AutoHub
+            <!-- Badge -->
+            <div class="hero-1 inline-flex items-center gap-2 px-4 py-2 rounded-full
+                    border border-white/20 text-white text-[0.78rem] font-semibold mb-6">
+                <span class="badge-dot w-2 h-2 rounded-full bg-[#25bf33] flex-shrink-0"></span>
+                Politeknik Negeri Jember
             </div>
 
-            <h2 class="hero-title">
+            <!-- Headline -->
+            <h1 class="hero-2 text-[clamp(2rem,5vw,3.6rem)] font-black leading-[1.10]
+                   tracking-[-1.5px] text-white">
                 Booking Servis
-                <span class="accent">Lebih Mudah</span>
+                <span class="text-[#25bf33]">Lebih Mudah</span>
                 &amp; Cepat
-            </h2>
+            </h1>
 
-            <p class="hero-desc">
-               AutoHub menghadirkan kemudahan booking servis kendaraan secara online tanpa perlu antre, 
-               dengan sistem yang modern, praktis, dan mudah digunakan.
+            <!-- Description -->
+            <p class="hero-3 mt-5 text-white/65 text-base leading-[1.75] max-w-[480px]">
+                AutoHub kini menghadirkan kemudahan booking servis kendaraan secara online
+                tanpa perlu antre, dengan sistem yang modern, praktis, dan mudah digunakan.
             </p>
 
-            <div class="hero-cta">
-                <a href="/register" class="btn-hero-primary">Daftar Sekarang</a>
-                <a href="/login" class="btn-hero-secondary">Masuk</a>
+            <!-- CTA -->
+            <div class="hero-4 mt-8 flex flex-col sm:flex-row gap-3">
+                <a href="/register"
+                    class="inline-flex items-center justify-center px-7 py-3.5 rounded-3xl
+                      text-[0.90rem] font-bold text-white bg-[#25bf33] hover:bg-[#1ea52b]
+                      transition-all duration-200 hover:-translate-y-0.5">
+                    Daftar Sekarang
+                </a>
+                <a href="/login"
+                    class="inline-flex items-center justify-center px-7 py-3.5 rounded-3xl
+                      text-[0.90rem] font-bold text-white border border-white/20
+                      bg-white/8 hover:bg-white/14
+                      transition-all duration-200 hover:-translate-y-0.5">
+                    Masuk
+                </a>
             </div>
         </div>
 
-        <!-- Right — Mockup -->
-        <div class="hero-right">
-            <div class="glow-1"></div>
-            <div class="glow-2"></div>
+        <!-- Right: mockup — hidden below lg -->
+        <div class="hero-5 hidden lg:flex justify-center items-end relative">
+            <!-- Glows -->
+            <div class="absolute top-8 right-6 w-44 h-44 rounded-full blur-3xl pointer-events-none
+                    bg-[rgba(37,191,51,0.18)]"></div>
+            <div class="absolute bottom-0 left-0 w-36 h-36 rounded-full blur-3xl pointer-events-none
+                    bg-[rgba(37,191,51,0.12)]"></div>
 
-            <div class="mockup-wrap">
-                <div class="phone phone-back">
-                    <div class="phone-frame">
-                        <div class="phone-screen phone-screen-img">
-                            <?php echo '<img src="/assets/dashboard.png" alt="Dashboard AutoHub" class="mockup-screen-img"/>' ?>
+            <!-- Phones -->
+            <div class="relative h-[460px] w-[360px]">
+                <div class="phone-back absolute bottom-0 left-2 z-10">
+                    <div class="w-[185px] rounded-[36px] shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                        <div class="rounded-[28px] overflow-hidden bg-white leading-[0]">
+                            <?php echo '<img src="/assets/detailBooking.png" alt="Detail Booking AutoHub"
+                             class="w-full object-cover object-top block"/>' ?>
                         </div>
                     </div>
                 </div>
-                <div class="phone phone-front">
-                    <div class="phone-frame">
-                        <div class="phone-screen phone-screen-img">
-                            <?php echo '<img src="/assets/detailBooking.png" alt="Detail Booking AutoHub" class="mockup-screen-img"/>' ?>
+                <div class="phone-front absolute bottom-0 right-2 z-20">
+                    <div class="w-[185px] rounded-[36px] shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                        <div class="rounded-[28px] overflow-hidden bg-white leading-[0]">
+                            <?php echo '<img src="/assets/dashboard.png" alt="Dashboard AutoHub"
+                             class="w-full object-cover object-top block"/>' ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </section>
 
-    <div class="section-divider"><hr class="divider-line"/></div>
 
-    <!-- ===== CARA BOOKING ===== -->
-    <section class="steps-section" style="padding-top: 48px;">
-        <div class="section-header">
-            <div class="section-eyebrow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <!-- Divider -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <hr class="border-white/10" />
+    </div>
+
+
+    <!-- ════════════════════════════════════════
+     CARA BOOKING — 4 Steps
+════════════════════════════════════════ -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-16 sm:pt-16 sm:pb-20">
+
+        <div class="text-center mb-12 reveal">
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4
+                    text-[0.76rem] font-bold uppercase tracking-widest
+                    bg-[rgba(37,191,51,0.13)] border border-[rgba(37,191,51,0.25)] text-[#6ee87a]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
                 Cara Mudah Booking
             </div>
-            <h2 class="section-title">Servis dalam <span class="accent">4 Langkah</span></h2>
-            <p class="section-desc">Proses booking yang simpel, cepat, dan bisa dilakukan dari mana saja.</p>
+            <h2 class="text-[clamp(1.6rem,3.5vw,2.6rem)] font-black text-white tracking-tight leading-tight">
+                Servis dalam <span class="text-[#25bf33]">4 Langkah</span>
+            </h2>
+            <p class="mt-3 text-white/45 text-[0.93rem] max-w-md mx-auto leading-relaxed">
+                Proses booking yang simpel, cepat, dan bisa dilakukan dari mana saja.
+            </p>
         </div>
 
-        <div class="steps-grid">
-            <div class="step-card">
-                <div class="step-num">1</div>
-                <div class="step-title">Daftar Akun</div>
-                <p class="step-desc">Buat akun gratis dengan email atau nomor HP-mu dalam hitungan detik.</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">2</div>
-                <div class="step-title">Pilih Layanan</div>
-                <p class="step-desc">Tentukan jenis servis yang dibutuhkan kendaraanmu dari daftar layanan yang tersedia.</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">3</div>
-                <div class="step-title">Atur Jadwal</div>
-                <p class="step-desc">Pilih tanggal dan jam yang paling cocok dengan aktivitas harianmu.</p>
-            </div>
-            <div class="step-card">
-                <div class="step-num">4</div>
-                <div class="step-title">Datang & Selesai</div>
-                <p class="step-desc">Datang tepat waktu, kendaraanmu langsung diproses tanpa antre panjang.</p>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <?php
+            $steps = [
+                ['1', 'Daftar Akun',      'Buat akun gratis dengan email dalam hitungan detik.'],
+                ['2', 'Pilih Layanan',    'Isi formulir servis yang dibutuhkan kendaraanmu'],
+                ['3', 'Atur Jadwal',      'Pilih tanggal dan jam yang paling cocok dengan aktivitas harianmu.'],
+                ['4', 'Datang & Selesai', 'Datang tepat waktu, kendaraanmu langsung diproses tanpa antre panjang.'],
+            ];
+            foreach ($steps as $i => $s): ?>
+                <div class="reveal card-shine text-center cursor-default p-7 rounded-[22px]
+                    bg-white/[0.04] border border-white/[0.09]
+                    hover:bg-[rgba(37,191,51,0.07)] hover:border-[rgba(37,191,51,0.30)]
+                    transition-all duration-300 hover:-translate-y-1"
+                    style="transition-delay: <?php echo $i * 80 ?>ms">
+                    <div class="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-4
+                        text-white text-base font-black
+                        bg-[#25bf33] shadow-[0_4px_16px_rgba(37,191,51,0.30)]">
+                        <?php echo $s[0] ?>
+                    </div>
+                    <p class="text-white font-extrabold text-[0.92rem] mb-2"><?php echo $s[1] ?></p>
+                    <p class="text-white/40 text-[0.80rem] leading-relaxed"><?php echo $s[2] ?></p>
+                </div>
+            <?php endforeach; ?>
         </div>
     </section>
 
-    <!-- ===== FITUR CUSTOMER ===== -->
-    <section class="features-section">
-        <div class="section-header">
-            <div class="section-eyebrow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+
+    <!-- ════════════════════════════════════════
+     FITUR CUSTOMER
+════════════════════════════════════════ -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
+
+        <div class="text-center mb-12 reveal">
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4
+                    text-[0.76rem] font-bold uppercase tracking-widest
+                    bg-[rgba(37,191,51,0.13)] border border-[rgba(37,191,51,0.25)] text-[#6ee87a]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 7h-9" />
+                    <path d="M14 17H5" />
+                    <circle cx="17" cy="17" r="3" />
+                    <circle cx="7" cy="7" r="3" />
+                </svg>
                 Fitur untuk Customer
             </div>
-            <h2 class="section-title">Semua yang Kamu Butuhkan <span class="accent">Ada di Sini</span></h2>
-            <p class="section-desc">
-                Dari booking hingga cek status servis, AutoHub hadir
-                lengkap untuk memudahkan pengalaman servis kendaraanmu.
+            <h2 class="text-[clamp(1.6rem,3.5vw,2.6rem)] font-black text-white tracking-tight leading-tight">
+                Semua yang Kamu Butuhkan <span class="text-[#25bf33]">Ada di Sini</span>
+            </h2>
+            <p class="mt-3 text-white/45 text-[0.93rem] max-w-lg mx-auto leading-relaxed">
+                Dari booking hingga cek status servis, AutoHub hadir lengkap untuk
+                memudahkan pengalaman servis kendaraanmu.
             </p>
         </div>
 
-        <div class="feat-grid">
-            <div class="feat-card">
-                <div class="feat-card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+            <?php
+            $features = [
+                [
+                    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-icon lucide-clipboard"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>',
+                    'title' => 'Booking Servis Online',
+                    'desc'  => 'Atur jadwal servis kendaraanmu dengan cepat tanpa harus datang langsung ke bengkel.',
+                ],
+                [
+                    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+                    'title' => 'Status Booking',
+                    'desc'  => 'Lihat perkembangan servis kendaraanmu secara langsung dari proses awal hingga selesai.',
+                ],
+                [
+                    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+                    'title' => 'Riwayat Servis',
+                    'desc'  => 'Semua riwayat servis tersimpan rapi untuk memudahkan pemantauan perawatan kendaraanmu.',
+                ],
+                [
+                    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>',
+                    'title' => 'Pilih Jadwal Fleksibel',
+                    'desc'  => 'Sesuaikan waktu booking dengan aktivitasmu. Tersedia berbagai slot waktu yang bisa dipilih bebas.',
+                ],
+            ];
+            foreach ($features as $i => $f): ?>
+                <div class="reveal card-shine cursor-default group p-7 rounded-[22px]
+                    bg-white/[0.04] border border-white/[0.09]
+                    hover:bg-[rgba(37,191,51,0.07)] hover:border-[rgba(37,191,51,0.30)]
+                    transition-all duration-300 hover:-translate-y-1"
+                    style="transition-delay: <?php echo ($i % 2) * 80 ?>ms">
+                    <div class="w-12 h-12 rounded-[14px] flex items-center justify-center mb-5
+                        bg-[rgba(37,191,51,0.14)]
+                        group-hover:bg-[rgba(37,191,51,0.22)] group-hover:scale-105
+                        transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#25bf33]"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <?php echo $f['icon'] ?>
+                        </svg>
+                    </div>
+                    <p class="text-white font-extrabold text-base mb-2"><?php echo $f['title'] ?></p>
+                    <p class="text-white/40 text-[0.84rem] leading-relaxed"><?php echo $f['desc'] ?></p>
                 </div>
-                <div class="feat-card-title">Booking Servis Online</div>
-                <p class="feat-card-desc">Atur jadwal servis kendaraanmu dengan cepat tanpa harus datang langsung ke bengkel.</p>
-            </div>
-            <div class="feat-card">
-                <div class="feat-card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                </div>
-                <div class="feat-card-title">Status Booking</div>
-                <p class="feat-card-desc"> Lihat perkembangan servis kendaraanmu secara langsung dari proses awal hingga selesai.</p>
-            </div>
-            <div class="feat-card">
-                <div class="feat-card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                </div>
-                <div class="feat-card-title">Riwayat Servis</div>
-                <p class="feat-card-desc">Semua riwayat servis tersimpan rapi untuk memudahkan pemantauan perawatan kendaraanmu.</p>
-            </div>
-            <div class="feat-card">
-                <div class="feat-card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div class="feat-card-title">Pilih Jadwal Fleksibel</div>
-                <p class="feat-card-desc">Sesuaikan waktu booking dengan aktivitasmu. Tersedia berbagai slot waktu yang bisa dipilih bebas.</p>
-            </div>
+            <?php endforeach; ?>
         </div>
     </section>
 
-    <div class="section-divider"><hr class="divider-line"/></div>
 
-    <!-- ===== CTA BANNER ===== -->
-    <section class="cta-section">
-        <div class="cta-banner">
-            <h2 class="cta-title">Siap Booking Servis Sekarang?</h2>
-            <p class="cta-desc">
-                Bergabung bersama AutoHub dan kelola booking servis bengkel anda dengan lebih mudah, 
+    <!-- Divider -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <hr class="border-white/10" />
+    </div>
+
+
+    <!-- ════════════════════════════════════════
+     CTA BANNER
+════════════════════════════════════════ -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <div class="reveal relative overflow-hidden rounded-[28px] text-center
+                border border-[rgba(37,191,51,0.28)]
+                bg-gradient-to-br from-[rgba(37,191,51,0.18)] via-[rgba(37,191,51,0.07)] to-transparent
+                px-6 py-14 sm:px-12 sm:py-16">
+
+            <!-- Glow -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-28 rounded-full blur-3xl
+                    pointer-events-none bg-[rgba(37,191,51,0.15)]"></div>
+
+            <h2 class="relative text-[clamp(1.4rem,3vw,2.1rem)] font-black text-white mb-3">
+                Siap Booking Servis Sekarang?
+            </h2>
+            <p class="relative text-white/50 text-[0.93rem] max-w-xl mx-auto leading-relaxed mb-8">
+                Bergabung bersama AutoHub dan kelola booking servis bengkel anda dengan lebih mudah,
                 cepat, dan praktis. Daftar sekarang dan rasakan kemudahan booking online untuk kendaraanmu!
             </p>
-            <div class="cta-btns">
-                <a href="/register" class="btn-hero-primary">Daftar Gratis</a>
-                <a href="/login" class="btn-hero-secondary">Sudah Punya Akun</a>
+            <div class="relative flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <a href="/register"
+                    class="w-full sm:w-auto inline-flex items-center justify-center
+                      px-8 py-3.5 rounded-[18px] text-[0.90rem] font-bold text-white
+                      bg-[#25bf33] hover:bg-[#1ea52b]
+                      transition-all duration-200 hover:-translate-y-0.5">
+                    Daftar Gratis
+                </a>
+                <a href="/login"
+                    class="w-full sm:w-auto inline-flex items-center justify-center
+                      px-8 py-3.5 rounded-[18px] text-[0.90rem] font-bold text-white
+                      border border-white/20 bg-white/8 hover:bg-white/14
+                      transition-all duration-200 hover:-translate-y-0.5">
+                    Sudah Punya Akun
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <div class="footer-inner">
-            <span class="footer-text">© 2026 <span>AutoHub</span> — Booking Online. All rights reserved. Developed by CJR Team (Kelompok 2 - Golongan E - Teknik Informatika)</p>
+
+    <!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+    <footer class="border-t border-white/[0.08] py-6 px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-white/30 text-[0.80rem]">
+                © 2026 <span class="text-[#25bf33] font-bold">AutoHub</span> — Booking Online.
+                All rights reserved.
+                Developed by CJR Team (Kelompok 2 - Golongan E - Teknik Informatika)
+            </p>
         </div>
     </footer>
+
+
+    <script>
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.10
+        });
+        revealEls.forEach(el => observer.observe(el));
+    </script>
 
 </body>
 
